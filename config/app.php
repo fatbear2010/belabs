@@ -2,6 +2,8 @@
 
 return [
 
+    
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -229,5 +231,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
+
+    LaravelFrontendPresets\ArgonPreset\ArgonPresetServiceProvider::class,
+
 
 ];

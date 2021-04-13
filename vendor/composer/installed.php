@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '12ff3f4b4a3406ec6dbdcaba6f34b1a40bb8aa0a',
+    'reference' => '39cf1d19de5032941efd2c105ebad9b4c5348606',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -420,6 +420,15 @@
         0 => '*',
       ),
     ),
+    'laravel-frontend-presets/argon' => 
+    array (
+      'pretty_version' => 'v1.1.1',
+      'version' => '1.1.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '62b3cb7516a605634416ceb386c6f2b467bc5f45',
+    ),
     'laravel/framework' => 
     array (
       'pretty_version' => 'v8.36.2',
@@ -436,7 +445,16 @@
       'aliases' => 
       array (
       ),
-      'reference' => '12ff3f4b4a3406ec6dbdcaba6f34b1a40bb8aa0a',
+      'reference' => '39cf1d19de5032941efd2c105ebad9b4c5348606',
+    ),
+    'laravel/legacy-factories' => 
+    array (
+      'pretty_version' => 'v1.1.0',
+      'version' => '1.1.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '5e3fe2fd5fda64e20ea5c74c831a7346294e902a',
     ),
     'laravel/sail' => 
     array (
@@ -455,6 +473,15 @@
       array (
       ),
       'reference' => '04ad32c1a3328081097a181875733fa51f402083',
+    ),
+    'laravel/ui' => 
+    array (
+      'pretty_version' => 'v3.2.0',
+      'version' => '3.2.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'a1f82c6283c8373ea1958b8a27c3d5c98cade351',
     ),
     'league/commonmark' => 
     array (
