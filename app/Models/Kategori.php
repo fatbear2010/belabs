@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kategori extends Model
 {
-    use HasFactory;
+    // use HasFactory;
+    protected $table = 'kategori';
     public function barangs()
     {
         return $this->hasMany('App\Barang','idkategori','idbarang');

@@ -33,5 +33,18 @@ Route::group(['middleware' => 'auth'], function () {
 	 Route::get('icons', function () {return view('pages.icons');})->name('icons'); 
 	 Route::get('table-list', function () {return view('pages.tables');})->name('table');
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
+
+	//admin
+	// Route::get('/admin/kategori','App\Http\Controllers\ProfileController@kategoriIndex');
+	// Route::get('/admin/kategori/create','App\Http\Controllers\ProfileController@createkategoriIndex');
+	// Route::get('/admin/kategori/{idkategori}/edit','App\Http\Controllers\ProfileController@editKat');
+	// Route::get('/admin/kategori/{name}','App\Http\Controllers\ProfileController@updateKat');
+	
+	Route::resource('admin/kategori','App\Http\Controllers\KatController');
+	
+
+	//::resource('category','CategoryController');
+
+
 });
 

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\PasswordRequest;
+use Illuminate\Http\Request;
+
+use App\Models\Kategori;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
@@ -51,4 +54,29 @@ class ProfileController extends Controller
 
         return back()->withPasswordStatus(__('Password successfully updated.'));
     }
+
+    public function kategoriIndex()
+    {
+         $queryBuilder = Kategori::All(); 
+        return view('admin.kategori.index',compact('queryBuilder'));
+    }
+    public function createkategoriIndex()
+    {
+         //$queryBuilder = Kategori::All(); ,compact('queryBuilder')
+        return view('admin.kategori.create');
+    }
+    public function editKat(Kategori $kategori)
+    {
+         //$queryBuilder = Kategori::All(); ,compact('queryBuilder')
+         //dd($kat);
+        $data = $kategori;
+        //dd($data);
+        return view('admin.kategori.edit',compact('data'));
+    }
+    public function updateKat()
+    {
+         //$queryBuilder = Kategori::All(); ,compact('queryBuilder')
+        return view('admin.kategori.create');
+    }
+    
 }

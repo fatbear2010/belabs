@@ -84,6 +84,27 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                <a class="nav-link active" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">
+                    <i class="fab fa-laravel" style="color: #f4645f;"></i>
+                    <span class="nav-link-text" style="color: #f4645f;">{{ __('Admin') }}</span>
+                </a>
+
+                <div class="collapse show" id="navbar-examples">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/admin/kategori') }}">
+                                {{ __('Kategori Barang') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('user.index') }}">
+                                {{ __('Barang') }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+                <li class="nav-item">
                     <a class="nav-link active" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">
                         <i class="fab fa-laravel" style="color: #f4645f;"></i>
                         <span class="nav-link-text" style="color: #f4645f;">{{ __('Laravel Examples') }}</span>
