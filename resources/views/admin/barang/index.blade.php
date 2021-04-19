@@ -2,31 +2,34 @@
 
 @section('content')   
 
-    @include('layouts.headers.cards')
+@include('layouts.headers.cards')
    
     <div class="page-toolbar" style ="font-size:large ; text-align:center">
         	
-            INDEX ADMIN KATEGORI  
-            <br><a href="{{route('kategori.create')}}">+ NewCategory</a>
+            INDEX ADMIN BARANG  
+            <br><a href="{{route('barang.create')}}">+ NewBarang</a>
+           
 <div class="container">
-  <h2>Table Kategori</h2>
-  <p> Ini adalah kategori dari barang yang bisa dipesan</p>
+  <h2>Table Barang</h2>
+  <p> Ini adalah barang yang bisa dipesan</p>
   <div class="table-responsive">          
   <table class="table">
     <thead>
       <tr>
         <th>ID</th>
-        <th>Nama Kategori</th>
+        <th>Nama Barang</th>
+        <th>ID Kategori</th>
       </tr>
     </thead>
     <tbody>
     @foreach($queryBuilder as $d)
       <tr>
-        <td>{{ $d->idkategori }}</td>
+        <td>{{ $d->idbarang }}</td>
         <td>{{ $d->nama }}</td>
-        <td><a href="{{route('kategori.edit',$d->idkategori)}}" class= 'btn btn-xs btn-info'>edit</a>
+        <td>{{ $d->kategori }}</td>
+        <td><a href="{{route('barang.edit',$d->idbarang)}}" class= 'btn btn-xs btn-info'>edit</a>
 
-<form method='Post' action="{{route('kategori.destroy',$d->idkategori)}}">
+<form method='Post' action="{{route('barang.destroy',$d->idbarang)}}">
 @csrf
 @method('DELETE')
 <input type="submit" value="delete" class='btn btn-danger btn-xs'

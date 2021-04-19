@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Barang extends Model
 {
-    use HasFactory;
+    //use HasFactory;
+    protected $table = 'barang';
+    public $primaryKey = 'idbarang';
+    public $timestamps = false;
+
     public function kategoris()
     {
         return $this->belongsTo('App\Kategori','idkategori');

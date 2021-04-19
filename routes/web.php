@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth'], function () {
 	// Route::get('/admin/kategori/{name}','App\Http\Controllers\ProfileController@updateKat');
 	
 	Route::resource('admin/kategori','App\Http\Controllers\KatController');
+	Route::resource('admin/barang','App\Http\Controllers\BarangController');
 	
 
 	//::resource('category','CategoryController');
