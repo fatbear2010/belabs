@@ -9,6 +9,9 @@ class Kategori extends Model
 {
     // use HasFactory;
     protected $table = 'kategori';
+    public $primaryKey = 'idkategori';
+    public $timestamps = false;
+
     public function barangs()
     {
         return $this->hasMany('App\Barang','idkategori','idbarang');

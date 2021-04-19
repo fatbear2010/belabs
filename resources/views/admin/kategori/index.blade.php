@@ -7,7 +7,7 @@
     <div class="page-toolbar" style ="font-size:large ; text-align:center">
         	
             INDEX ADMIN KATEGORI  
-            <br><a href="{{url('admin/kategori/create')}}">+ NewCategory</a>
+            <br><a href="{{route('kategori.create')}}">+ NewCategory</a>
             <br> NANTI DIISI TABEL BLABLABLA
 <div class="container">
   <h2>Table Kategori</h2>
@@ -25,9 +25,9 @@
       <tr>
         <td>{{ $d->idkategori }}</td>
         <td>{{ $d->nama }}</td>
-        <td><a href="{{url('admin/kategori/'.$d->idkategori.'/edit')}}" class= 'btn btn-xs btn-info'>edit</a>
+        <td><a href="{{route('kategori.edit',$d->idkategori)}}" class= 'btn btn-xs btn-info'>edit</a>
 
-<form method='Post' action="{{url('admin/kategori/'.$d->idkategori)}}">
+<form method='Post' action="{{route('kategori.destroy',$d->idkategori)}}">
 @csrf
 @method('DELETE')
 <input type="submit" value="delete" class='btn btn-danger btn-xs'

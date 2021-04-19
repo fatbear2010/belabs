@@ -26,7 +26,6 @@ class KatController extends Controller
      */
     public function create()
     {
-        //$queryBuilder = Kategori::All(); ,compact('queryBuilder')
         return view('admin.kategori.create');
     }
 
@@ -38,7 +37,10 @@ class KatController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data= new Kategori();
+        $data->nama=$request->get('txtName');
+        $data->save();
+        return redirect()->route('kategori.index')->with('status','Category is added');
     }
 
     /**
@@ -58,12 +60,14 @@ class KatController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Kategori $id)
+    public function edit($id)
     {
-        //$data = Kategori::find($id);
-        $data =$id;
+       // dd($id);
+        $data =Kategori::find($id);
+       // dd($data) ;
+        //$data =$id;
 
-        dd($data);
+        //dd($data);
         return view('admin.kategori.edit',compact('data'));
     }
 
@@ -76,8 +80,11 @@ class KatController extends Controller
      */
     public function update(Request $request, $id)
     {
-         //$queryBuilder = Kategori::All(); ,compact('queryBuilder')
-         return view('admin.kategori.create');
+        $category = Kategori::find($id);
+        // dd($category);
+        $category->nama=$request->get('txtName');
+        $category->save();
+        return redirect()->route('kategori.index')->with('status','Category data is changed');
     }
 
     /**
@@ -88,6 +95,18 @@ class KatController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            $category = Kategori::find($id);
+            //dd($category);
+            $category->delete();
+            return redirect()->route('kategori.index')->with('status','Data Category sudah dihapus');
+ 
+        }
+        catch(\PDOException $e)
+        {
+            $msg="Data Gagal dihapus. pastikan data child sudah hilang atau tidak berhubungan";
+ 
+            return redirect()->route('category.index')->with('error',$msg);
+        }
     }
 }

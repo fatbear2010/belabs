@@ -17,7 +17,7 @@
 							</div>
 						</div>
 						<div class="portlet-body form">
-							<form role="form" method="POST" action="{{url('category')}}">
+							<form role="form" method="POST" action="{{route('kategori.store')}}">
                             @csrf
 								<div class="form-body">
 									<div class="form-group">

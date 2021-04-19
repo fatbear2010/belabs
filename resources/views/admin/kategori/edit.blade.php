@@ -17,7 +17,7 @@
 							</div>
 						</div>
 						<div class="portlet-body form">
-							<form role="form" method="POST" action="{{url('kategori/'.$data->idkategori)}}">
+							<form role="form" method="POST" action="{{route('kategori.update',$data->idkategori)}}">
                             @csrf
                             @method("PUT")
 								<div class="form-body">
