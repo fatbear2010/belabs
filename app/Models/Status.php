@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Status extends Model
 {
-    use HasFactory;
+    protected $table = 'status';
+    public $primaryKey = 'idstatus';
+    public $timestamps = false;
     public function historys()
     {
         return $this->hasMany('App\History','idstatus','idhistory');

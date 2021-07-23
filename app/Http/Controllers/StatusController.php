@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Barang;
-use App\Models\Kategori;
+use App\Models\Status;
 
-
-class BarangController extends Controller
+class StatusController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,10 +15,8 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $queryBuilder = Barang::All();
-        //dd($queryBuilder);
-        $kat = Kategori::All();
-        return view('admin.barang.index',compact('queryBuilder','kat'));
+        $queryBuilder = Status::All(); 
+        return view('admin.status.index',compact('queryBuilder'));
     }
 
     /**
@@ -30,9 +26,7 @@ class BarangController extends Controller
      */
     public function create()
     {
-        $cat = Kategori::All();
-        
-        return view('admin.barang.create',compact('cat'));
+        return view('admin.status.create');
     }
 
     /**
@@ -43,22 +37,12 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        
-        //$cat = Kategori::find($request->get('comboKat'));
-        
+        $data= new Status();
+        $data->nama=$request->get('txtName');
+        $data->kategori=$request->get('txtKat');
 
-        // $file =$request->file('logo');
-        // $imgFolder='img';
-        // $imgFile=time()."_".$file->getClientOriginalName();
-        // $file->move($imgFolder,$imgFile);
-        // $data->url=$imgFile;
-        $data= new Barang();
-        $data->idbarang=$request->get('txtID');
-        $data->nama=$request->get('txtNama');
-        $data->kategori=$request->get('comboKat');
-        //dd( $data->kategori);
         $data->save();
-        return redirect()->route('barang.index')->with('status','Barang sudah ditambahkan');
+        return redirect()->route('status.index')->with('status','Status is added');
     }
 
     /**
@@ -80,10 +64,8 @@ class BarangController extends Controller
      */
     public function edit($id)
     {
-        $data =Barang::find($id);
-        $cat = Kategori::All();
-
-        return view('admin.barang.edit',compact('data','cat'));
+        $data =Status::find($id);
+         return view('admin.status.edit',compact('data'));
     }
 
     /**
@@ -95,16 +77,13 @@ class BarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $barang = Barang::find($id);
+        $status = Status::find($id);
         // dd($category);
-        $barang->idbarang = $barang->idbarang;
-        $barang->nama=$request->get('txtNama');
-        //dd($request->get('comboKat'));
+        $status->nama=$request->get('txtName');
+        $status->kategori=$request->get('txtKat');
 
-        $barang->kategori=$request->get('comboKat');
-
-        $barang->save();
-        return redirect()->route('barang.index')->with('status','Barang data is changed');
+        $status->save();
+        return redirect()->route('status.index')->with('status','Status data is changed');
     }
 
     /**
@@ -116,17 +95,17 @@ class BarangController extends Controller
     public function destroy($id)
     {
         try{
-            $barang = Barang::find($id);
+            $status = Status::find($id);
             //dd($category);
-            $barang->delete();
-            return redirect()->route('barang.index')->with('status','Data Barang sudah dihapus');
+            $status->delete();
+            return redirect()->route('status.index')->with('status','Data Category sudah dihapus');
  
         }
         catch(\PDOException $e)
         {
             $msg="Data Gagal dihapus. pastikan data child sudah hilang atau tidak berhubungan";
  
-            return redirect()->route('barang.index')->with('error',$msg);
+            return redirect()->route('status.index')->with('error',$msg);
         }
     }
 }

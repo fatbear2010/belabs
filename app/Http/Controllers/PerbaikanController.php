@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\BarangDetail;
 use Illuminate\Http\Request;
-use App\Models\Barang;
-use App\Models\Kategori;
+use App\Models\Perbaikan;
 
 
-class BarangController extends Controller
+class PerbaikanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,10 +17,10 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $queryBuilder = Barang::All();
+        $queryBuilder = Perbaikan::All();
         //dd($queryBuilder);
-        $kat = Kategori::All();
-        return view('admin.barang.index',compact('queryBuilder','kat'));
+        $barangdetail = BarangDetail::All();
+        return view('admin.perbaikan.index',compact('queryBuilder','barangdetail'));
     }
 
     /**
@@ -30,9 +30,8 @@ class BarangController extends Controller
      */
     public function create()
     {
-        $cat = Kategori::All();
-        
-        return view('admin.barang.create',compact('cat'));
+        $perb = Perbaikan::All();
+        return view('admin.perbaikan.create',compact('perb'));
     }
 
     /**
@@ -43,22 +42,15 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        
-        //$cat = Kategori::find($request->get('comboKat'));
-        
+        $data= new Perbaikan();
+        $data->mulai=$request->get('txtMulai');
+        $data->selesai=$request->get('txtSelesai');
+        $data->keterangan=$request->get('txtKet');
+        $data->barang=$request->get('comboKat');
 
-        // $file =$request->file('logo');
-        // $imgFolder='img';
-        // $imgFile=time()."_".$file->getClientOriginalName();
-        // $file->move($imgFolder,$imgFile);
-        // $data->url=$imgFile;
-        $data= new Barang();
-        $data->idbarang=$request->get('txtID');
-        $data->nama=$request->get('txtNama');
-        $data->kategori=$request->get('comboKat');
         //dd( $data->kategori);
         $data->save();
-        return redirect()->route('barang.index')->with('status','Barang sudah ditambahkan');
+        return redirect()->route('perbaikan.index')->with('status','Perbaikan sudah ditambahkan');
     }
 
     /**
@@ -80,10 +72,11 @@ class BarangController extends Controller
      */
     public function edit($id)
     {
-        $data =Barang::find($id);
-        $cat = Kategori::All();
+        $data =Perbaikan::find($id);
+        //dd($data);
+        $bar = BarangDetail::All();
 
-        return view('admin.barang.edit',compact('data','cat'));
+        return view('admin.perbaikan.edit',compact('data','bar'));
     }
 
     /**
@@ -95,16 +88,19 @@ class BarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $barang = Barang::find($id);
+        $perb = Perbaikan::find($id);
         // dd($category);
-        $barang->idbarang = $barang->idbarang;
-        $barang->nama=$request->get('txtNama');
+        $perb->idperbaikan = $perb->idperbaikan;
+        $perb->mulai=$request->get('txtMulai');
+        $perb->selesai=$request->get('txtSelesai');
+        $perb->keterangan=$request->get('txtKet');
+        $perb->barang=$request->get('comboKat');
+
         //dd($request->get('comboKat'));
 
-        $barang->kategori=$request->get('comboKat');
 
-        $barang->save();
-        return redirect()->route('barang.index')->with('status','Barang data is changed');
+        $perb->save();
+        return redirect()->route('perbaikan.index')->with('status','Data Perbaikan Sudah diubah');
     }
 
     /**
@@ -116,17 +112,17 @@ class BarangController extends Controller
     public function destroy($id)
     {
         try{
-            $barang = Barang::find($id);
+            $perb = Perbaikan::find($id);
             //dd($category);
-            $barang->delete();
-            return redirect()->route('barang.index')->with('status','Data Barang sudah dihapus');
+            $perb->delete();
+            return redirect()->route('perbaikan.index')->with('status','Data Perbaikan Sudah dihapus');
  
         }
         catch(\PDOException $e)
         {
             $msg="Data Gagal dihapus. pastikan data child sudah hilang atau tidak berhubungan";
  
-            return redirect()->route('barang.index')->with('error',$msg);
+            return redirect()->route('perbaikan.index')->with('error',$msg);
         }
     }
 }

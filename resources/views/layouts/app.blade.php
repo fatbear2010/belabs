@@ -29,9 +29,19 @@
         @endauth
         
         <div class="main-content">
+        <div class="container-fluid mt--7">
             @include('layouts.navbars.navbar')
+            
+            <div class="card bg-secondary shadow">
             @yield('content')
+            </div>
         </div>
+        </div>
+        @if(session('status'))
+			<div class="alert alert-success">
+				{{session('status')}}
+			</div>
+			@endif
 
         @guest()
             @include('layouts.footers.guest')

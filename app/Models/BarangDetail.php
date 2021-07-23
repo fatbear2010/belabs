@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BarangDetail extends Model
 {
-    use HasFactory;
+    protected $table = 'barangdetail';
     public function barangs()
     {
         return $this->belongsTo('App\Barang','idbarang');

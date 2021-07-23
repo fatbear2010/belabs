@@ -10,6 +10,7 @@ class Barang extends Model
     //use HasFactory;
     protected $table = 'barang';
     public $primaryKey = 'idbarang';
+    public $keyType = 'string';
     public $timestamps = false;
 
     public function kategoris()

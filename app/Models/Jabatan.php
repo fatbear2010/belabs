@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jabatan extends Model
 {
-    use HasFactory;
+    protected $table = 'jabatan';
+    public $primaryKey = 'idjabatan';
+    public $timestamps = false;
     public function users()
     {
         return $this->hasMany('App\User','idjabatan','idUser');

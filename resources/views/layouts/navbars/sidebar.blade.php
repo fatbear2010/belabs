@@ -101,9 +101,25 @@
                                 {{ __('Barang') }}
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('jabatan.index') }}">
+                                {{ __('Jabatan') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('perbaikan.index') }}">
+                                {{ __('Perbaikan') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('status.index') }}">
+                                {{ __('Status') }}
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
+            
                 <li class="nav-item">
                     <a class="nav-link active" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">
                         <i class="fab fa-laravel" style="color: #f4645f;"></i>

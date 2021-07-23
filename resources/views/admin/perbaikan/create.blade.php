@@ -8,7 +8,7 @@
     <div class="portlet">
 						<div class="portlet-title">
 							<div class="caption">
-								<i class="fa fa-reorder"></i> Edit Barang
+								<i class="fa fa-reorder"></i> New Perbaikan
 							</div>
 							<div class="tools">
 								<a href="" class="collapse"></a>
@@ -19,24 +19,30 @@
 						</div>
 						<div class="portlet-body form">
 							<form enctype="multipart/form-data" 
-							role="form" method="POST" action="{{route('barang.update',$data->idbarang)}}">
+							role="form" method="POST" action="{{route('perbaikan.store')}}">
                             @csrf
-                            @method("PUT")
-
 								<div class="form-body">
                             
 									<div class="form-group">
-										<label for="exampleInputEmail1">Nama Barang</label>
-										<input type="text" name="txtNama" class="form-control" id="exampleInputEmail1" placeholder="Enter text" value="{{$data->nama}}">
+										<label for="exampleInputEmail1">Mulai Perbaikan</label>
+										<input type="date" name="txtMulai" class="form-control" id="exampleInputEmail1" placeholder="Enter text">
+									</div>
+                                    <div class="form-group">
+										<label for="exampleInputEmail1">Selesai Perbaikan</label>
+										<input type="date" name="txtSelesai" class="form-control" id="exampleInputEmail1" placeholder="Enter text">
+									</div>
+                                    <div class="form-group">
+										<label for="exampleInputEmail1">Keterangan</label>
+										<input type="text" name="txtKet" class="form-control" id="exampleInputEmail1" placeholder="Enter text" >
 									</div>
                                     
 									<!-- category id-->
                                     <div class="form-group">
-										<label>Nama Kategori</label>
+										<label>ID Barang Detail</label>
                                         <br>
 										<select class="form-control" name="comboKat">
-											@foreach($cat as $c)
-                                            <option value="{{$c->idkategori}}">{{$c->nama}}</option>
+											@foreach($perb as $p)
+                                            <option value="{{$p->barang}}">{{$p->barang}}</option>
                                             @endforeach
 										</select>
 									</div>
