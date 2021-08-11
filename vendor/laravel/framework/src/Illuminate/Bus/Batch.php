@@ -368,7 +368,7 @@ class Batch implements Arrayable, JsonSerializable
     }
 
     /**
-     * Determine if the batch has "then" callbacks.
+     * Determine if the batch has "finally" callbacks.
      *
      * @return bool
      */
@@ -459,6 +459,7 @@ class Batch implements Arrayable, JsonSerializable
      *
      * @return array
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->toArray();

@@ -16,15 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('trymail','App\Http\Controllers\MailController@sendVerificarionMail');
+Route::post('/vcode','App\Http\Controllers\RegistrationController@aktivasi1');
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Auth::routes();
 
-Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
-
-Route::group(['middleware' => 'auth'], function () {
+Route::middleware('auth')->group(function() {
 	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
@@ -33,7 +31,8 @@ Route::group(['middleware' => 'auth'], function () {
 	 Route::get('icons', function () {return view('pages.icons');})->name('icons'); 
 	 Route::get('table-list', function () {return view('pages.tables');})->name('table');
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
-
+	//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+	Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
 	//admin
 	// Route::get('/admin/kategori','App\Http\Controllers\ProfileController@kategoriIndex');
 	// Route::get('/admin/kategori/create','App\Http\Controllers\ProfileController@createkategoriIndex');
@@ -46,11 +45,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('admin/perbaikan','App\Http\Controllers\PerbaikanController');
 	Route::resource('admin/status','App\Http\Controllers\StatusController');
 
-
-	
-
 	//::resource('category','CategoryController');
-
 
 });
 

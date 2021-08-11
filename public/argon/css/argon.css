@@ -18,6 +18,7 @@
 :root
 {
     --blue: #5e72e4;
+    --fik: #eb6123;
     --indigo: #5603ad;
     --purple: #8965e0;
     --pink: #f3a4b5;
@@ -2969,6 +2970,14 @@ a.btn.disabled,
 fieldset:disabled a.btn
 {
     pointer-events: none;
+}
+
+.btn-fik
+{
+    color: #fff;
+    border-color: var(--fik);
+    background-color: var(--fik);
+    box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
 }
 
 .btn-primary

@@ -1,10 +1,10 @@
 <div class="row align-items-center justify-content-xl-between">
-    <div class="col-xl-6">
-        <div class="copyright text-center text-xl-left text-muted">
-            &copy; {{ now()->year }} <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">Creative Tim</a> &amp;
-            <a href="https://www.updivision.com" class="font-weight-bold ml-1" target="_blank">Updivision</a>
+    <div class="col-xl-12">
+        <div class="copyright text-center text-xl-center text-muted ">
+            &copy; {{ now()->year }} <a href="https://industrikreatif.ubaya.ac.id/" class=" text-orange font-weight-bold ml-1" target="_blank">Fakultas Industri Kreatif Universitas Surabaya</a> &amp;<a href="https://stefsk.com" class="text-orange font-weight-bold ml-1" target="_blank">STEFK</a> X<a href="" class="text-orange font-weight-bold ml-1" target="_blank">DYS07 </a>
         </div>
     </div>
+    <?php if(1==2) { ?>
     <div class="col-xl-6">
         <ul class="nav nav-footer justify-content-center justify-content-xl-end">
             <li class="nav-item">
@@ -24,4 +24,5 @@
             </li>
         </ul>
     </div>
+    <?php } ?>
 </div>
