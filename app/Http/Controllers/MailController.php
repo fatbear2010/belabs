@@ -11,9 +11,9 @@ class MailController extends Controller
 {
     protected function sendVerificarionMail(){
         
-        if (Hash::check('halo', Hash::make('halo'))) {
-            dd(Hash::make('halo'));
-        }
-        // Mail::to('21stefsk@gmail.com')->send(new email());
+        //if (Hash::check('halo', Hash::make('halo'))) {
+        //    dd(Hash::make('halo'));
+       // }
+         Mail::to('21stefsk@gmail.com')->send(new email('halo','stefsk.com'));
     }
 }

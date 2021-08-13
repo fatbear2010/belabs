@@ -58,7 +58,6 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        //dd($request);
         $this->validateLogin($request);
 
         if ($this->hasTooManyLoginAttempts($request)) {
@@ -69,19 +68,24 @@ class LoginController extends Controller
 
         if($this->guard()->validate($this->credentials($request))) {
             if(Auth::attempt(['nrpnpk' => $request->nrpnpk, 'password' => $request->password, 'status' => '1'])) {
-               // dd(Auth::user());
                  return redirect()->intended('/home');
-            }  else {
+            } 
+            else if(Auth::attempt(['nrpnpk' => $request->nrpnpk, 'password' => $request->password, 'status' => '3'])) {
+                $error = 'Akun Anda Terblokir, Silahkan Hubungi Admin';
+                Auth::logout();
+                return view('auth.login',compact('error'));
+            }     
+            else {
                 $this->incrementLoginAttempts($request);
                 return response()->json([
-                    'error' => 'This account is not activated.'
+                    'error' => 'Something Wrong'
                 ], 401);
             }
-        } else {
+        } 
+        else {
             $this->incrementLoginAttempts($request);
-            return response()->json([
-                'error' => 'Credentials do not match our database.'
-            ], 401);
+            $error = 'NRP / NPK / Password Salah';
+            return view('auth.login',compact('error'));
         }
     }
 }

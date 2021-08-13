@@ -13,18 +13,21 @@
                         <div class="text-muted text-center mt-2 mb-3"><h1>Aktivasi Akun BeLabs</h1></div>
                     </div>
                     <div class="card-body px-lg-5 py-lg-5">
+                        @if(isset($error))
+                            <span class="invalid-feedback text-center" style="display: block;" role="alert">
+                                <strong>{{ $error }}</strong>
+                            </span>
+                            <br>
+                            <div class="text-center">
+                                <a href="{{ route('login') }}" class="text-light"><button style="width: 100%" class="btn btn-danger mt-4">Kembali</button></a>
+                            </div>        
+                        @else
                         <div class="text-center text-muted mb-4">
+                                <h3>Halo, {{$nama}} <br> Status Akun : {{$jabatan->nama}}</h3>
                             <small>
-                                    Silahkan Masukkan Menggunakan <strong>NRP (Mahasiswa) / NPK (Dosen)</strong> Dan <strong>Password</strong> Anda   
+                                    Silahkan Lengkapi Form Dibawah ini 
                             </small>
                         </div>
-                        @if(isset($error))
-                             
-                                    <span class="invalid-feedback text-center" style="display: block;" role="alert">
-                                        <strong>{{ $error }}</strong>
-                                    </span>
-                                    <br>
-                                @endif
                         <form role="form" method="POST" action="{{ url('/vcode') }}">
                             @csrf
                             <div class="form-group">
@@ -40,9 +43,7 @@
                                 <button style="width: 100%" type="submit" class="btn btn-fik mt-4">Aktifkan Akun</button>
                             </div>
                         </form>
-                          <div class="text-center">
-                                 <a href="{{ route('login') }}" class="text-light"><button style="width: 100%" class="btn btn-danger mt-4">Kembali</button></a>
-                            </div>
+                        @endif
                     </div>
                     
                 </div>

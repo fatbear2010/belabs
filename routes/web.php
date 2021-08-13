@@ -18,7 +18,8 @@ Route::get('/', function () {
 });
 Route::get('trymail','App\Http\Controllers\MailController@sendVerificarionMail');
 Route::post('/vcode','App\Http\Controllers\RegistrationController@aktivasi1');
-
+Route::get('/resend/{id}', 'App\Http\Controllers\RegistrationController@aktivasi2');
+Route::get('/vcodes/{vcode}', 'App\Http\Controllers\RegistrationController@aktivasi3');
 Auth::routes(['verify' => true]);
 
 

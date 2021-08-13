@@ -20,9 +20,9 @@
 
                         <form role="form" method="POST" action="{{ route('login') }}">
                             @csrf
-                            @if ($errors->has('nrpnpk'))
+                            @if (isset($error))
                                     <span class="invalid-feedback text-center" style="display: block;" role="alert">
-                                        <strong>{{ $errors->first('nrpnpk') }}</strong>
+                                        <strong>{{ $error }}</strong>
                                     </span>
                                     <br>
                                 @endif

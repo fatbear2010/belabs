@@ -16,9 +16,10 @@ class email extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($nama , $url)
     {
-        //
+        $this->nama = $nama;
+        $this->url = $url;
     }
 
     /**
@@ -28,7 +29,9 @@ class email extends Mailable
      */
     public function build()
     {
-        return $this->from(env('MAIL_USERNAME','BeLabs'))->subject('Verifikasi Akun BeLabs')->view('mail.m_verifikasi'); 
+        $nama = $this->nama;
+        $url = $this->url;
+        return $this->from(env('MAIL_USERNAME','BeLabs'))->subject('Verifikasi Akun BeLabs')->view('mail.m_verifikasi',compact('nama','url')); 
        // return $this->from(env('MAIL_USERNAME','BeLabs'))->subject('Verifikasi Akun BeLabs')->view('mail.m_verifikasi', compact('')); 
     }
 }

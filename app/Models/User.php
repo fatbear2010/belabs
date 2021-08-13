@@ -6,12 +6,18 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+use App\Models\Jabatan;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
     protected $table = 'users';
+    public $timestamps = false;
+
+    public function jabatan()
+    {
+        return $this->belongsTo(Jabatan::class,'jabatan','idjabatan');
+    }
 
     /**
      * The attributes that are mass assignable.

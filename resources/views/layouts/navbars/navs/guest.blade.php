@@ -23,6 +23,7 @@
                     </div>
                 </div>
             </div>
+            @if(1==2)
             <!-- Navbar items -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -50,6 +51,7 @@
                     </a>
                 </li>
             </ul>
+            @endif
         </div>
     </div>
 </nav>
