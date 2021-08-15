@@ -1,58 +1,45 @@
-
 @extends('layouts.app')
 
-@section('content')   
+@section('content')
 
-    @include('layouts.headers.cards')
-   
-    <div class="portlet">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-reorder"></i> Edit Barang
-							</div>
-							<div class="tools">
-								<a href="" class="collapse"></a>
-								<a href="#portlet-config" data-toggle="modal" class="config"></a>
-								<a href="" class="reload"></a>
-								<a href="" class="remove"></a>
-							</div>
-						</div>
-						<div class="portlet-body form">
-							<form enctype="multipart/form-data" 
-							role="form" method="POST" action="{{route('barang.update',$data->idbarang)}}">
-                            @csrf
-                            @method("PUT")
 
-								<div class="form-body">
-                            
-									<div class="form-group">
-										<label for="exampleInputEmail1">Nama Barang</label>
-										<input type="text" name="txtNama" class="form-control" id="exampleInputEmail1" placeholder="Enter text" value="{{$data->nama}}">
-									</div>
-                                    
-									<!-- category id-->
-                                    <div class="form-group">
-										<label>Nama Kategori</label>
-                                        <br>
-										<select class="form-control" name="comboKat">
-											@foreach($cat as $c)
-                                            <option value="{{$c->idkategori}}">{{$c->nama}}</option>
-                                            @endforeach
-										</select>
-									</div>
+<div class="card bg-secondary shadow">
+	<div class="card-header bg-white border-0">
+		<div class="row align-items-center">
+			<h3 class="mb-0">Edit Barang</h3>
+		</div>
+	</div>
+	<form enctype="multipart/form-data" role="form" method="POST" action="{{route('barang.update',$data->idbarang)}}">
+		@csrf
+		@method("PUT")
+		<h6 class="heading-small text-muted mb-4"> &nbsp Ubah Informasi Barang</h6>
 
-                                    <!-- <div class="form-group">
-                  					<label>Foto Produk</label>
-                  					<input type="file" class="form-control"
-                   						  id ='logo' name='logo'>
-               						</div> -->
-                                       
-								<div class="form-actions">
-									<button type="submit" class="btn btn-primary">Submit</button>
-									<button onClick="history.back()" type="button" class="btn btn-default">Cancel</button>
-								</div>
-							</form>
-						</div>
-					</div>
-  
+		<div class="pl-lg-4">
+			<div class="form-group">
+				<label for="exampleInputEmail1">Nama Barang</label>
+				<input type="text" name="txtNama" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" value="{{$data->nama}}">
+			</div>
+			<!-- category id-->
+			<div class="form-group">
+				<label>Nama Kategori</label>
+				<br>
+				<select class="form-control" name="comboKat">
+					@foreach($cat as $c)
+					<option value="{{$c->idkategori}}">{{$c->nama}}</option>
+					@endforeach
+				</select>
+			</div>
+
+
+			<div class="text-center">
+				<button type="submit" class="btn btn-primary">Submit</button>
+				<button onClick="history.back()" type="button" class="btn btn-default">Cancel</button>
+			</div>
+
+		</div>
+	</form>
+	<div class="portlet-body form">
+	</div>
+</div>
+
 @endsection

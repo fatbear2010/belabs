@@ -101,11 +101,11 @@
                                 {{ __('Barang') }}
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('jabatan.index') }}">
                                 {{ __('Jabatan') }}
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('perbaikan.index') }}">
                                 {{ __('Perbaikan') }}

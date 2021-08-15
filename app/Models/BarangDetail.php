@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class BarangDetail extends Model
 {
     protected $table = 'barangdetail';
+    public $timestamps = false;
     public function barangs()
     {
         return $this->belongsTo('App\Barang','idbarang');

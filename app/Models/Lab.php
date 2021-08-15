@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lab extends Model
 {
-    use HasFactory;
+    protected $table = 'lab';
+    public $primaryKey = 'idlab';
+    public $timestamps = false;
     public function barangDetails()
     {
         return $this->hasMany('App\BarangDetail','idlab','idbarangDetail');

@@ -31,7 +31,8 @@ class PerbaikanController extends Controller
     public function create()
     {
         $perb = Perbaikan::All();
-        return view('admin.perbaikan.create',compact('perb'));
+        $bDetail = BarangDetail::All();
+        return view('admin.perbaikan.create',compact('perb','bDetail'));
     }
 
     /**
@@ -43,6 +44,7 @@ class PerbaikanController extends Controller
     public function store(Request $request)
     {
         $data= new Perbaikan();
+        $data->idperbaikan = $request->get('txtID');
         $data->mulai=$request->get('txtMulai');
         $data->selesai=$request->get('txtSelesai');
         $data->keterangan=$request->get('txtKet');

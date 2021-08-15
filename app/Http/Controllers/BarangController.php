@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use App\Models\BarangDetail;
 use App\Models\Kategori;
+use App\Models\Lab;
 
 
 class BarangController extends Controller
@@ -18,9 +20,12 @@ class BarangController extends Controller
     public function index()
     {
         $queryBuilder = Barang::All();
+
         //dd($queryBuilder);
         $kat = Kategori::All();
-        return view('admin.barang.index',compact('queryBuilder','kat'));
+        $lab = Lab::All();
+
+        return view('admin.barang.index',compact('queryBuilder','kat','lab'));
     }
 
     /**
@@ -31,8 +36,9 @@ class BarangController extends Controller
     public function create()
     {
         $cat = Kategori::All();
+        $lab = Lab::All();
         
-        return view('admin.barang.create',compact('cat'));
+        return view('admin.barang.create',compact('cat','lab'));
     }
 
     /**
@@ -44,9 +50,8 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         
-        //$cat = Kategori::find($request->get('comboKat'));
-        
 
+        //$cat = Kategori::find($request->get('comboKat'));
         // $file =$request->file('logo');
         // $imgFolder='img';
         // $imgFile=time()."_".$file->getClientOriginalName();
@@ -57,7 +62,37 @@ class BarangController extends Controller
         $data->nama=$request->get('txtNama');
         $data->kategori=$request->get('comboKat');
         //dd( $data->kategori);
+
         $data->save();
+
+        $arrayDataDetail[] = $request->get('txtIDDetail');
+        $arrayDataDetail[] = $request->get('txtMerk');
+        $arrayDataDetail[] = $request->get('txtKondisi');
+        $arrayDataDetail[] = $request->get('txtPerbaikan');
+        $arrayDataDetail[] = $request->get('txtStatus');
+        $arrayDataDetail[] = $request->get('comboLab');
+        $arrayDataDetail[] = $request->get('txtJum1');
+        $arrayDataDetail[] = $request->get('txtJum2');
+        $arrayDataDetail[] = $request->get('txtWkt1');
+        $arrayDataDetail[] = $request->get('txtWkt2');
+        $jumlah = count($request->get('txtIDDetail'));
+        for($i = 0 ; $i<$jumlah;$i++)
+        {
+            $bd = new BarangDetail();
+            $bd ->idbarangDetail = $arrayDataDetail[0][$i];
+            $bd ->merk = $arrayDataDetail[1][$i];
+            $bd ->kondisi = $arrayDataDetail[2][$i];
+            $bd ->perbaikan = $arrayDataDetail[3][$i];
+            $bd ->status = $arrayDataDetail[4][$i];
+            $bd ->lab = $arrayDataDetail[5][$i];
+            $bd ->jumPakai1 = $arrayDataDetail[6][$i];
+            $bd ->jumPakai2 = $arrayDataDetail[7][$i];
+            $bd ->wktPakai1 = $arrayDataDetail[8][$i];
+            $bd ->wktPakai2 = $arrayDataDetail[9][$i];
+            $bd ->idbarang = $request->get('txtID');
+            $bd->save();
+            
+        }
         return redirect()->route('barang.index')->with('status','Barang sudah ditambahkan');
     }
 

@@ -1,43 +1,58 @@
 @extends('layouts.app')
 
-@section('content')   
+@section('content')
 
-    @include('layouts.headers.cards')
-   
-    <div class="page-toolbar" style ="font-size:large ; text-align:center">
-        	
-            INDEX ADMIN KATEGORI  
-            <br><a href="{{route('kategori.create')}}">+ NewCategory</a>
-<div class="container">
-  <h2>Table Kategori</h2>
-  <p> Ini adalah kategori dari barang yang bisa dipesan</p>
-  <div class="table-responsive">          
-  <table class="table">
-    <thead>
+
+
+<div class="card-header border-0">
+  <div class="row align-items-center">
+    <div class="col-8">
+      <h3 class="mb-0">KATEGORI</h3>
+    </div>
+    <div class="col-4 text-right">
+      <a href="{{route('kategori.create')}}" class="btn btn-sm btn-primary">Tambah KATEGORI</a>
+    </div>
+  </div>
+</div>
+
+<div class="col-12">
+</div>
+
+<div class="table-responsive">
+  <table class="table align-items-center table-flush">
+    <thead class="thead-light">
       <tr>
-        <th>ID</th>
-        <th>Nama Kategori</th>
+        <th scope="col">ID</th>
+        <th scope="col">Nama Kategori</th>
+        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
-    @foreach($queryBuilder as $d)
+      @foreach($queryBuilder as $d)
       <tr>
         <td>{{ $d->idkategori }}</td>
         <td>{{ $d->nama }}</td>
-        <td><a href="{{route('kategori.edit',$d->idkategori)}}" class= 'btn btn-xs btn-info'>edit</a>
+        <td class="text-right">
+          <div class="dropdown">
+            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-ellipsis-v"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+              <a class="dropdown-item" href="{{route('kategori.edit',$d->idkategori)}}">Edit</a>
+              <form method='Post' action="{{route('kategori.destroy',$d->idkategori)}}">
+                @csrf
+                @method('DELETE')
+                <button type="submit" value="delete" onclick="if(!confirm('Yakin Hapus??'))return false;" class="dropdown-item" href="">Delete</a>
+              </form>
+            </div>
+          </div>
+        </td>
 
-<form method='Post' action="{{route('kategori.destroy',$d->idkategori)}}">
-@csrf
-@method('DELETE')
-<input type="submit" value="delete" class='btn btn-danger btn-xs'
-onclick="if(!confirm('Yakin Hapus??'))return false;"/>
-</form>
-</td>
-      </tr>
-      @endforeach
+        @endforeach
     </tbody>
+
   </table>
-  </div>
-      </div>
-  
-@endsection
+</div>
+</div>
+
+  @endsection

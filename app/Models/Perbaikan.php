@@ -9,6 +9,7 @@ class Perbaikan extends Model
 {
     protected $table = 'perbaikan';
     public $primaryKey = 'idperbaikan';
+    public $keyType = 'string';
     public $timestamps = false;
     
     public function barangDetails()
