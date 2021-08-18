@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 
 class RegistrationController extends Controller
 {
+    //status 1 = valid , 2 = blm diaktivassi, 3 = diblokir, 
     protected function aktivasi1(Request $request)
     {
         $user = User::where('nrpnpk',$request->nrpnpk)->first();
@@ -29,7 +30,7 @@ class RegistrationController extends Controller
                 $vcode = Hash::make($nrpnpk);
                 $user->vcode = $vcode;
                 $user->save();
-                Mail::to('21stefsk@gmail.com')->send(new email($nama,'https://localhost/kp/belabs2/public/vcodes/'.$vcode));
+                Mail::to($user->email)->send(new email($nama,'https://localhost/kp/belabs2/public/vcodes/'.$vcode));
                 return view('auth.vcode',compact('nama','email','nrpnpk')); 
             }
             else if($user->status == '3')
@@ -62,7 +63,7 @@ class RegistrationController extends Controller
                 $vcode = Hash::make($nrpnpk);
                 $user->vcode = $vcode;
                 $user->save();
-                Mail::to('21stefsk@gmail.com')->send(new email('nama','https://localhost/kp/belabs2/public/vcodes/'.$vcode));
+                Mail::to($user->email)->send(new email($nama,'https://localhost/kp/belabs2/public/vcodes/'.$vcode));
                 return view('auth.vcode',compact('nama','email','nrpnpk')); 
             }
             else if($user->status == '3')
@@ -86,12 +87,48 @@ class RegistrationController extends Controller
             $nrpnpk = $user->nrpnpk;
             $jabatan = Jabatan::where('idjabatan',$user->jabatan)->first();
 
-            //dd($jabatan);
+           // dd($jabatan);
             return view('auth.registration',compact('nama','nrpnpk','vcode','jabatan')); 
         }
         else{
             $error = 'Link Verifikasi Salah Atau Sudah Tidak Berlaku';
             return view('auth.registration',compact('error'));
         }
+    }
+
+    protected function aktivasi4(Request $request)
+    {   
+        $user = User::where('vcode',$request->vcode)->first();
+        if($user)
+        {
+            if($request->pass1 == $request->pass2)
+            {
+                $nama = $user->nama;
+                $nrpnpk = $user->nrpnpk;
+                $user->password = Hash::make($request->pass1);
+                $user->notelp = $request->telp;
+                $user->lineId = $request->line;
+                $user->save();
+                $jabatan = Jabatan::where('idjabatan',$user->jabatan)->first();
+                $done = "Selamat Proses Aktivasi Telah Selesai, Silahkan Lakukan Login";
+    
+                return view('auth.registration',compact('nama','done','jabatan')); 
+            }
+            else
+            {
+                $vcode = $request->vcode;
+                $nama = $user->nama;
+                $nrpnpk = $user->nrpnpk;
+                $jabatan = Jabatan::where('idjabatan',$user->jabatan)->first();
+                $error1 = 'Password Tidak Sama';
+                return view('auth.registration',compact('error1','nama','jabatan','vcode'));
+            }
+           
+        }
+        else{
+            $error = 'Ada Yang Salah, Silahkan Ulangi Aktivasi';
+            return view('auth.registration',compact('error'));
+        }
+
     }
 }

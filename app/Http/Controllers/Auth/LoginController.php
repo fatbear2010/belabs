@@ -77,9 +77,9 @@ class LoginController extends Controller
             }     
             else {
                 $this->incrementLoginAttempts($request);
-                return response()->json([
-                    'error' => 'Something Wrong'
-                ], 401);
+                $error = 'Akun Anda Belum Aktif';
+                Auth::logout();
+                return view('auth.login',compact('error'));
             }
         } 
         else {

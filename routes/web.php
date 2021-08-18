@@ -20,6 +20,7 @@ Route::get('trymail','App\Http\Controllers\MailController@sendVerificarionMail')
 Route::post('/vcode','App\Http\Controllers\RegistrationController@aktivasi1');
 Route::get('/resend/{id}', 'App\Http\Controllers\RegistrationController@aktivasi2');
 Route::get('/vcodes/{vcode}', 'App\Http\Controllers\RegistrationController@aktivasi3');
+Route::post('/vdone', 'App\Http\Controllers\RegistrationController@aktivasi4');
 Auth::routes(['verify' => true]);
 
 
