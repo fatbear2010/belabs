@@ -2,7 +2,7 @@
 
 @section('content')
 
-
+@include('layouts.headers.cards')
 <div class="card bg-secondary shadow">
 	<div class="card-header bg-white border-0">
 		<div class="row align-items-center">

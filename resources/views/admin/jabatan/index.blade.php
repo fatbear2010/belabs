@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+@include('layouts.headers.cards')
 
 
 <div class="card-header border-0">

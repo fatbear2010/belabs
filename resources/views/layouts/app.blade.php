@@ -37,45 +37,33 @@
     @endauth
 
     <div class="main-content">
-        <div class="container-fluid mt-4">
+    		@include('layouts.navbars.navbar')<!--Dashboard-->
+             
+        <div   >
             @if(session('status'))
             <div class="alert alert-success">
                 {{session('status')}}
             </div>
             @endif
-            <div class="card bg-secondary shadow">
-                @include('layouts.navbars.navbar')<!--Dashboard-->
-                @include('layouts.headers.cards') <!--ungu ungu-->
-                <div class="card bg-secondary shadow">
-                    <div class="container-fluid mt--7">
-                        <div class="row">
-                            <div class="col-xl-12 order-xl-2 mb-5 mb-xl-0">
-                                @yield('content')
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+            <div class="card bg-secondary shadow" >
+                @yield('content')
+                   
+                @auth()
+                    @include('layouts.footers.auth')
+                @endauth
+                @guest()
+                    @include('layouts.footers.guest')
+                @endguest
             </div>
-            <footer class="footer">
-                <div class="row align-items-center justify-content-xl-between">
-                    <div class="col-xl-12">
-                        <div class="copyright text-center text-xl-center text-muted ">
-                            © 2021 <a href="https://industrikreatif.ubaya.ac.id/" class=" text-orange font-weight-bold ml-1" target="_blank">Fakultas Industri Kreatif Universitas Surabaya</a> &amp;<a href="https://stefsk.com" class="text-orange font-weight-bold ml-1" target="_blank">STEFK</a> X<a href="" class="text-orange font-weight-bold ml-1" target="_blank">DYS07 </a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-
-
+            
+           
         </div>
     </div>
 
     </div>
 
 
-    @guest()
-    @include('layouts.footers.guest')
-    @endguest
 
     <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
