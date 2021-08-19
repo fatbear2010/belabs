@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function() {
 	Route::resource('admin/jabatan','App\Http\Controllers\JabatanController');
 	Route::resource('admin/perbaikan','App\Http\Controllers\PerbaikanController');
 	Route::resource('admin/status','App\Http\Controllers\StatusController');
+	Route::resource('admin/lab','App\Http\Controllers\LabController');
 
 	//::resource('category','CategoryController');
 

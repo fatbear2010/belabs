@@ -116,6 +116,11 @@
                                 {{ __('Status') }}
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('lab.index') }}">
+                                {{ __('Lab') }}
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

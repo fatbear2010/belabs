@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
+use App\Models\Lab;
+
 
 class LabController extends Controller
 {
@@ -15,7 +17,8 @@ class LabController extends Controller
      */
     public function index()
     {
-       
+        $queryBuilder = Lab::All();
+        return view('admin.lab.index', compact('queryBuilder'));
     }
 
     /**
@@ -25,7 +28,7 @@ class LabController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.lab.create');
     }
 
     /**
@@ -36,7 +39,14 @@ class LabController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = new Lab();
+        $data->idlab = $request->get('txtID');
+        $data->namaLab = $request->get('txtName');
+        $data->lokasi = $request->get('txtLokasi');
+        $data->fakultas = $request->get('txtFakultas');
+
+        $data->save();
+        return redirect()->route('lab.index')->with('status', 'Lab Sudah Ditambahkan');
     }
 
     /**
@@ -58,7 +68,12 @@ class LabController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = Lab::find($id);
+        // dd($data) ;
+        //$data =$id;
+
+        //dd($data);
+        return view('admin.lab.edit', compact('data'));
     }
 
     /**
@@ -70,7 +85,15 @@ class LabController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $lab = Lab::find($id);
+        // dd($category);
+        
+        $lab->namaLab = $request->get('txtName');
+        $lab->lokasi = $request->get('txtLokasi');
+        $lab->fakultas = $request->get('txtFakultas');
+
+        $lab->save();
+        return redirect()->route('lab.index')->with('status', 'Data Lab Sudah dihapus');
     }
 
     /**
@@ -81,6 +104,15 @@ class LabController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $lab = Lab::find($id);
+            //dd($category);
+            $lab->delete();
+            return redirect()->route('lab.index')->with('status', 'Data Lab sudah dihapus');
+        } catch (\PDOException $e) {
+            $msg = "Data Gagal dihapus. pastikan data child sudah hilang atau tidak berhubungan";
+
+            return redirect()->route('lab.index')->with('error', $msg);
+        }
     }
 }
