@@ -14,7 +14,7 @@
       <h3 class="mb-0">BARANG</h3>
     </div>
     <div class="col-4 text-right">
-      <a href="{{route('barang.create')}}" class="btn btn-sm btn-primary">Tambah Barang</a>
+      <a href="{{route('barang.create')}}" class="btn btn-warning">Tambah Barang</a>
     </div>
   </div>
 </div>
