@@ -3,6 +3,10 @@
 @section('content')
 @include('layouts.headers.cards')
 
+<div class="container-fluid mt--7">
+  <div class="row">
+      <div class="col-xl-12 mb-5 mb-xl-0">
+
 <div class="card bg-secondary shadow">
 	<div class="card-header bg-white border-0">
 		<div class="row align-items-center">
@@ -23,8 +27,8 @@
 
 
 			<div class="text-center">
-				<button type="submit" class="btn btn-primary">Submit</button>
-				<button onClick="history.back()" type="button" class="btn btn-default">Cancel</button>
+				<button type="submit" class="btn btn-warning">Submit</button>
+				<button onClick="history.back()" type="button" class="btn btn-outline-warning">Cancel</button>
 			</div>
 
 		</div>
@@ -32,5 +36,7 @@
 	<div class="portlet-body form">
 	</div>
 </div>
+</div>
+</div></div>
 
 @endsection

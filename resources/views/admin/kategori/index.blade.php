@@ -3,6 +3,10 @@
 @section('content')
 @include('layouts.headers.cards')
 
+<div class="container-fluid mt--7">
+  <div class="row">
+      <div class="col-xl-12 mb-5 mb-xl-0">
+
 
 <div class="card-header border-0">
   <div class="row align-items-center">
@@ -10,7 +14,7 @@
       <h3 class="mb-0">KATEGORI</h3>
     </div>
     <div class="col-4 text-right">
-      <a href="{{route('kategori.create')}}" class="btn btn-sm btn-primary">Tambah KATEGORI</a>
+      <a href="{{route('kategori.create')}}" class="btn btn-warning">Tambah KATEGORI</a>
     </div>
   </div>
 </div>
@@ -54,5 +58,8 @@
   </table>
 </div>
 </div>
+
+</div>
+</div></div>
 
   @endsection
