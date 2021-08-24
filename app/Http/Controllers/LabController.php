@@ -39,6 +39,8 @@ class LabController extends Controller
      */
     public function store(Request $request)
     {
+        //$user = User::all();
+        
         $data = new Lab();
         $data->idlab = $request->get('txtID');
         $data->namaLab = $request->get('txtName');
@@ -46,6 +48,16 @@ class LabController extends Controller
         $data->fakultas = $request->get('txtFakultas');
 
         $data->save();
+        // foreach($user as $u)
+        // {
+        //     if($request->get('check_'.$u->id))
+        //     {
+        //         $data->users()->attach($u->id,["Keterangan"=>'Laboran']);
+        //     }
+        //     else{
+        //         $data->users()->attach($u->id,["hakAkses"=>'BukanLaporan']);
+        //     }
+        // }
         return redirect()->route('lab.index')->with('status', 'Lab Sudah Ditambahkan');
     }
 

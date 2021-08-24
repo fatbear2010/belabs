@@ -14,4 +14,11 @@ class Jabatan extends Model
     {
         return $this->hasMany(User::class,'idjabatan','jabatan');
     }
+   
+    public function status()
+    {
+        return $this->belongsToMany('App\Models\Status','statusJabatan','idjabatan','idstatus')
+        ->withPivot('hakAkses');
+
+    }
 }

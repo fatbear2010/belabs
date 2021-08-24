@@ -42,8 +42,9 @@
 			</div>
 
 			<hr class="my-4">
+			<h6 class="heading-small text-muted mb-4"> &nbsp Informasi Barang Detil</h6>
 			<input type="number" class="form-control" id="detailbrg" placeholder="Jumlah Detail Barang" min=1 required>
-			<h6 class="heading-small text-muted mb-4"> &nbsp Informasi Barang</h6>
+			
 
 
 			<div id="loop">
@@ -86,8 +87,9 @@
 			
 			for (var i = oldNumber; i < jumlah; i++) {
 				var loop = `<div class="pl-lg-4" id="angka_` + i + `">
+				
 			<div class="form-group">
-				<label for="form-control-label"><strong>ID Barang Detail `+i+`</strong></label>
+				<label for="form-control-label"><strong>ID Barang Detail</strong></label>
 				<input type="text" name="txtIDDetail[]" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" required>
 			</div>
 
@@ -117,21 +119,18 @@
 				</select>
 			</div>
 			<div class="form-group">
-				<label for="form-control-label">Jumlah Pakai 1</label>
+				<label for="form-control-label">Jumlah Pakai(kali)</label>
 				<input type="text" name="txtJum1[]" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" required>
 			</div>
 			<div class="form-group">
-				<label for="form-control-label">Jumlah Pakai 2</label>
+				<label for="form-control-label">Durasi Pakai(...jam)</label>
 				<input type="text" name="txtJum2[]" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" required>
 			</div>
 			<div class="form-group">
-				<label for="form-control-label">Waktu Pakai 1</label>
+				<label for="form-control-label">Waktu Pakai (/hari)</label>
 				<input type="text" name="txtWkt1[]" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" required>
 			</div>
-			<div class="form-group">
-				<label for="form-control-label">Waktu Pakai 2</label>
-				<input type="text" name="txtWkt2[]" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" required>
-			</div>
+			
 			<hr class="my-4">
 		</div>`;
 				$('#loop').append(loop);

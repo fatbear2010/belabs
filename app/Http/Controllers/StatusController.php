@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Status;
+use App\Models\Jabatan;
+use App\Models\StatusJabatan;
 
 class StatusController extends Controller
 {
@@ -26,7 +28,9 @@ class StatusController extends Controller
      */
     public function create()
     {
-        return view('admin.status.create');
+        $queryBuilder = Jabatan::All(); 
+
+        return view('admin.status.create',compact('queryBuilder'));
     }
 
     /**
@@ -37,11 +41,24 @@ class StatusController extends Controller
      */
     public function store(Request $request)
     {
+        $jabatan = Jabatan::all();
+       
         $data= new Status();
         $data->nama=$request->get('txtName');
         $data->kategori=$request->get('txtKat');
-
         $data->save();
+        foreach($jabatan as $j)
+        {
+            if($request->get('check_'.$j->idjabatan))
+            {
+                $data->jabatans()->attach($j->idjabatan,["hakAkses"=>'1']);
+            }
+            else{
+                $data->jabatans()->attach($j->idjabatan,["hakAkses"=>'0']);
+            }
+        }
+
+        
         return redirect()->route('status.index')->with('status','Status is added');
     }
 
@@ -65,7 +82,9 @@ class StatusController extends Controller
     public function edit($id)
     {
         $data =Status::find($id);
-         return view('admin.status.edit',compact('data'));
+        $queryBuilder = Jabatan::all();
+        $statusjbtn = StatusJabatan::where('idstatus',$id)->get();
+         return view('admin.status.edit',compact('data','queryBuilder','statusjbtn'));
     }
 
     /**
@@ -76,13 +95,24 @@ class StatusController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {$jabatan = Jabatan::all();
         $status = Status::find($id);
         // dd($category);
         $status->nama=$request->get('txtName');
         $status->kategori=$request->get('txtKat');
-
+        
+        foreach($jabatan as $j)
+        {
+            if($request->get('check_'.$j->idjabatan))
+            {
+                $status->jabatans()->updateExistingPivot($j->idjabatan,["hakAkses"=>'1']);
+            }
+            else{
+                $status->jabatans()->updateExistingPivot($j->idjabatan,["hakAkses"=>'0']);
+            }
+        }
         $status->save();
+        
         return redirect()->route('status.index')->with('status','Status data is changed');
     }
 
@@ -96,6 +126,7 @@ class StatusController extends Controller
     {
         try{
             $status = Status::find($id);
+            $status->jabatans()->detach($id);
             //dd($category);
             $status->delete();
             return redirect()->route('status.index')->with('status','Data Category sudah dihapus');

@@ -74,7 +74,6 @@ class BarangController extends Controller
         $arrayDataDetail[] = $request->get('txtJum1');
         $arrayDataDetail[] = $request->get('txtJum2');
         $arrayDataDetail[] = $request->get('txtWkt1');
-        $arrayDataDetail[] = $request->get('txtWkt2');
         $jumlah = count($request->get('txtIDDetail'));
         for($i = 0 ; $i<$jumlah;$i++)
         {
@@ -85,10 +84,9 @@ class BarangController extends Controller
             $bd ->perbaikan = $arrayDataDetail[3][$i];
             $bd ->status = $arrayDataDetail[4][$i];
             $bd ->lab = $arrayDataDetail[5][$i];
-            $bd ->jumPakai1 = $arrayDataDetail[6][$i];
-            $bd ->jumPakai2 = $arrayDataDetail[7][$i];
+            $bd ->jumPakai = $arrayDataDetail[6][$i];
+            $bd ->durasiPakai = $arrayDataDetail[7][$i];
             $bd ->wktPakai1 = $arrayDataDetail[8][$i];
-            $bd ->wktPakai2 = $arrayDataDetail[9][$i];
             $bd ->idbarang = $request->get('txtID');
             $bd->save();
             

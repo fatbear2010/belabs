@@ -14,4 +14,9 @@ class Status extends Model
     {
         return $this->hasMany('App\History','idstatus','idhistory');
     }
+    public function jabatans()
+    {
+        return $this->belongsToMany('App\Models\Jabatan','statusJabatan','idstatus','idjabatan')
+        ->withPivot('hakAkses');
+    }
 }

@@ -15,4 +15,10 @@ class Lab extends Model
     {
         return $this->hasMany('App\BarangDetail','idlab','idbarangDetail');
     }
+
+    public function users()
+    {
+        return $this->belongsToMany('App\Models\User','laboran','idlab','id')
+        ->withPivot('keterangan');
+    }
 }

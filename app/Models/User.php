@@ -18,6 +18,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Jabatan::class,'jabatan','idjabatan');
     }
+    public function users()
+    {
+        return $this->belongsToMany('App\Models\Lab','laboran','id','idlab')
+        ->withPivot('keterangan');
+    }
 
     /**
      * The attributes that are mass assignable.
