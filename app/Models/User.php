@@ -13,14 +13,14 @@ class User extends Authenticatable
 
     protected $table = 'users';
     public $timestamps = false;
-
+    public $keyType = 'string';
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class,'jabatan','idjabatan');
     }
-    public function users()
+    public function laborans()
     {
-        return $this->belongsToMany('App\Models\Lab','laboran','id','idlab')
+        return $this->belongsToMany('App\Models\Lab','laboran','user','lab')
         ->withPivot('keterangan');
     }
 

@@ -35,6 +35,35 @@
 							<label for="exampleInputEmail1">Fakultas</label>
 							<input type="text" name="txtFakultas" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" style="width:600px;">
 						</div>
+						<div class="form-group">
+							<label>Laboran</label>
+							<br>
+							<select class="form-control" name="comboLab" id="comboLab">
+								@foreach($user as $c)
+								<option value="{{$c->id}}">{{$c->nama}}</option>
+								@endforeach
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="exampleInputEmail1">Keterangan</label>
+							<input type="text" name="txtket" class="form-control form-control-alternative" id="txtket" placeholder="Enter text" style="width:600px;">
+						</div>
+						<button onclick="inputlaboran()" type="button" class="btn btn-warning">Tambah Laboran</button>
+						<table class="table align-items-center table-flush">
+							<thead class="thead-light">
+								<tr>
+									<th scope="col">ID</th>
+									<th scope="col">Nama Laboran</th>
+									<th scope="col">Keterangan</th>
+
+									<th scope="col"></th>
+								</tr>
+							</thead>
+							<tbody id="datalaboran">
+
+							</tbody>
+						</table>
+
 
 						<div class="text-center">
 							<button type="submit" class="btn btn-warning">Submit</button>
@@ -51,4 +80,62 @@
 		</div>
 	</div>
 </div>
+
+<script>
+	var lab = [];
+
+	function inputlaboran() {
+
+		var laboran_id = $('#comboLab').val();
+		var keterangan = $('#txtket').val();
+		var tersedia = false;
+
+		for (let i = 0; i < lab.length; i++) {
+			if (lab[i][0] == laboran_id) {
+				lab[i][1] = keterangan
+				tersedia = true;
+			}
+		}
+
+		if (!tersedia) {
+			lab.push([laboran_id, keterangan]);
+		}
+
+		$.ajax({
+			type: 'POST',
+			url: '{{route("lab.showlaboran")}}',
+			data: {
+				'_token': '<?php echo csrf_token() ?>',
+				'lab': lab
+			},
+			success: function(data) {
+				$('#datalaboran').html(data.msg);
+
+			}
+		});
+	}
+
+	function removelaboran($id) {
+        for (let i = 0; i < lab.length; i++) {
+            if (lab[i][0] == $id) {
+                lab.splice(i, 1);
+                if (lab.length > 0) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{route("lab.showlaboran")}}',
+                        data: {
+                            '_token': '<?php echo csrf_token() ?>',
+                            'lab': lab
+                        },
+                        success: function(data) {
+                            $('#datalaboran').html(data.msg);
+                        }
+                    });
+                } else {
+                    $('#datalaboran').html('');
+                }
+            }
+        }
+    }
+</script>
 @endsection

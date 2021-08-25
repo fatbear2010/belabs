@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function() {
 	Route::resource('admin/status','App\Http\Controllers\StatusController');
 	Route::resource('admin/lab','App\Http\Controllers\LabController');
 	Route::resource('admin/statusjabatan','App\Http\Controllers\StatusJabatanController');
+	Route::post('admin/lab/showlaboran','App\Http\Controllers\LabController@showlaboran')->name('lab.showlaboran');
 
 
 	//::resource('category','CategoryController');

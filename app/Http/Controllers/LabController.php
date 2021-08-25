@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use App\Models\Lab;
+use App\Models\User;
+
 
 
 class LabController extends Controller
@@ -28,7 +30,8 @@ class LabController extends Controller
      */
     public function create()
     {
-        return view('admin.lab.create');
+        $user = User::where('jabatan','<>','1')->get();
+        return view('admin.lab.create',compact('user'));
     }
 
     /**
@@ -39,25 +42,25 @@ class LabController extends Controller
      */
     public function store(Request $request)
     {
-        //$user = User::all();
-        
+        $laboran =$request->get('laboran');
+       
         $data = new Lab();
         $data->idlab = $request->get('txtID');
+        
         $data->namaLab = $request->get('txtName');
         $data->lokasi = $request->get('txtLokasi');
         $data->fakultas = $request->get('txtFakultas');
 
         $data->save();
-        // foreach($user as $u)
-        // {
-        //     if($request->get('check_'.$u->id))
-        //     {
-        //         $data->users()->attach($u->id,["Keterangan"=>'Laboran']);
-        //     }
-        //     else{
-        //         $data->users()->attach($u->id,["hakAkses"=>'BukanLaporan']);
-        //     }
-        // }
+        
+        foreach($laboran as $u)
+        {
+            $userlab = explode(',', $u);
+
+            $data->users()->attach($userlab[0],["keterangan"=>$userlab[1]]);
+            
+        }
+        //dd($data);
         return redirect()->route('lab.index')->with('status', 'Lab Sudah Ditambahkan');
     }
 
@@ -126,5 +129,15 @@ class LabController extends Controller
 
             return redirect()->route('lab.index')->with('error', $msg);
         }
+    }
+    public function showlaboran()
+    {
+        $arr = $_POST['lab'];
+        $table = "";
+        foreach ($arr as $a) {
+            $user = User::find($a[0]);
+            $table .= "<tr><td>$a[0]</td><td>$user->nama</td><td>$a[1]</td><td><button type=button onclick=removelaboran($a[0])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='laboran[]' value='$a[0],$a[1]'>";
+        }
+        return response()->json(array('status' => 'oke', 'msg' => $table), 200);
     }
 }
