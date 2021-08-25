@@ -7,8 +7,7 @@ use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use App\Models\Lab;
 use App\Models\User;
-
-
+use Illuminate\Support\Facades\DB;
 
 class LabController extends Controller
 {
@@ -56,8 +55,9 @@ class LabController extends Controller
         foreach($laboran as $u)
         {
             $userlab = explode(',', $u);
-
-            $data->users()->attach($userlab[0],["keterangan"=>$userlab[1]]);
+            
+            $query = DB::table('laboran')->insert(['idlab'=>$request->get('txtID'),'id'=>$userlab[0],'keterangan'=>$userlab[1]]);
+            // $data->users()->attach($userlab[0],["keterangan"=>$userlab[1]]);
             
         }
         //dd($data);
