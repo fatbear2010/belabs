@@ -10,12 +10,12 @@
                 <div class="card bg-secondary shadow border-0">
                      <div class="card-header bg-transparent pb-2" style="text-align: center;">
                         <img style="width: 100%; max-width: 150px;" src="{{ asset('argon') }}/img/BL3.png">
-                        <div class="text-muted text-center mt-2 mb-3"><h1>Aktivasi Akun BeLabs</h1></div>
+                        <div class="text-muted text-center mt-2 mb-3"><h1>Aktivasi Akun BeLABS</h1></div>
                     </div>
                     <div class="card-body px-lg-5 py-lg-5">
                         
                           <div class="text-center">
-                            <h3>Halo <strong>{{$nama}}</strong> <br>Terima Kasih Telah Mengaktifkan Akun BeLabs <br> Kami Telah Mengirimkan Email Konfirmasi Ke Email Gooaya Anda 
+                            <h3>Halo <strong>{{$nama}}</strong> <br>Terima Kasih Telah Mengaktifkan Akun BeLABS <br> Kami Telah Mengirimkan Email Konfirmasi Ke Email Gooaya Anda 
                             <br><strong>{{$email}}</strong><br>Silahkan Periksa Email Anda Untuk Melanjutkan Proses Aktivasi</h3>
                             </div>
 

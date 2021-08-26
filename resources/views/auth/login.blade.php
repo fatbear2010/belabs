@@ -9,7 +9,7 @@
                 <div class="card bg-secondary shadow border-0">
                     <div class="card-header bg-transparent pb-2" style="text-align: center;">
                         <img style="width: 100%; max-width: 150px;" src="{{ asset('argon') }}/img/BL3.png">
-                        <div class="text-muted text-center mt-2 mb-3"><h1>Selamat Datang Di BeLabs</h1></div>
+                        <div class="text-muted text-center mt-2 mb-3"><h1>Selamat Datang Di BeLABS</h1></div>
                     </div>
                     <div class="card-body px-lg-5 py-lg-5">
                         <div class="text-center text-muted mb-4">
