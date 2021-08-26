@@ -25,26 +25,27 @@
                         </div>  
                         <div class="text-center">
                             <a href="{{ route('login') }}" class="text-light"><button style="width: 100%" class="btn btn-danger mt-4">Kembali</button></a>
-                        </div>    
+                        </div>   
+                        <script>
+                            var minutes1 = 90;
+                            var second1 = 0;
+                            var x = setInterval(function() {
+                                var distance = minutes1-second1;
+                                var minutes = Math.floor(distance / 60 );
+                                var seconds = Math.floor(distance % 60 );if(seconds < 10){seconds = "0" + seconds;}
+                                document.getElementById("cnd").innerHTML ="Kirim Kembali Email Dalam "+ minutes + ":" + seconds;
+                                if (distance < 0) {
+                                    clearInterval(x);
+                                    document.getElementById("cnd1").innerHTML = " <a href=\"{{ url('resend/'.$nrpnpk) }}\" class=\"text-light\"><button style=\"width: 100%\" class=\"btn btn-success mt-4\" >Kirim kembali Email</button></a>";
+                                }
+                                second1++;
+                            }, 1000);
+                        </script> 
                     </div>
                     
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        var minutes1 = 90;
-        var second1 = 0;
-        var x = setInterval(function() {
-            var distance = minutes1-second1;
-            var minutes = Math.floor(distance / 60 );
-            var seconds = Math.floor(distance % 60 );if(seconds < 10){seconds = "0" + seconds;}
-            document.getElementById("cnd").innerHTML ="Kirim Kembali Email Dalam "+ minutes + ":" + seconds;
-            if (distance < 0) {
-                clearInterval(x);
-                document.getElementById("cnd1").innerHTML = " <a href=\"{{ url('resend/'.$nrpnpk) }}\" class=\"text-light\"><button style=\"width: 100%\" class=\"btn btn-success mt-4\" >Kirim kembali Email</button></a>";
-            }
-            second1++;
-        }, 1000);
-    </script>
+    
 @endsection

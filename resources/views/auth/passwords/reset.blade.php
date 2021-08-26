@@ -1,61 +1,79 @@
-@extends('layouts.app', ['class' => 'bg-default'])
+@extends('layouts.app', ['class' => 'bg-white'])
 
 @section('content')
     @include('layouts.headers.guest')
-    
+
     <div class="container mt--8 pb-5">
+        <!-- Table -->
         <div class="row justify-content-center">
             <div class="col-lg-5 col-md-7">
                 <div class="card bg-secondary shadow border-0">
-                    
+                     <div class="card-header bg-transparent pb-2" style="text-align: center;">
+                        <img style="width: 100%; max-width: 150px;" src="{{ asset('argon') }}/img/BL3.png">
+                        <div class="text-muted text-center mt-2 mb-3"><h1>Reset Password Akun BeLabs</h1></div>
+                    </div>
                     <div class="card-body px-lg-5 py-lg-5">
-                        <div class="text-center text-muted mb-4">
-                            <small>{{ __('Reset Password') }}</small>
-                        </div>
-                        <form role="form" method="POST" action="{{ route('password.update') }}">
-                            @csrf
-
-                            <input type="hidden" name="token" value="{{ $token }}">
-
-                            <div class="form-group{{ $errors->has('email') ? ' has-danger' : '' }} mb-3">
-                                <div class="input-group input-group-alternative">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
-                                    </div>
-                                    <input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ __('Email') }}" type="email" name="email" value="{{ $email ?? old('email') }}" required autofocus>
-                                </div>
-                                @if ($errors->has('email'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                            <div class="form-group{{ $errors->has('password') ? ' has-danger' : '' }}">
-                                <div class="input-group input-group-alternative">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
-                                    </div>
-                                    <input class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="{{ __('Password') }}" type="password" required>
-                                </div>
-                                @if ($errors->has('password'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group input-group-alternative">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
-                                    </div>
-                                    <input class="form-control" placeholder="{{ __('Confirm Password') }}" type="password" name="password_confirmation" required>
-                                </div>
-                            </div>
+                        @if(isset($error))
+                            <span class="invalid-feedback text-center" style="display: block;" role="alert">
+                                <strong>{{ $error }}</strong>
+                            </span>
+                            <br>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary my-4">{{ __('Reset Password') }}</button>
+                                <a href="{{ route('login') }}" class="text-light"><button style="width: 100%" class="btn btn-danger mt-4">Kembali</button></a>
+                            </div>        
+                        @endif
+                        @if(isset($done))
+                            <div class="text-center text-muted mb-4">
+                                <h3>Halo, {{$nama}} </h3>
+                        
+                            </div>
+                            <span class="invalid-feedback text-center" style="display: block;" role="alert">
+                                <strong>{{ $done }}</strong>
+                            </span>
+                            <br>
+                            <div class="text-center">
+                                <a href="{{ route('login') }}" class="text-light"><button style="width: 100%" class="btn btn-success mt-4">Login</button></a>
+                            </div>        
+                        @endif
+                        @if(isset($vcode))
+                        <div class="text-center text-muted mb-4">
+                                <h3>Halo, {{$nama}}</h3>
+                            <small>
+                                    Silahkan Isi Form Berikut Mereset Password Anda
+                            </small>
+                        </div>
+                        @if(isset($error1))
+                            <span class="invalid-feedback text-center" style="display: block;" role="alert">
+                                <strong>{{ $error1 }}</strong>
+                            </span>
+                            <br>   
+                        @endif
+                        <form role="form" method="POST" action="{{ url('/resetfinish') }}">
+                            @csrf
+                            <div class="form-group">
+                                <input type="hidden" name="vcode" value="{{$vcode}}">
+                                 <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="icofont-key"></i></span>
+                                    </div>
+                                    <input class="form-control" placeholder="password" type="password" required minlength="8" name="pass1" autofocus>
+                                 </div>
+                                 <br>
+                                 <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="icofont-key"></i></span>
+                                    </div>
+                                    <input class="form-control" placeholder="Ulangi Password" type="password" required minlength="8" name="pass2" autofocus>
+                                 </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button style="width: 100%" type="submit" class="btn btn-fik mt-4">Reset Password</button>
                             </div>
                         </form>
+                        @endif
                     </div>
+                   
                 </div>
             </div>
         </div>

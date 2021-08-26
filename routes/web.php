@@ -14,13 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth/login');
 });
 Route::get('trymail','App\Http\Controllers\MailController@sendVerificarionMail');
 Route::post('/vcode','App\Http\Controllers\RegistrationController@aktivasi1');
 Route::get('/resend/{id}', 'App\Http\Controllers\RegistrationController@aktivasi2');
+Route::get('/resendps/{id}', 'App\Http\Controllers\auth\ForgotPasswordController@reset1');
 Route::get('/vcodes/{vcode}', 'App\Http\Controllers\RegistrationController@aktivasi3');
+Route::get('/resetpass/{vcode}', 'App\Http\Controllers\auth\ForgotPasswordController@reset2');
 Route::post('/vdone', 'App\Http\Controllers\RegistrationController@aktivasi4');
+Route::post('/resetfinish', 'App\Http\Controllers\auth\ForgotPasswordController@reset3');
 Auth::routes(['verify' => true]);
 
 
