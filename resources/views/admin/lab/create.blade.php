@@ -38,7 +38,7 @@
 						<div class="form-group">
 							<label>Laboran</label>
 							<br>
-							<select class="form-control multiple-select" name="comboLab" id="comboLab">
+							<select class="form-control multiple-laboran" name="comboLab" id="comboLab">
 								@foreach($user as $c)
 								<option value="{{$c->id}}">{{$c->nama}}</option>
 								@endforeach
@@ -138,7 +138,7 @@
 		}
 	}
 	$(document).ready(function() {
-		$('.multiple-select').select2();
+		$('.multiple-laboran').select2();
 	});
 </script>
 @endsection
