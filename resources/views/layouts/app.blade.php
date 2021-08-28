@@ -25,6 +25,8 @@
     <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
+    
+
 </head>
 
 <body class="{{ $class ?? '' }}">
@@ -37,27 +39,28 @@
     @endauth
 
     <div class="main-content">
-    		@include('layouts.navbars.navbar')<!--Dashboard-->
-             
-        <div   >
+        @include('layouts.navbars.navbar')
+        <!--Dashboard-->
+
+        <div>
             @if(session('status'))
             <div class="alert alert-success">
                 {{session('status')}}
             </div>
             @endif
 
-            <div class="card bg-secondary shadow" >
+            <div class="card bg-secondary shadow">
                 @yield('content')
-                   
+
                 @auth()
-                    @include('layouts.footers.auth')
+                @include('layouts.footers.auth')
                 @endauth
                 @guest()
-                    @include('layouts.footers.guest')
+                @include('layouts.footers.guest')
                 @endguest
             </div>
-            
-           
+
+
         </div>
     </div>
 
@@ -72,6 +75,9 @@
 
     <!-- Argon JS -->
     <script src="{{ asset('argon') }}/js/argon.js?v=1.0.0"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </body>
 
 </html>

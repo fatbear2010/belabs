@@ -38,7 +38,7 @@
 						<div class="form-group">
 							<label>Laboran</label>
 							<br>
-							<select class="form-control" name="comboLab" id="comboLab">
+							<select class="form-control multiple-select" name="comboLab" id="comboLab">
 								@foreach($user as $c)
 								<option value="{{$c->id}}">{{$c->nama}}</option>
 								@endforeach
@@ -116,26 +116,29 @@
 	}
 
 	function removelaboran($id) {
-        for (let i = 0; i < lab.length; i++) {
-            if (lab[i][0] == $id) {
-                lab.splice(i, 1);
-                if (lab.length > 0) {
-                    $.ajax({
-                        type: 'POST',
-                        url: '{{route("lab.showlaboran")}}',
-                        data: {
-                            '_token': '<?php echo csrf_token() ?>',
-                            'lab': lab
-                        },
-                        success: function(data) {
-                            $('#datalaboran').html(data.msg);
-                        }
-                    });
-                } else {
-                    $('#datalaboran').html('');
-                }
-            }
-        }
-    }
+		for (let i = 0; i < lab.length; i++) {
+			if (lab[i][0] == $id) {
+				lab.splice(i, 1);
+				if (lab.length > 0) {
+					$.ajax({
+						type: 'POST',
+						url: '{{route("lab.showlaboran")}}',
+						data: {
+							'_token': '<?php echo csrf_token() ?>',
+							'lab': lab
+						},
+						success: function(data) {
+							$('#datalaboran').html(data.msg);
+						}
+					});
+				} else {
+					$('#datalaboran').html('');
+				}
+			}
+		}
+	}
+	$(document).ready(function() {
+		$('.multiple-select').select2();
+	});
 </script>
 @endsection
