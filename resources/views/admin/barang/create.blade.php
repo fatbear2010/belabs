@@ -130,7 +130,11 @@
 				<label for="form-control-label">Waktu Pakai (/hari)</label>
 				<input type="text" name="txtWkt1[]" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" required>
 			</div>
-			
+			<div class="form-group">
+				<label for="form-control-label">Gambar Barang</label>
+				<input type="file" multiple name="filefoto_`+i+`[]" class="form-control form-control-alternative" id="exampleInputEmail1" required>
+			</div>
+
 			<hr class="my-4">
 		</div>`;
 				$('#loop').append(loop);

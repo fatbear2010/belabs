@@ -117,7 +117,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('statusjabatan.index') }}">
+                            <a class="nav-link" href="{{ route('barangdetail.index') }}">
                                 {{ __('Status Jabatan') }}
                             </a>
                         </li>
@@ -130,7 +130,7 @@
                 </div>
             </li>
             
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link active" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">
                         <i class="fab fa-laravel" style="color: #f4645f;"></i>
                         <span class="nav-link-text" style="color: #f4645f;">{{ __('Laravel Examples') }}</span>
@@ -172,19 +172,19 @@
                     <a class="nav-link" href="#">
                         <i class="ni ni-circle-08 text-pink"></i> {{ __('Register') }}
                     </a>
-                </li>
-                <li class="nav-item mb-5 mr-4 ml-4 pl-1 bg-danger" style="position: absolute; bottom: 0;">
+                </li> -->
+                <!-- <li class="nav-item mb-5 mr-4 ml-4 pl-1 bg-danger" style="position: absolute; bottom: 0;">
                     <a class="nav-link text-white" href="https://www.creative-tim.com/product/argon-dashboard-pro-laravel" target="_blank">
                         <i class="ni ni-cloud-download-95"></i> Upgrade to PRO
                     </a>
-                </li>
+                </li> -->
             </ul>
             <!-- Divider -->
             <hr class="my-3">
             <!-- Heading -->
-            <h6 class="navbar-heading text-muted">Documentation</h6>
+            <!-- <h6 class="navbar-heading text-muted">Documentation</h6> -->
             <!-- Navigation -->
-            <ul class="navbar-nav mb-md-3">
+            <!-- <ul class="navbar-nav mb-md-3">
                 <li class="nav-item">
                     <a class="nav-link" href="https://argon-dashboard-laravel.creative-tim.com/docs/getting-started/overview.html">
                         <i class="ni ni-spaceship"></i> Getting started
@@ -200,7 +200,7 @@
                         <i class="ni ni-ui-04"></i> Components
                     </a>
                 </li>
-            </ul>
+            </ul> -->
         </div>
     </div>
 </nav>

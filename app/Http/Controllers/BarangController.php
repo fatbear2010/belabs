@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
 use App\Models\BarangDetail;
+use App\Models\GambarBarang;
 use App\Models\Kategori;
 use App\Models\Lab;
 
@@ -25,7 +26,7 @@ class BarangController extends Controller
         $kat = Kategori::All();
         $lab = Lab::All();
 
-        return view('admin.barang.index',compact('queryBuilder','kat','lab'));
+        return view('admin.barang.index', compact('queryBuilder', 'kat', 'lab'));
     }
 
     /**
@@ -37,8 +38,8 @@ class BarangController extends Controller
     {
         $cat = Kategori::All();
         $lab = Lab::All();
-        
-        return view('admin.barang.create',compact('cat','lab'));
+
+        return view('admin.barang.create', compact('cat', 'lab'));
     }
 
     /**
@@ -49,18 +50,18 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        
 
+      
         //$cat = Kategori::find($request->get('comboKat'));
         // $file =$request->file('logo');
         // $imgFolder='img';
         // $imgFile=time()."_".$file->getClientOriginalName();
         // $file->move($imgFolder,$imgFile);
         // $data->url=$imgFile;
-        $data= new Barang();
-        $data->idbarang=$request->get('txtID');
-        $data->nama=$request->get('txtNama');
-        $data->kategori=$request->get('comboKat');
+        $data = new Barang();
+        $data->idbarang = $request->get('txtID');
+        $data->nama = $request->get('txtNama');
+        $data->kategori = $request->get('comboKat');
         //dd( $data->kategori);
 
         $data->save();
@@ -75,23 +76,51 @@ class BarangController extends Controller
         $arrayDataDetail[] = $request->get('txtJum2');
         $arrayDataDetail[] = $request->get('txtWkt1');
         $jumlah = count($request->get('txtIDDetail'));
-        for($i = 0 ; $i<$jumlah;$i++)
-        {
+        for ($i = 0; $i < $jumlah; $i++) {
             $bd = new BarangDetail();
-            $bd ->idbarangDetail = $arrayDataDetail[0][$i];
-            $bd ->merk = $arrayDataDetail[1][$i];
-            $bd ->kondisi = $arrayDataDetail[2][$i];
-            $bd ->perbaikan = $arrayDataDetail[3][$i];
-            $bd ->status = $arrayDataDetail[4][$i];
-            $bd ->lab = $arrayDataDetail[5][$i];
-            $bd ->jumPakai = $arrayDataDetail[6][$i];
-            $bd ->durasiPakai = $arrayDataDetail[7][$i];
-            $bd ->wktPakai1 = $arrayDataDetail[8][$i];
-            $bd ->idbarang = $request->get('txtID');
+            $bd->idbarangDetail = $arrayDataDetail[0][$i];
+            $bd->merk = $arrayDataDetail[1][$i];
+            $bd->kondisi = $arrayDataDetail[2][$i];
+            $bd->perbaikan = $arrayDataDetail[3][$i];
+            $bd->status = $arrayDataDetail[4][$i];
+            $bd->lab = $arrayDataDetail[5][$i];
+            $bd->jumPakai = $arrayDataDetail[6][$i];
+            $bd->durasiPakai = $arrayDataDetail[7][$i];
+            $bd->wktPakai1 = $arrayDataDetail[8][$i];
+            $bd->idbarang = $request->get('txtID');
             $bd->save();
-            
+
+            if ($i == 0) {
+                if ($request->has('filefoto_')) {
+                    $file = $request->file('filefoto_');
+                    foreach ($file as $f) {
+                        $foto = new GambarBarang();
+                        $imgFolder = 'img';
+                        $imgFile = time() . "_" . $f->getClientOriginalName();
+                        $f->move($imgFolder, $imgFile);
+                        $foto->namafile = $imgFile;
+                        $foto->barang = $arrayDataDetail[0][$i];
+                        $foto->save();
+                    }
+                }
+            }
+            else
+            {
+                if ($request->has('filefoto_'.$i)) {
+                    $file = $request->file('filefoto_'.$i);
+                    foreach ($file as $f) {
+                        $foto = new GambarBarang();
+                        $imgFolder = 'img';
+                        $imgFile = time() . "_" . $f->getClientOriginalName();
+                        $f->move($imgFolder, $imgFile);
+                        $foto->namafile = $imgFile;
+                        $foto->barang = $arrayDataDetail[0][$i];
+                        $foto->save();
+                    }
+                }
+            }
         }
-        return redirect()->route('barang.index')->with('status','Barang sudah ditambahkan');
+        return redirect()->route('barang.index')->with('status', 'Barang sudah ditambahkan');
     }
 
     /**
@@ -113,10 +142,10 @@ class BarangController extends Controller
      */
     public function edit($id)
     {
-        $data =Barang::find($id);
+        $data = Barang::find($id);
         $cat = Kategori::All();
 
-        return view('admin.barang.edit',compact('data','cat'));
+        return view('admin.barang.edit', compact('data', 'cat'));
     }
 
     /**
@@ -131,13 +160,13 @@ class BarangController extends Controller
         $barang = Barang::find($id);
         // dd($category);
         $barang->idbarang = $barang->idbarang;
-        $barang->nama=$request->get('txtNama');
+        $barang->nama = $request->get('txtNama');
         //dd($request->get('comboKat'));
 
-        $barang->kategori=$request->get('comboKat');
+        $barang->kategori = $request->get('comboKat');
 
         $barang->save();
-        return redirect()->route('barang.index')->with('status','Barang data is changed');
+        return redirect()->route('barang.index')->with('status', 'Barang data is changed');
     }
 
     /**
@@ -148,18 +177,35 @@ class BarangController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        try {
+            
+            $sqlsearchIdbarang = BarangDetail::where("idbarang",$id)->get();
+            
+            foreach($sqlsearchIdbarang as $s)
+            { 
+               
+                $gambar = GambarBarang::where("barang",$s->idbarangDetail)->get();
+                 $perbaikan =  Perbaikan::where("barang",$s->idbarangDetail)->get();
+                foreach($gambar as $g)
+                {
+                    $g->delete();
+                }
+                foreach($perbaikan as $p)
+                {
+                    $p->delete();
+                }
+                $s->delete();
+            }
+            
+           
             $barang = Barang::find($id);
             //dd($category);
             $barang->delete();
-            return redirect()->route('barang.index')->with('status','Data Barang sudah dihapus');
- 
-        }
-        catch(\PDOException $e)
-        {
-            $msg="Data Gagal dihapus. pastikan data child sudah hilang atau tidak berhubungan";
- 
-            return redirect()->route('barang.index')->with('error',$msg);
+            return redirect()->route('barang.index')->with('status', 'Data Barang sudah dihapus');
+        } catch (\PDOException $e) {
+            $msg = "Data Gagal dihapus. pastikan data child sudah hilang atau tidak berhubungan";
+
+            return redirect()->route('barang.index')->with('error', $msg);
         }
     }
 }

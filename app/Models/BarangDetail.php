@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\GambarBarang;
 class BarangDetail extends Model
 {
     protected $table = 'barangdetail';
+    public $primaryKey = 'idbarangDetail';
+    public $keyType = 'string';
     public $timestamps = false;
     public function barangs()
     {
@@ -15,11 +17,11 @@ class BarangDetail extends Model
     }
     public function gambars()
     {
-        return $this->hasMany('App\GambarBarang','idbarangDetail','idgambar');
+        return $this->hasMany(GambarBarang::class,'idbarangDetail','barang');
     }
     public function perbaikans()
     {
-        return $this->hasMany('App\Perbaikan','idbarangDetail','idperbaikan');
+        return $this->hasMany(Perbaikan::class,'idbarangDetail','barang');
     }
     public function labs()
     {
