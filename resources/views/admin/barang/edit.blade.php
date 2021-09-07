@@ -29,7 +29,8 @@
 				<br>
 				<select class="form-control" name="comboKat">
 					@foreach($cat as $c)
-					<option value="{{$c->idkategori}}">{{$c->nama}}</option>
+					
+					<option value="{{$c->idkategori}}" @if($c->idkategori == $data->kategori) selected @endif>{{$c->nama}}</option>
 					@endforeach
 				</select>
 			</div>

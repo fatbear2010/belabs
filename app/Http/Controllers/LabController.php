@@ -18,6 +18,7 @@ class LabController extends Controller
      */
     public function index()
     {
+        $this->authorize('check-jabatan');
         $queryBuilder = Lab::All();
         return view('admin.lab.index', compact('queryBuilder'));
     }
@@ -29,6 +30,7 @@ class LabController extends Controller
      */
     public function create()
     {
+        $this->authorize('check-jabatan');
         $user = User::where('jabatan','<>','1')->get();
         return view('admin.lab.create',compact('user'));
     }
@@ -41,6 +43,7 @@ class LabController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('check-jabatan');
         $laboran =$request->get('laboran');
        
         $data = new Lab();
@@ -83,6 +86,7 @@ class LabController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('check-jabatan');
         $data = Lab::find($id);
         // dd($data) ;
         //$data =$id;
@@ -100,6 +104,7 @@ class LabController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorize('check-jabatan');
         $lab = Lab::find($id);
         // dd($category);
         
@@ -120,6 +125,7 @@ class LabController extends Controller
     public function destroy($id)
     {
         try {
+            $this->authorize('check-jabatan');
             $lab = Lab::find($id);
             //dd($category);
             $lab->delete();

@@ -17,6 +17,7 @@ class StatusJabatanController extends Controller
      */
     public function index()
     {
+        $this->authorize('check-jabatan');
         $queryBuilder = StatusJabatan::All(); 
         
         return view('admin.statusJabatan.index',compact('queryBuilder'));
@@ -29,6 +30,7 @@ class StatusJabatanController extends Controller
      */
     public function create()
     {
+        $this->authorize('check-jabatan');
         $stat = Status::All();
         $jab = Jabatan::All();
         return view('admin.statusjabatan.create',compact('stat','jab'));
@@ -42,6 +44,7 @@ class StatusJabatanController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('check-jabatan');
         $data= new Status();
         $data->nama=$request->get('txtName');
         $data->kategori=$request->get('txtKat');

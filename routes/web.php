@@ -53,8 +53,7 @@ Route::middleware('auth')->group(function() {
 	Route::resource('admin/statusjabatan','App\Http\Controllers\StatusJabatanController');
 	Route::post('admin/lab/showlaboran','App\Http\Controllers\LabController@showlaboran')->name('lab.showlaboran');
 	Route::resource('admin/barangdetail','App\Http\Controllers\BarangDetailController');
-
-
+	Route::resource('admin/users','App\Http\Controllers\UserController');
 
 	//::resource('category','CategoryController');
 

@@ -101,6 +101,11 @@
                                 {{ __('Barang') }}
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('barangdetail.index') }}">
+                                {{ __('Barang Detail') }}
+                            </a>
+                        </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('jabatan.index') }}">
                                 {{ __('Jabatan') }}
@@ -117,13 +122,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('barangdetail.index') }}">
-                                {{ __('Status Jabatan') }}
+                            <a class="nav-link" href="{{ route('lab.index') }}">
+                                {{ __('Lab') }}
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('lab.index') }}">
-                                {{ __('Lab') }}
+                            <a class="nav-link" href="{{ route('users.index') }}">
+                                {{ __('User') }}
                             </a>
                         </li>
                     </ul>

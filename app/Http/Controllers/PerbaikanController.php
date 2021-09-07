@@ -17,6 +17,7 @@ class PerbaikanController extends Controller
      */
     public function index()
     {
+        $this->authorize('check-jabatan');
         $queryBuilder = Perbaikan::All();
         //dd($queryBuilder);
         $barangdetail = BarangDetail::All();
@@ -30,6 +31,7 @@ class PerbaikanController extends Controller
      */
     public function create()
     {
+        $this->authorize('check-jabatan');
         $perb = Perbaikan::All();
         $bDetail = BarangDetail::All();
         return view('admin.perbaikan.create',compact('perb','bDetail'));
@@ -43,6 +45,7 @@ class PerbaikanController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('check-jabatan');
         $data= new Perbaikan();
         $data->idperbaikan = $request->get('txtID');
         $data->mulai=$request->get('txtMulai');
@@ -74,6 +77,7 @@ class PerbaikanController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('check-jabatan');
         $data =Perbaikan::find($id);
         //dd($data);
         $bar = BarangDetail::All();
@@ -90,6 +94,7 @@ class PerbaikanController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorize('check-jabatan');
         $perb = Perbaikan::find($id);
         // dd($category);
         $perb->idperbaikan = $perb->idperbaikan;
@@ -114,6 +119,7 @@ class PerbaikanController extends Controller
     public function destroy($id)
     {
         try{
+            $this->authorize('check-jabatan');
             $perb = Perbaikan::find($id);
             //dd($category);
             $perb->delete();

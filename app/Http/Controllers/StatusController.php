@@ -17,6 +17,7 @@ class StatusController extends Controller
      */
     public function index()
     {
+        $this->authorize('check-jabatan');
         $queryBuilder = Status::All(); 
         return view('admin.status.index',compact('queryBuilder'));
     }
@@ -28,6 +29,7 @@ class StatusController extends Controller
      */
     public function create()
     {
+        $this->authorize('check-jabatan');
         $queryBuilder = Jabatan::All(); 
 
         return view('admin.status.create',compact('queryBuilder'));
@@ -41,6 +43,7 @@ class StatusController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('check-jabatan');
         $jabatan = Jabatan::all();
        
         $data= new Status();
@@ -81,6 +84,7 @@ class StatusController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('check-jabatan');
         $data =Status::find($id);
         $queryBuilder = Jabatan::all();
         $statusjbtn = StatusJabatan::where('idstatus',$id)->get();
@@ -95,7 +99,9 @@ class StatusController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {$jabatan = Jabatan::all();
+    {
+        $this->authorize('check-jabatan');
+        $jabatan = Jabatan::all();
         $status = Status::find($id);
         // dd($category);
         $status->nama=$request->get('txtName');
@@ -125,6 +131,7 @@ class StatusController extends Controller
     public function destroy($id)
     {
         try{
+            $this->authorize('check-jabatan');
             $status = Status::find($id);
             $status->jabatans()->detach($id);
             //dd($category);

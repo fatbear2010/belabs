@@ -15,6 +15,7 @@ class KatController extends Controller
      */
     public function index()
     {
+        $this->authorize('check-jabatan');
         $queryBuilder = Kategori::All(); 
         return view('admin.kategori.index',compact('queryBuilder'));
     }
@@ -26,6 +27,7 @@ class KatController extends Controller
      */
     public function create()
     {
+        $this->authorize('check-jabatan');
         return view('admin.kategori.create');
     }
 
@@ -37,6 +39,7 @@ class KatController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('check-jabatan');
         $data= new Kategori();
         $data->nama=$request->get('txtName');
         $data->save();
@@ -62,6 +65,7 @@ class KatController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('check-jabatan');
        // dd($id);
         $data =Kategori::find($id);
        // dd($data) ;
@@ -79,7 +83,8 @@ class KatController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    { 
+        $this->authorize('check-jabatan');
         $category = Kategori::find($id);
         // dd($category);
         $category->nama=$request->get('txtName');
@@ -96,6 +101,7 @@ class KatController extends Controller
     public function destroy($id)
     {
         try{
+            $this->authorize('check-jabatan');
             $category = Kategori::find($id);
             //dd($category);
             $category->delete();

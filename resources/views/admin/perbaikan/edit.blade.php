@@ -38,7 +38,7 @@
 					<br>
 					<select class="form-control" name="comboKat">
 						@foreach($bar as $d)
-						<option value="{{$d->idbarangDetail}}">{{$d->idbarangDetail}}</option>
+						<option value="{{$d->idbarangDetail}}" @if($d->idbarangDetail == $data->barang) selected @endif>{{$d->idbarangDetail}}</option>
 						@endforeach
 					</select>
 				</div>

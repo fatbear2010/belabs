@@ -108,8 +108,8 @@
                                         <i class="fas fa-ellipsis-v"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                        <a class="dropdown-item" href="{{route('barang.edit',$d->idbarang)}}">Edit</a>
-                                        <form method='Post' action="{{route('barang.destroy',$d->idbarang)}}">
+                                        <a class="dropdown-item" href="{{route('barangdetail.edit',$d->idbarangDetail)}}">Edit</a>
+                                        <form method='Post' action="{{route('barangdetail.destroy',$d->idbarangDetail)}}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" value="delete" onclick="if(!confirm('Yakin Hapus??'))return false;" class="dropdown-item" href="">Delete</a>

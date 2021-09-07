@@ -15,6 +15,7 @@ class JabatanController extends Controller
      */
     public function index()
     {
+        $this->authorize('check-jabatan');
         $queryBuilder = Jabatan::All(); 
         return view('admin.jabatan.index',compact('queryBuilder'));
     }
@@ -26,6 +27,7 @@ class JabatanController extends Controller
      */
     public function create()
     {
+        $this->authorize('check-jabatan');
         return view('admin.jabatan.create');
     }
 
@@ -37,6 +39,7 @@ class JabatanController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('check-jabatan');
         $data= new Jabatan();
         $data->nama=$request->get('txtName');
         $data->save();
@@ -62,6 +65,7 @@ class JabatanController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('check-jabatan');
         $data =Jabatan::find($id);
         return view('admin.jabatan.edit',compact('data'));
     }
@@ -75,6 +79,7 @@ class JabatanController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorize('check-jabatan');
         $jabatan = Jabatan::find($id);
         // dd($category);
         $jabatan->nama=$request->get('txtName');
@@ -91,6 +96,7 @@ class JabatanController extends Controller
     public function destroy($id)
     {
         try{
+            $this->authorize('check-jabatan');
             $jabatan = Jabatan::find($id);
             //dd($category);
             $jabatan->delete();

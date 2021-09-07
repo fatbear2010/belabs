@@ -20,6 +20,7 @@ class BarangController extends Controller
      */
     public function index()
     {
+        $this->authorize('check-jabatan');
         $queryBuilder = Barang::All();
 
         //dd($queryBuilder);
@@ -36,6 +37,7 @@ class BarangController extends Controller
      */
     public function create()
     {
+        $this->authorize('check-jabatan');
         $cat = Kategori::All();
         $lab = Lab::All();
 
@@ -51,7 +53,7 @@ class BarangController extends Controller
     public function store(Request $request)
     {
 
-      
+        $this->authorize('check-jabatan');
         //$cat = Kategori::find($request->get('comboKat'));
         // $file =$request->file('logo');
         // $imgFolder='img';
@@ -131,6 +133,7 @@ class BarangController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('check-jabatan');
         //
     }
 
@@ -142,6 +145,7 @@ class BarangController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('check-jabatan');
         $data = Barang::find($id);
         $cat = Kategori::All();
 
@@ -157,6 +161,7 @@ class BarangController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorize('check-jabatan');
         $barang = Barang::find($id);
         // dd($category);
         $barang->idbarang = $barang->idbarang;
@@ -178,7 +183,7 @@ class BarangController extends Controller
     public function destroy($id)
     {
         try {
-            
+            $this->authorize('check-jabatan');
             $sqlsearchIdbarang = BarangDetail::where("idbarang",$id)->get();
             
             foreach($sqlsearchIdbarang as $s)
