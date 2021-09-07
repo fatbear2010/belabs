@@ -37,7 +37,7 @@ class UserController extends Controller
         $data->email=$request->get('txtEmail');
         
         $data->status=2;
-        $data->password=$request->get('txtPassword');
+        $data->password=hash::make($request->get('txtPassword'));
         $data->jabatan=$request->get('comboJabatan');
         
 
