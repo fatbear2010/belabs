@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\GambarBarang;
+use App\Models\Barang;
+use App\Models\Perbaikan;
+use App\Models\Lab;
+
 class BarangDetail extends Model
 {
     protected $table = 'barangdetail';
@@ -13,7 +17,7 @@ class BarangDetail extends Model
     public $timestamps = false;
     public function barangs()
     {
-        return $this->belongsTo('App\Barang','idbarang');
+        return $this->belongsTo(Barang::class,'idbarang');
     }
     public function gambars()
     {
@@ -25,7 +29,7 @@ class BarangDetail extends Model
     }
     public function labs()
     {
-        return $this->belongsTo('App\Lab','idlab');
+        return $this->belongsTo(Lab::class,'idlab');
     }
     //kurang  ke tabel pinjam 
 }

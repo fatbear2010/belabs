@@ -31,7 +31,7 @@ class emaillp extends Mailable
     {
         $nama = $this->nama;
         $url = $this->url;
-        return $this->from(env('MAIL_USERNAME','BeLabs'))->subject('Reset Password Akun BeLabs')->view('mail.m_lupapassword',compact('nama','url')); 
+        return $this->from(env('MAIL_USERNAME','BeLABS'))->subject('Reset Password Akun BeLABS')->view('mail.m_lupapassword',compact('nama','url')); 
        // return $this->from(env('MAIL_USERNAME','BeLabs'))->subject('Verifikasi Akun BeLabs')->view('mail.m_verifikasi', compact('')); 
     }
 }

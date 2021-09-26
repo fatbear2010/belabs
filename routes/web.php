@@ -57,5 +57,23 @@ Route::middleware('auth')->group(function() {
 
 	//::resource('category','CategoryController');
 
+	Route::resource('barang/all','App\Http\Controllers\PinjamController');
+	Route::post('barang/all','App\Http\Controllers\PinjamController@filter')->name('barang.filter');
+	Route::get('barang/detail/{id}','App\Http\Controllers\PinjamController@detail')->name('barang.detail');
+	Route::get('barang/detail2/{id}','App\Http\Controllers\PinjamController@detail2')->name('barang.detail2');
+	Route::get('barang/jadwal/','App\Http\Controllers\PinjamController@jadwal')->name('barang.jadwal');
+	Route::get('barang/tgl/','App\Http\Controllers\PinjamController@tgl')->name('barang.tgl');
+	Route::post('barang/tambah/','App\Http\Controllers\PinjamController@tambah')->name('barang.tambah');
+
+	Route::resource('lab/all','App\Http\Controllers\PinjamLabController');
+	Route::post('lab/all','App\Http\Controllers\PinjamLabController@filter')->name('lab.filter');
+	Route::get('lab/detail/{id}','App\Http\Controllers\PinjamLabController@detail')->name('lab.detail');
+	Route::get('lab/jadwal/','App\Http\Controllers\PinjamLabController@jadwal')->name('lab.jadwal');
+	Route::get('lab/tgl/','App\Http\Controllers\PinjamLabController@tgl')->name('lab.tgl');
+	Route::post('lab/tambah/','App\Http\Controllers\PinjamLabController@tambah')->name('lab.tambah');
+
+	Route::get('keranjang/clean/','App\Http\Controllers\KeranjangController@clean')->name('keranjang.clean');
+	Route::get('keranjang/hapusPinjam/','App\Http\Controllers\KeranjangController@hapusPinjam')->name('keranjang.hapusPinjam');
+	Route::get('keranjang/hapusBarang/','App\Http\Controllers\KeranjangController@hapusBarang')->name('keranjang.hapusBarang');
 });
 

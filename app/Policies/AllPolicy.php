@@ -23,4 +23,8 @@ class AllPolicy
     {
         return ($user->jabatan == '2' ? Response::allow() : Response::deny('Anda harus login sebagai Kalab untuk mengakses fitur ini'));
     }
+    public function mhs(User $user)
+    {
+        return ($user->jabatan == '1' ? Response::allow() : Response::deny('Anda Tidak Memiliki Akses Untuk Fitur Ini'));
+    }
 }

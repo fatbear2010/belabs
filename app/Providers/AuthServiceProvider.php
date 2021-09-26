@@ -25,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Gate::define('check-jabatan','App\Policies\AllPolicy@check');
+        Gate::define('mahasiswa','App\Policies\AllPolicy@mhs');
         //
     }
 }

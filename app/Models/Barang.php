@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Kategori;
 class Barang extends Model
 {
     //use HasFactory;
@@ -15,7 +15,7 @@ class Barang extends Model
 
     public function kategoris()
     {
-        return $this->belongsTo('App\Kategori','idkategori');
+        return $this->belongsTo(Kategori::class,'idkategori','kategori');
     }
 
     public function barangDetails()
