@@ -67,6 +67,7 @@
             </div>
         </div>
     </div>
+    @if (isset($sukses))
     <script>
         var minutes1 = 90;
         var second1 = 0;
@@ -82,4 +83,5 @@
             second1++;
         }, 1000);
     </script>
+    @endif
 @endsection

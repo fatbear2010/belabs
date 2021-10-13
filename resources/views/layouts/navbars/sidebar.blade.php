@@ -17,7 +17,11 @@
                 <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <div class="media align-items-center">
                         <span class="avatar avatar-sm rounded-circle">
-                        <img alt="" src="https://my.ubaya.ac.id/img/mhs/{{auth()->user()->nrpnpk}}_m.jpg?534039184">
+                        @if(auth()->user()->jabatan1()->nama == "Mahasiswa")
+                        <img alt="" onerror="this.onerror=null; this.src='{{ asset('argon') }}/img/BL3.png'" src="https://my.ubaya.ac.id/img/mhs/{{auth()->user()->nrpnpk}}_m.jpg">
+                        @else
+                        <img alt="" onerror="this.onerror=null; this.src='{{ asset('argon') }}/img/BL3.png'" src="https://my.ubaya.ac.id/img/krywn/{{auth()->user()->nrpnpk}}_m.jpg">
+                        @endif
                         </span>
                     </div>
                 </a>
@@ -51,11 +55,11 @@
             </li>
             
         </ul>
-          
-        <button type="button" class="btn btn-fik d-md-none" data-toggle="dropdown" id="buka2" style="width: 100%; margin-top:10px;">
+        @if(!isset($lihat)) 
+        <button type="button" onclick="cekkeranjang();" class="btn btn-fik d-md-none" data-toggle="dropdown" id="buka2" style="width: 100%; margin-top:10px;">
             <i class="fa fa-shopping-cart" aria-hidden="true"></i> Keranjang <span id="keranjang2" class="badge badge-pill badge-dark text-light">{{ count((array) session('cart')) }}</span>
         </button>
-       
+       @endif
         <!-- Collapse -->
         <div class="collapse navbar-collapse" id="sidenav-collapse-main">
             
@@ -83,9 +87,11 @@
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('home') }}">
-                        <i class="icofont-home text-fik"></i> Home
+                        <i class="icofont-home text-fik"></i> Beranda
                     </a>
                 </li>
+              
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/barang/all') }}">
                         <i class="icofont-fix-tools text-fik"></i> Peminjaman Barang
@@ -97,6 +103,63 @@
                     </a>
                 </li>
                
+                 <li class="nav-item">
+                    <a class="nav-link" href="{{ route('home') }}">
+                        <i class="icofont-heart-alt" style="color: #f4645f;"></i></i> Pesanan
+                    </a>
+                </li>
+               <li class="nav-item">
+                <a class="nav-link " href="#navbar-examples1" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples1">
+                    <i class="fab fa-laravel" style="color: #f4645f;"></i>
+                    <span class="nav-link-text" style="color: #f4645f;">Pengaturan Laboratorium</span>
+                </a>
+
+                <div class="collapse " id="navbar-examples1">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/admin/kategori') }}">
+                                {{ __('Kategori Barang') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('barang.index') }}">
+                                {{ __('Barang') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('barangdetail.index') }}">
+                                {{ __('Barang Detail') }}
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="{{ route('jabatan.index') }}">
+                                {{ __('Jabatan') }}
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('perbaikan.index') }}">
+                                {{ __('Perbaikan') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('status.index') }}">
+                                {{ __('Status') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('lab.index') }}">
+                                {{ __('Lab') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('users.index') }}">
+                                {{ __('User') }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
 
                 <li class="nav-item">
                 <a class="nav-link " href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">

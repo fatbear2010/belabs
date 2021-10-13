@@ -13,6 +13,7 @@ class User extends Authenticatable
 
     protected $table = 'users';
     public $timestamps = false;
+    public $primaryKey = 'nrpnpk';
     public $keyType = 'string';
     public function jabatan()
     {

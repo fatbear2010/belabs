@@ -61,7 +61,7 @@ class PinjamController extends Controller
             
             if($s->status == 2)
             {
-                $pinjam = Pinjam::where('barang',$idbarang)->where('tanggal',date("Y-m-d", strtotime($date)))->get();
+                $pinjam = Pinjam::where('barang',$idbarang)->where('status','1')->where('tanggal',date("Y-m-d", strtotime($date)))->get();
                 foreach ($pinjam as $p)
                 {
                     if($s->mulai >= $p->mulai && $s->selesai <= $p->selesai) { 
@@ -111,6 +111,38 @@ class PinjamController extends Controller
                     }
                 }
             }
+
+            if($s->status == 2 && (strtotime(date("Y-m-d"))>= strtotime($date) ))
+            {
+                if(strtotime($s->mulai)-1800 <= time() ) {
+                    $s->status = 0;
+                }
+            }
+
+            if($s->status == 2)
+            {
+                $cart=Session()->get('cart');
+                if(isset($cart[$idbarang]))
+                {
+                    $help2 = 0;
+                    foreach ($cart[$idbarang]['pinjam'] as $p)
+                    {
+                        if($p['tgl']==$date)
+                        {
+                            $m1 = strtotime($p['mulai']);
+                            $s1 = strtotime($p['selesai']);
+                            $m2 = strtotime($s->mulai);
+                            $s2 = strtotime($s->selesai);
+
+                            if($m1 <= $m2 && $s1 >= $s2){$help2 = 1; }
+                            elseif($m1 >= $m2 && $s1 <= $s2){$help2 = 1; }
+                            else if($m1 >= $m2 && $s1 >= $s2 && $m1<=$s2){$help2 = 1; }
+                            else if($m1 <= $m2 && $s1 <= $s2 && $m1>=$s2){$help2 = 1; }
+                        }
+                    }
+                    if($help2 == 1){ $s->status = 4; }
+                }
+            }
         }
         return $sesi;
     }
@@ -133,7 +165,7 @@ class PinjamController extends Controller
             
             if($s->status == 1)
             {
-                $pinjam = Pinjam::where('barang',$idbarang)->where('tanggal',date("Y-m-d", strtotime($date)))->get();
+                $pinjam = Pinjam::where('barang',$idbarang)->where('status','1')->where('tanggal',date("Y-m-d", strtotime($date)))->get();
                 foreach ($pinjam as $p)
                 {
                     if($s->mulai >= $p->mulai && $s->selesai <= $p->selesai) { 
@@ -183,6 +215,14 @@ class PinjamController extends Controller
                     }
                 }
             }
+
+            if($s->status == 1 && (strtotime(date("Y-m-d"))>= strtotime($date) ))
+            {
+                if(strtotime($s->mulai)-1800 <= time() ) {
+                    $s->status = 0;
+                }
+            }
+
             $pembanding+=$s->status;
         }
 
@@ -338,7 +378,7 @@ class PinjamController extends Controller
 
     public function filter(Request $request)
     {
-        $query = 'select * from barang b inner join barangdetail d on b.idbarang = d.idbarang inner join lab l on l.idlab = d.lab ';
+        $query = 'select b.nama as nama, b.idbarang as idbarang from barang b left join barangdetail d on b.idbarang = d.idbarang left join lab l on l.idlab = d.lab ';
         $jumlah = 0;
         $filter = array();
         if($request->nama != "")
@@ -371,15 +411,108 @@ class PinjamController extends Controller
             $jumlah++;
             $filter['kategori'] = $request->cat;
         }
-       // dd($request);
         $barang = DB::select($query);
+       
         $lab = Lab::all();
         $cat = Kategori::all();
         $sesi = Sesi::all();
         $fak = DB::select('SELECT DISTINCT fakultas FROM lab');
-        return view('pinjam.index',compact('barang','lab','fak','cat','sesi','filter'));
+        
+        //dd($barang);
+        if($request->cat == "ALL" &&$request->lab == "ALL"&&$request->fakultas == "ALL" && $request->nama == "")
+        {
+            return view('pinjam.index',compact('barang','lab','fak','cat','sesi'));
+        }
+        else{
+            return view('pinjam.index',compact('barang','lab','fak','cat','sesi','filter'));
+        }
+       // dd($request);
+        
     }
+    
+    public static function cekAda1($date, $mulai, $selesai)
+    {
+        //selesai gaada dianggap sesi terakhir, mulai gaada diambil jam terawal, date gaada maka di for setiap hari 
+        $sesi = Sesi::select("*")->where('mulai','>=',$mulai)->where('selesai','<=',$selesai)->orderBy('mulai', 'ASC')->get();
+        $jumlah = count($sesi);
+        $pembanding = 0;
+        $hari = date("N", strtotime($date));
+        $barang = BarangDetail::all();
+        foreach($barang as $barangdt)
+        {
+            $rutin = Rutin::where('idbarangDetail',$barangdt->idbarangdetail)->where('hariint',$hari)->orderBy('jamMulai','ASC')->get();
+            foreach ($sesi as $s)
+            {
+                $s->status = 1;
 
+                if($barangdt->status != 0){$s->status = 0;}
+                else if($barangdt->kondisi == 1){$s->status = 0;}
+                else if($barangdt->perbaikan == 1){$s->status = 0;}
+                
+                if($s->status == 1)
+                {
+                    $pinjam = Pinjam::where('barang',$idbarang)->where('tanggal',date("Y-m-d", strtotime($date)))->get();
+                    foreach ($pinjam as $p)
+                    {
+                        if($s->mulai >= $p->mulai && $s->selesai <= $p->selesai) { 
+                            if($p->statusDosen == "" || $p->statusKalab == "" ){ $s->status = 0; }
+                            else {$s->status = 0; }
+                        }
+                    }
+                }
+
+                if($s->status == 1)
+                {
+                    $jumr = count($rutin);
+                    if($jumr > 0) 
+                    {
+                        $pr = $rutin[0];
+                    }
+                    else{
+                        $s->status = 0;
+                    }
+                    $countr = 1;
+                    foreach ($rutin as $r)
+                    {
+                        if($countr == 1)
+                        {
+                            if($s->mulai < $r->jamMulai) { $s->status = 0; }
+                            else if($s->selesai <= $r->jammulai) { $s->status = 0; }
+                            else if($s->mulai >= $r->jamSelesai && $jumr == 1 ) { $s->status = 0; }
+                        }   
+                        else
+                        {
+                            if($s->mulai < $r->jamMulai && $s->mulai >= $pr->jamSelesai)  { $s->status = 0; }
+                            else if($s->selesai <= $r->jammulai && $s->mulai >= $pr->jamSelesai) { $s->status = 0; }
+                            else if($s->mulai >= $r->jamSelesai && $s->mulai >= $pr->jamSelesai && $jumr == $countr) { $s->status = 0; }
+                        }
+                        $countr+=1;
+                        if($jumr>1) { $pr = $r;}
+                    }
+                }
+            
+                if($s->status == 1)
+                {
+                    $block = Block::where('idbarangDetail',$idbarang)->where('tanggal',date("Y-m-d", strtotime($date)))->get();
+                    foreach ($block as $b)
+                    {
+                        if($s->mulai >= $b->mulai && $s->selesai <= $b->selesai) { 
+                            {$s->status = 0; }
+                        }
+                    }
+                }
+
+                if($s->status == 1 && (strtotime(date("Y-m-d"))>= strtotime($date) ))
+                {
+                    if(strtotime($s->mulai)-1800 <= time() ) {
+                        $s->status = 0;
+                    }
+                }
+                $pembanding+=$s->status;
+            }
+
+        }    
+    }
     /**
      * Show the form for creating a new resource.
      *

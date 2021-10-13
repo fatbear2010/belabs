@@ -49,7 +49,7 @@ class PinjamLabController extends Controller
             
             if($s->status == 2)
             {
-                $pinjam = PinjamLab::where('idlab',$idlab)->where('tanggal',date("Y-m-d", strtotime($date)))->get();
+                $pinjam = PinjamLab::where('idlab',$idlab)->where('status','1')->where('tanggal',date("Y-m-d", strtotime($date)))->get();
                 foreach ($pinjam as $p)
                 {
                     if($s->mulai >= $p->mulai && $s->selesai <= $p->selesai) { 
@@ -99,11 +99,46 @@ class PinjamLabController extends Controller
                     }
                 }
             }
+
+            if($s->status == 2 && (strtotime(date("Y-m-d"))>= strtotime($date) ))
+            {
+                if(strtotime($s->mulai)-1800 <= time() ) {
+                    $s->status = 0;
+                }
+            }
+
+
             $s->kuota = $lab->kapasitas - $s->kuota;
             if($s->kuota <= 0)
             {
                 $s->status = 0; 
             }
+
+            if($s->status == 2)
+            {
+                $cart=Session()->get('cart');
+                if(isset($cart[$idlab]))
+                {
+                    $help2 = 0;
+                    foreach ($cart[$idlab]['pinjam'] as $p)
+                    {
+                        if($p['tgl']==$date)
+                        {
+                             $m1 = strtotime($p['mulai']);
+                             $s1 = strtotime($p['selesai']);
+                             $m2 = strtotime($s->mulai);
+                             $s2 = strtotime($s->selesai);
+                            
+                            if($m1 <= $m2 && $s1 >= $s2){$help2 = 1; }
+                            elseif($m1 >= $m2 && $s1 <= $s2){$help2 = 1;  }
+                            else if($m1 >= $m2 && $s1 >= $s2 && $m1<=$s2){$help2 = 1;}
+                            else if($m1 <= $m2 && $s1 <= $s2 && $m1>=$s2){$help2 = 1;}
+                        }
+                    }
+                    if($help2 == 1){ $s->status = 4;}
+                }
+            }
+
         }
         return $sesi;
     }
@@ -125,7 +160,7 @@ class PinjamLabController extends Controller
             
             if($s->status == 1)
             {
-                $pinjam = PinjamLab::where('idlab',$idlab)->where('tanggal',date("Y-m-d", strtotime($date)))->get();
+                $pinjam = PinjamLab::where('idlab',$idlab)->where('status','1')->where('tanggal',date("Y-m-d", strtotime($date)))->get();
                 foreach ($pinjam as $p)
                 {
                     if($s->mulai >= $p->mulai && $s->selesai <= $p->selesai) { 
@@ -176,6 +211,13 @@ class PinjamLabController extends Controller
                 }
             }
 
+            if($s->status == 1 && (strtotime(date("Y-m-d"))>= strtotime($date) ))
+            {
+                if(strtotime($s->mulai)-1800 <= time() ) {
+                    $s->status = 0;
+                }
+            }
+
             if(($lab->kapasitas - $s->kuota)<=0){$s->status == 0; }
             $pembanding+=$s->status;
         }
@@ -217,7 +259,7 @@ class PinjamLabController extends Controller
     public function detail($id)
     {
         $lab = Lab::where('idlab',$id)->first();
-        $laboran = DB::select("select * from laboran l inner join users u on l.user = u.id where l.lab = '".$id."'");
+        $laboran = DB::select("select * from laboran l inner join users u on l.user = u.nrpnpk where l.lab = '".$id."'");
         $bantuan = DB::select("select namafile from gambar where lab = '".$id."'");
         $rutin = Rutin::where('idlab',$id)->orderBy('hariint','ASC')->orderBy('jamMulai','ASC')->get();
         $sesi = $this->cekSesi($id, date("Y-m-d"));
@@ -328,35 +370,19 @@ class PinjamLabController extends Controller
             $jumlah++;
             $filter['fakultas'] = $request->fakultas;
         }
-        if($request->tgl != "ALL")
-        {
-            if($jumlah == 0){ $query.= ' where '; }
-            else if($jumlah == 1){ $query.= ' and '; }
-            $query = $query . 'tgl= \'' . $request->fakultas . '\' ';
-            $jumlah++;
-            $filter['tgl'] = $request->fakultas;
-        }
-        if($request->jammul != "ALL")
-        {
-            if($jumlah == 0){ $query.= ' where '; }
-            else if($jumlah == 1){ $query.= ' and '; }
-            $query = $query . 'jm= \'' . $request->fakultas . '\' ';
-            $jumlah++;
-            $filter['jamul'] = $request->jamul;
-        }
-        if($request->jamsel != "ALL")
-        {
-            if($jumlah == 0){ $query.= ' where '; }
-            else if($jumlah == 1){ $query.= ' and '; }
-            $query = $query . 'js= \'' . $request->fakultas . '\' ';
-            $jumlah++;
-            $filter['jasel'] = $request->jasel;
-        }
+        
        // dd($request);
         $lab = DB::select($query);
         $sesi = Sesi::all();
         $fak = DB::select('SELECT DISTINCT fakultas FROM lab');
-        return view('pinjamlab.index',compact('lab','fak','sesi','filter'));
+        if($request->nama == "" && $request->fakultas == "ALL")
+        {
+            return view('pinjamlab.index',compact('lab','fak','sesi'));
+        }
+        else{
+            return view('pinjamlab.index',compact('lab','fak','sesi','filter'));
+        }
+      
     }
 
     /**

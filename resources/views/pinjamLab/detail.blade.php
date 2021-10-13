@@ -189,6 +189,11 @@
                         <i class="bg-danger"></i>
                         <span class="status">Tidak Tersedia</span>
                       </span>
+                         <?php } else if($sesi[$i]->status == 4 ) { ?>
+                        <span class="badge badge-dot mr-4">
+                        <i class="bg-dark"></i>
+                        <span class="status">Sudah Ada Di Keranjang</span>
+                      </span>
                       <?php } else if($sesi[$i]->status == 2 ) { ?>
                         <span class="badge badge-dot mr-4">
                         <i class="bg-success"></i>
@@ -211,6 +216,11 @@
                         <i class="bg-danger"></i>
                         <span class="status">Tidak Tersedia</span>
                       </span>
+                         <?php } else if($sesi[$i+$jum]->status == 4 ) { ?>
+                        <span class="badge badge-dot mr-4">
+                        <i class="bg-dark"></i>
+                        <span class="status">Sudah Ada Di Keranjang</span>
+                      </span>
                       <?php } else if($sesi[$i+$jum]->status == 2 ) { ?>
                         <span class="badge badge-dot mr-4">
                         <i class="bg-success"></i>
@@ -232,6 +242,7 @@
   <div style="width: 100%" class="wrap">
   <span class="wrap badge badge-dot"><i class="bg-success"></i></span>Tersedia | Laboratorium Dapat Digunakan<br>
   <span class="wrap badge badge-dot "><i class="bg-danger"></i></span> Tidak Tersedia | Laboratorium Tidak Dapat Dipinjam Atau Kapasitas Penuh<br>
+  <span class="wrap badge badge-dot "><i class="bg-dark"></i></span> Sudah Di Keranjang | Item Sudah Ada Di Keranjang<br>
   </div>
 </div>
 

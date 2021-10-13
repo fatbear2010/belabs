@@ -75,5 +75,18 @@ Route::middleware('auth')->group(function() {
 	Route::get('keranjang/clean/','App\Http\Controllers\KeranjangController@clean')->name('keranjang.clean');
 	Route::get('keranjang/hapusPinjam/','App\Http\Controllers\KeranjangController@hapusPinjam')->name('keranjang.hapusPinjam');
 	Route::get('keranjang/hapusBarang/','App\Http\Controllers\KeranjangController@hapusBarang')->name('keranjang.hapusBarang');
+	Route::get('keranjang/keranjangdetail/','App\Http\Controllers\KeranjangController@keranjangdetail')->name('keranjang.keranjangdetail');
+	Route::get('keranjang/dosen/','App\Http\Controllers\KeranjangController@dosen')->name('keranjang.dosen');
+	Route::post('keranjang/checkout/','App\Http\Controllers\KeranjangController@checkout')->name('keranjang.checkout');
+	Route::post('keranjang/final/','App\Http\Controllers\KeranjangController@final')->name('keranjang.final');
+	Route::get('keranjang/test/','App\Http\Controllers\KeranjangController@test')->name('keranjang.test');
+
+	Route::get('profil/gantiprofil/','App\Http\Controllers\HomeController@gantiprofil1')->name('profil.gantiprofil');
+	Route::get('profil/gantipassword/','App\Http\Controllers\HomeController@gantipassword1')->name('profil.gantipassword');
+	Route::get('profil/pgantiprofil/','App\Http\Controllers\HomeController@gantiprofil2')->name('profil.pgantiprofil');
+	Route::get('profil/pgantipassword/','App\Http\Controllers\HomeController@gantipassword2')->name('profil.pgantipassword');
+
+	Route::get('order/showorder/','App\Http\Controllers\HomeController@showorder')->name('order.showorder');
+	Route::get('order/detail/{id}','App\Http\Controllers\HomeController@orderdetail')->name('order.detail');
 });
 

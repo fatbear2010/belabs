@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class History extends Model
 {
-    use HasFactory;
+    protected $table = 'history';
+    public $primaryKey = 'idhistory';
+    public $timestamps = false;
     public function status()
     {
         return $this->belongsTo('App\Status','idstatus');

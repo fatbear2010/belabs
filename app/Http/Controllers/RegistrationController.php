@@ -60,7 +60,7 @@ class RegistrationController extends Controller
                 $nama = $user->nama;
                 $email = $user->email;
                 $nrpnpk = $user->nrpnpk;
-                $vcode = Hash::make($nrpnpk);
+                $vcode = $vcode = Hash::make($nrpnpk);
                 $user->vcode = $vcode;
                 $user->save();
                 Mail::to($user->email)->send(new email($nama,'https://localhost/kp/belabs2/public/vcodes/'.$vcode));
@@ -73,7 +73,7 @@ class RegistrationController extends Controller
             }
         }
         else{
-            $error = 'NRP atau NPK Tidak Terdaftar Silah Periksa Kembali Atau Hubungi Admin';
+            $error = 'NRP atau NPK Tidak Terdaftar Silahkan Periksa Kembali Atau Hubungi Admin';
             return view('auth.register',compact('error'));
         }
     }
@@ -108,6 +108,8 @@ class RegistrationController extends Controller
                 $user->password = Hash::make($request->pass1);
                 $user->notelp = $request->telp;
                 $user->lineId = $request->line;
+                $user->status = 1;
+                $user->vcode = Hash::make($user->nrpnpk);
                 $user->save();
                 $jabatan = Jabatan::where('idjabatan',$user->jabatan)->first();
                 $done = "Selamat Proses Aktivasi Telah Selesai, Silahkan Lakukan Login";

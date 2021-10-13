@@ -35,6 +35,11 @@
                       <i class="bg-primary"></i>
                       <span class="status">Dalam Perbaikan</span>
                     </span>
+                       <?php } else if($sesi[$i]->status == 4 ) { ?>
+                        <span class="badge badge-dot mr-4">
+                        <i class="bg-dark"></i>
+                        <span class="status">Sudah Ada Di Keranjang</span>
+                      </span>
                     <?php } else if($sesi[$i]->status == 2 ) { ?>
                       <span class="badge badge-dot mr-4">
                       <i class="bg-success"></i>
@@ -62,7 +67,12 @@
                       <i class="bg-warning"></i>
                       <span class="status">Sedang Diproses</span>
                     </span>
-                     <?php } else if($sesi[$i]->status == 3 ) { ?>
+                       <?php } else if($sesi[$i+$jum]->status == 4 ) { ?>
+                        <span class="badge badge-dot mr-4">
+                        <i class="bg-dark"></i>
+                        <span class="status">Sudah Ada Di Keranjang</span>
+                      </span>
+                     <?php } else if($sesi[$i+$jum]->status == 3 ) { ?>
                       <span class="badge badge-dot mr-4">
                       <i class="bg-primary"></i>
                       <span class="status">Dalam Perbaikan</span>

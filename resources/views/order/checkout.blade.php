@@ -1,29 +1,79 @@
-<!-- Top navbar -->
+
 <?php use App\Http\Controllers\PinjamController; ?>
 <?php use App\Http\Controllers\PinjamLabController; ?>
-  <?php
-  function isMobile1() {
+<?php
+  function isMobile() {
       return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
   }
-  date_default_timezone_set('Asia/Jakarta');
+  
   ?>
+@extends('layouts.app')
 
-<div  class="modal fade modal-default2" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true" >
-    <div class="modal-dialog modal- modal-dialog-centered" style="max-width: 90%; " role="document">
-        <div class="modal-content">
-          <div class="modal-body p-0">
+@section('content')
+@include('layouts.headers.cards')
 
-            <div class="card bg-secondary shadow border-0">
-              <div class="card-body px-lg-5 py-lg-5">
 
-                <h1 class="text-center">Keranjang</h1>
-                <div class="row text-center" id="keranjang">
-                  @if(session('cart'))
-                  @foreach(session('cart') as $item)
+<div class="container-fluid mt--7">
+  <div class="row">
+      <div class="col-xl-12 mb-5 mb-xl-0">
+
+
+<!--div -->
+<div class="card-header border-0">
+  <div class="row align-items-center">
+    <div class="col-12 text-center">
+      <h1> <i class="fa fa-shopping-cart" aria-hidden="true"></i> Keranjang</h1>
+      <br>
+      @if(session('status'))
+  @if(session('status') == 3)
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+  <span class="alert-inner--text">Barang Berhasil Ditambahkan Ke Keranjang</span>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <span aria-hidden="true">&times;</span></button>
+</div>
+  @elseif(session('status') == 1)
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <span class="alert-inner--icon"><i class="icofont-error"></i></span>
+  <span class="alert-inner--text">Keranjang Telah Diperbarui, Silahkan Checkout Kembali</a></span>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <span aria-hidden="true">&times;</span></button>
+  </div>
+  @elseif(session('status') == 2)
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <span class="alert-inner--icon"><i class="icofont-error"></i></span>
+  <span class="alert-inner--text">Barang Gagal Ditambahkan Karena Bertabrakan Dengan Keranjang</span>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <span aria-hidden="true">&times;</span></button>
+</div>
+  @endif
+@endif  
+
+      <div class="keranjang11" id="keranjang11">
+      @if(session('cart'))
+      <button style="width: 100%; margin-top: 10px;" id="clean11" class=" btn btn-dark" >Bersihkan Keranjang</button>
+      @else
+      <button style="width: 100%; margin-top: 10px;"  class=" btn btn-dark" >Keranjang Anda Kosong</button>
+      @endif
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div style="margin-left: auto; margin-right: auto;">
+    @if(session('cart'))
+    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;" >
+         <div class="card card-profile shadow " style="width: 100%;">
+            <div class="card-header text-left">
+                <h2>Item Yang Dipesan</h2><span class="font-weight-light"></span>
+            </div>  
+              
+           @foreach(session('cart') as $item)
+                <div class="row" style="margin: 5px 10px 5px 10px;">
                   <?php $gambar = $item['gambar'];?>
                   @if($item['tipe'] == "barang")
-                  @if(isMobile1())
-                  <div id="a{{$item['id']}}" class="col-lg-12 overflow-auto" style="margin-bottom:10px; min-width: 100px; ">
+                  @if(isMobile())
+                  <div id="d{{$item['id']}}" class="col-lg-12 overflow-auto" style="margin-bottom:10px; min-width: 100px; ">
                         <div class="card" style=" min-width: 100px;">
                             <div style="position:relative;  overflow: hidden; height:100px; ">
                                 <img style="top: 50%" class="card-img" src='{{asset("img/$gambar")}}' alt="Gambar"  onerror="this.onerror=null; this.src='{{ asset('argon') }}/img/BL3.png'"> 
@@ -36,17 +86,17 @@
                             </div>
                             <div class="row" style="margin-left: 10px;">
                                 <a style="margin-bottom:5px; margin-right: 5px;" href="{{ url('barang/detail2/'.$item['id']) }}" class="btn-sm btn-dark"> <i class="icofont-eye-alt"></i> Cek Barang</a>
-                                <button onclick="delete2('a{{$item['id']}}');" style="margin-bottom:5px;" class="btn-sm btn-danger"><i class="icofont-ui-delete"></i> Hapus Barang</button>
+                                <button onclick="delete12('d{{$item['id']}}');" style="margin-bottom:5px;" class="btn-sm btn-danger"><i class="icofont-ui-delete"></i> Hapus Barang</button>
                             </div>
                             <div style="margin-top: auto; margin-bottom: auto;  text-align:left; min-width: 200px;  ">
                                 <div style="padding:10px;">
                                     <h3>Jadwal Peminjaman</h3>
                                     <?php $hitung = 0; ?>
                                     @foreach($item['pinjam'] as $pj)
-                                    <div id="c{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;" id="b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
+                                    <div id="f{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;" id="e{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
                                         <button class="btn-sm btn-fik"> 
                                             {{$pj['tgl']}}<br>{{$pj['mulai']." - ".$pj['selesai']}} </button> 
-                                            <button onclick="delete1('b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}','a{{$item['id']}}');" class="btn-sm btn-danger" style=" margin-left:5px;"><i class="icofont-ui-delete"></i> Hapus
+                                            <button onclick="delete11('e{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}','d{{$item['id']}}');" class="btn-sm btn-danger" style=" margin-left:5px;"><i class="icofont-ui-delete"></i> Hapus
                                         </button>
                                         
                                     </div>  
@@ -57,7 +107,7 @@
                         </div>
                     </div>
                     @else
-                    <div id="a{{$item['id']}}" class="col-lg-12 overflow-auto" style="margin-bottom:10px; min-width: 350px; max-height: 90%;">
+                    <div id="d{{$item['id']}}" class="col-lg-12" style="margin-bottom:10px; min-width: 350px; max-height: 90%;">
                         <div class="card rounded" style=" min-width: 380px;">
                             <div style="margin-left: 1px;" class="row rounded-top" >
                                 <div style="position:relative;  overflow: hidden; height:200px; width:200px; ">
@@ -71,7 +121,7 @@
                                         </div>
                                     </div>
                                     <a style="margin-bottom:5px;" href="{{ url('barang/detail2/'.$item['id']) }}" class="btn btn-dark"> <i class="icofont-eye-alt"></i> Cek Barang</a>
-                                    <button onclick="delete2('a{{$item['id']}}');" style="margin-bottom:5px;" class="btn btn-danger"><i class="icofont-ui-delete"></i> Hapus Barang</button>
+                                    <button onclick="delete12('d{{$item['id']}}');" style="margin-bottom:5px;" class="btn btn-danger"><i class="icofont-ui-delete"></i> Hapus Barang</button>
                                 </div>
                                 <div style="margin-top: auto; margin-bottom: auto;  text-align:left; ;  ">
                                     <div style="padding:15px;">
@@ -79,11 +129,11 @@
                                         <div class="">
                                             <?php $hitung = 0; ?>
                                             @foreach($item['pinjam'] as $pj)
-                                            <div class="col" id="b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
-                                                <div id="c{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;">
+                                            <div class="col" id="e{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
+                                                <div id="f{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;">
                                                     <button class="btn btn-fik" > 
                                                     {{$pj['tgl']." ".$pj['mulai']." - ".$pj['selesai']}} </button> 
-                                                    <button onclick="delete1('b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}','a{{$item['id']}}');" id="b{{$hitung.$item['id']}}" class="btn btn-danger" style=" margin-left:5px;"><i class="icofont-ui-delete"></i> Hapus</button>
+                                                    <button onclick="delete11('e{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}','d{{$item['id']}}');" id="e{{$hitung.$item['id']}}" class="btn btn-danger" style=" margin-left:5px;"><i class="icofont-ui-delete"></i> Hapus</button>
                                                   
                                                 </div>  
                                             </div>
@@ -97,8 +147,8 @@
                     </div>
                     @endif
                     @elseif($item['tipe']=="lab")
-                    @if(isMobile1())
-                    <div id="a{{$item['id']}}" class="col-lg-12 overflow-auto" style="margin-bottom:10px; min-width: 100px; ">
+                    @if(isMobile())
+                    <div id="d{{$item['id']}}" class="col-lg-12 overflow-auto" style="margin-bottom:10px; min-width: 100px; ">
                         <div class="card" style=" min-width: 100px;">
                             <div style="position:relative;  overflow: hidden; height:100px; ">
                                 <img style="top: 50%" class="card-img" src='{{asset("img/$gambar")}}' alt="Gambar"  onerror="this.onerror=null; this.src='{{ asset('argon') }}/img/BL3.png'"> 
@@ -111,17 +161,17 @@
                             </div>
                             <div class="row" style="margin-left: 10px;">
                                 <a style="margin-bottom:5px; margin-right: 5px;" href="{{ url('lab/detail/'.$item['id']) }}" class="btn-sm btn-dark"> <i class="icofont-eye-alt"></i> Cek Laboratorium</a>
-                                <button onclick="delete2('a{{$item['id']}}');" style="margin-bottom:5px;" class="btn-sm btn-danger"><i class="icofont-ui-delete"></i> Hapus Laboratorium</button>
+                                <button onclick="delete12('d{{$item['id']}}');" style="margin-bottom:5px;" class="btn-sm btn-danger"><i class="icofont-ui-delete"></i> Hapus Laboratorium</button>
                             </div>
                             <div style="margin-top: auto; margin-bottom: auto;  text-align:left; min-width: 200px;  ">
                                 <div style="padding:10px;">
                                     <h3>Jadwal Penggunaan</h3>
                                     <?php $hitung = 0; ?>
                                     @foreach($item['pinjam'] as $pj)
-                                    <div id="c{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;" id="b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
+                                    <div id="f{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;" id="e{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
                                         <button class="btn-sm btn-fik"> 
                                             {{$pj['tgl']}}<br>{{$pj['mulai']." - ".$pj['selesai']}} </button> 
-                                            <button onclick="delete1('b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}','a{{$item['id']}}');" class="btn-sm btn-danger" style=" margin-left:5px;"><i class="icofont-ui-delete"></i> Hapus
+                                            <button onclick="delete11('e{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}','d{{$item['id']}}');" class="btn-sm btn-danger" style=" margin-left:5px;"><i class="icofont-ui-delete"></i> Hapus
                                         </button>
                                     </div>  
                                     <?php $hitung++; ?>
@@ -131,7 +181,7 @@
                         </div>
                     </div>
                     @else
-                    <div id="a{{$item['id']}}" class="col-lg-12 overflow-auto" style="margin-bottom:10px; min-width: 350px; max-height: 90%;">
+                    <div id="d{{$item['id']}}" class="col-lg-12 " style="margin-bottom:10px; min-width: 350px; max-height: 90%;">
                         <div class="card rounded" style=" min-width: 380px;">
                             <div style="margin-left: 1px;" class="row rounded-top" >
                                 <div style="position:relative;  overflow: hidden; height:200px; width:200px; ">
@@ -145,7 +195,7 @@
                                         </div>
                                     </div>
                                     <a style="margin-bottom:5px;" href="{{ url('lab/detail/'.$item['id']) }}" class="btn btn-dark"> <i class="icofont-eye-alt"></i> Cek Laboratorium</a>
-                                    <button onclick="delete2('a{{$item['id']}}');" style="margin-bottom:5px;" class="btn btn-danger"><i class="icofont-ui-delete"></i> Hapus Laboratorium</button>
+                                    <button onclick="delete12('d{{$item['id']}}');" style="margin-bottom:5px;" class="btn btn-danger"><i class="icofont-ui-delete"></i> Hapus Laboratorium</button>
                                 </div>
                                 <div style="margin-top: auto; margin-bottom: auto;  text-align:left; ;  ">
                                     <div style="padding:15px;">
@@ -153,11 +203,11 @@
                                         <div class="">
                                             <?php $hitung = 0; ?>
                                             @foreach($item['pinjam'] as $pj)
-                                            <div class="col" id="b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
-                                                <div id="c{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;">
+                                            <div class="col" id="e{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
+                                                <div id="f{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;">
                                                     <button class="btn btn-fik" > 
                                                     {{$pj['tgl']." ".$pj['mulai']." - ".$pj['selesai']}} </button> 
-                                                    <button onclick="delete1('b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}','a{{$item['id']}}');" id="b{{$hitung.$item['id']}}" class="btn btn-danger" style=" margin-left:5px;"><i class="icofont-ui-delete"></i> Hapus</button>
+                                                    <button onclick="delete11('e{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}','d{{$item['id']}}');" id="e{{$hitung.$item['id']}}" class="btn btn-danger" style=" margin-left:5px;"><i class="icofont-ui-delete"></i> Hapus</button>
                                                 </div>  
                                             </div>
                                             <?php $hitung++; ?>
@@ -170,126 +220,113 @@
                     </div>
                     @endif
                     @endif
+                </div>
                     @endforeach
-                    @else
-                    <h3 class="card-title wrap">Keranjang Anda Kosong</h3>
-                    @endif
-                          @if(count((array) session('cart')) != 0 )
-                          <div id="btnkrj" style="width:100%;">
-                          <a href="{{url('keranjang/keranjangdetail')}}"><button style="width: 100%; margin-top: 10px;" id="checkout" class="btn btn-fik" >Lihat Keranjang</button></a>
-                          <button style="width: 100%; margin-top: 10px;" id="clean" class=" btn btn-dark" >Bersihkan Keranjang</button>
-                          </div>
-                          @endif
-                         <button style="width: 100%; margin-top: 10px;" id="tutup2" class=" btn btn-danger" >Tutup</button>
-                        
-                          
-                      </div> 
-                  </div>
-              </div> 
-
+        </div>
+        @endif
+    </div>
+</div>
+<br>
+<div id="keranjang12">
+      <form id="iniform" action="{{url('keranjang/checkout')}}" method="post"> @csrf
+    @if(session('cart'))
+    <div class="card card-profile shadow " style="width: 100%;">
+        <div class="card-header">
+            <h2>Dosen Penanggungjawab<span class="font-weight-light"></span></h2>
+        </div>
+   
+        <div class="row" style="margin: 20px 20px 5px 20px;">
+            <div class="col-md-12">
+                <h4>Pilih Dosen</h4>
+                <select class="select2 form-control-lg dosen1" style="width:100%;" name="dosen" id="dosen1" required="">
+                  <option value="" disabled selected>Pilih Dosen Penanggungjawab</option>
+                  @foreach($dosen as $d)
+                  <option value="{{$d->nrpnpk}}">{{$d->nama." - ".$d->fakultas}}</option>
+                  @endforeach
+              </select>
           </div>
       </div>
-  </div>  
-</div>
-  <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
-    <div class="container-fluid">
-        <!-- Brand -->
-        <a class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" href="">{{auth()->user()->jabatan1()->nama}}</a>
-        <!-- Form -->
-        @if(1==2)
-        <form class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
-            <div class="form-group mb-0">
-                <div class="input-group input-group-alternative">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
-                    </div>
-                    <input class="form-control" placeholder="Search" type="text">
-                </div>
-            </div>
-        </form>
-        @endif
-        <!-- User -->
-        <ul class="navbar-nav align-items-center d-none d-md-flex">
-
-            <li class="nav-item dropdown">
-                 @if(!isset($lihat)) 
-                <button onclick="cekkeranjang();" type="button" class="btn btn-fik" data-toggle="dropdown" id="buka3">
-                    <i class="fa fa-shopping-cart" aria-hidden="true"></i> Keranjang <span id="keranjang1" class="badge badge-pill badge-dark text-light">{{ count((array) session('cart')) }}</span>
-                </button>
-                @endif
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <div class="media align-items-center">
-                    <span class="avatar avatar-sm rounded-circle">
-                        @if(auth()->user()->jabatan1()->nama == "Mahasiswa")
-                        <img alt="" onerror="this.onerror=null; this.src='{{ asset('argon') }}/img/BL3.png'" src="https://my.ubaya.ac.id/img/mhs/{{auth()->user()->nrpnpk}}_m.jpg">
-                        @else
-                        <img alt="" onerror="this.onerror=null; this.src='{{ asset('argon') }}/img/BL3.png'" src="https://my.ubaya.ac.id/img/krywn/{{auth()->user()->nrpnpk}}_m.jpg">
-                        @endif
-                    </span>
-                    <div class="media-body ml-2 d-none d-lg-block">
-                        <span class="mb-0 text-sm  font-weight-bold">{{ auth()->user()->nama }}</span>
-                    </div>
-                </div>
-            </a>
-            <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
-                <div class=" dropdown-header noti-title">
-                    <h6 class="text-overflow m-0">{{ __('Welcome!') }}</h6>
-                </div>
-                <a href="{{ route('profile.edit') }}" class="dropdown-item">
-                    <i class="ni ni-single-02"></i>
-                    <span>{{ __('My profile') }}</span>
-                </a>
-                <a href="#" class="dropdown-item">
-                    <i class="ni ni-settings-gear-65"></i>
-                    <span>{{ __('Settings') }}</span>
-                </a>
-                <a href="#" class="dropdown-item">
-                    <i class="ni ni-calendar-grid-58"></i>
-                    <span>{{ __('Activity') }}</span>
-                </a>
-                <a href="#" class="dropdown-item">
-                    <i class="ni ni-support-16"></i>
-                    <span>{{ __('Support') }}</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();
-                document.getElementById('logout-form').submit();">
-                <i class="ni ni-user-run"></i>
-                <span>{{ __('Logout') }}</span>
-            </a>
+      <div class="row card" id="datadosen" style="margin: 5px 20px 5px 20px;"></div>
+  </div><br>
+   <div class="card card-profile shadow " style="width: 100%;">
+        <div class="card-header">
+            <h2>Catatan Pemesanan<span class="font-weight-light"></span></h2>
         </div>
-    </li>
-</ul>
-</div>
-</nav>
+   
+        <div class="row" style="margin: 20px 20px 5px 20px;">
+            <div class="col-md-12">
+              
+                    <textarea class="form-control" name="pesan" rows="3"></textarea>
+                    <br>
+                    <input type="hidden" name="random" value="{{$random}}">
+                    
+               
+   
+          </div>
+      </div>
+  </div>
+  <input type="submit" name="ok" style="width: 100%; margin-top: 10px;" id="checkout11" class="btn btn-fik" value="Checkout" >
+                  <?php if (1==2){ ?>
+                  <div class="row"><h2 class="text-left">Kode Dispensasi</h2></div>
+                  <input  class="form-control" type="text" name="kode">
+                  <br>
+                </form>  <?php } ?>
+   @endif
+</div>           
+                  </div>
+                  
+              </div> 
+            </div>
+                
+              </div>
+
 <script>
 
-   function delete1(id, ids)
+   function delete11(id, ids)
    {
     $.ajax({
         type: "GET",
         url: "{{url('keranjang/hapusPinjam')}}",
-        data: {id:id},
+        data: {id:id,kr:'kr'},
         success: function(data) {
             if(data == 1){ $('#'+id).remove(); }
-            else if (data == 0) { $('#'+ids).remove(); cekkeranjang(); }
+            else if (data == 0) { $('#'+ids).remove(); cekkeranjang11(); }
             else if (data == 2) { 
-                $('#keranjang1').empty();
-                $('#keranjang2').empty();
-                $('#keranjang1').append('0');
-                $('#keranjang2').append('0');
-                $('#keranjang').empty();
-                $('#keranjang').append('<h3 class="card-title wrap">Keranjang Anda Kosong</h3> <br> <button style="width: 100%; margin-top: 10px;" id="tutup2" class=" btn btn-danger" onclick="$(\'.modal-default2\').modal(\'hide\');" >Tutup</button>');
+                $('#keranjang11').empty();
+                $('#keranjang13').empty();
+                $('#keranjang12').empty();
+                $('#keranjang11').append('<button style="width: 100%; margin-top: 10px;"  class=" btn btn-dark" >Keranjang Anda Kosong</button>');
             }
             else {}
         }
     });   
    }
+ 
+$(document).ready(function(){
 
+   cekkeranjang11()
+   $('.select2').select2();
+   $('#dosen1').on("change", function (e) {
+    $('#datadosen').empty();
+    $('#datadosen').append('<div style="margin:5px;" class ="text-center"><div class="spinner-border text-fik" role="status"></div><br><br><h3>Loading....</h3></div> ');
+    $.ajax({
+        type: "GET",
+        url: "{{url('keranjang/dosen')}}",
+        data: {
+            'dosen': this.value
+        },
+        success: function(data) {
+          
+          $('#datadosen').empty();
+          $('#datadosen').append(data);
+        }
+    });
 
-   function cekkeranjang()
+   });
+
+});
+
+   function cekkeranjang11()
    {
     <?php $hitung2 = 0; $hitung3 = 0; $hitung4 =0;?>
     @if(session('cart')!=null)
@@ -299,12 +336,12 @@
             if($item['tipe'] == "barang")
             {
                 if(PinjamController::cekada($item['id'],$pj['tgl'],$pj['mulai'],$pj['selesai'])==1 ){ ?>
-                @if(isMobile1())
-                    $('#c{{str_pad($hitung2,4,'0',STR_PAD_LEFT).$item['id']}}').append(
+                @if(isMobile())
+                    $('#f{{str_pad($hitung2,4,'0',STR_PAD_LEFT).$item['id']}}').append(
                         '<button class="btn-sm text-danger"style=" margin-left:5px;" >'+ 
                         '<i class="icofont-warning"></i> Item Tidak Tersedia</button>');
                 @else
-                    $('#c{{str_pad($hitung2,4,'0',STR_PAD_LEFT).$item['id']}}').append(
+                    $('#f{{str_pad($hitung2,4,'0',STR_PAD_LEFT).$item['id']}}').append(
                         '<button class="btn text-danger"style=" margin-left:5px;" >'+ 
                         '<i class="icofont-warning"></i> Item Tidak Tersedia</button>');
                 @endif                    
@@ -313,13 +350,13 @@
             }
             else if($item['tipe'] == "lab")
             {
-                if(PinjamLabController::cekada($item['id'],$pj['tgl'],$pj['mulai'],$pj['selesai'])==1 ){ ?>
-                @if(isMobile1())
-                    $('#c{{str_pad($hitung3,4,'0',STR_PAD_LEFT).$item['id']}}').append(
+                if(PinjamLabController::cekada($item['id'],$pj['tgl'],$pj['mulai'],$pj['selesai'])==1  ){ ?>
+                @if(isMobile())
+                    $('#f{{str_pad($hitung3,4,'0',STR_PAD_LEFT).$item['id']}}').append(
                         '<button class="btn-sm text-danger"style=" margin-left:5px;" >'+ 
                         '<i class="icofont-warning"></i> Item Tidak Tersedia</button>');
                 @else
-                    $('#c{{str_pad($hitung3,4,'0',STR_PAD_LEFT).$item['id']}}').append(
+                    $('#f{{str_pad($hitung3,4,'0',STR_PAD_LEFT).$item['id']}}').append(
                         '<button class="btn text-danger"style=" margin-left:5px;" >'+ 
                         '<i class="icofont-warning"></i> Item Tidak Tersedia</button>');
                 @endif   
@@ -331,60 +368,43 @@
      @endforeach
      @endif
      var hasil = {{$hitung4}};
-     if( hasil != 0) { $('#checkout').prop('disabled', true); }   
+     if( hasil != 0) { $('#checkout11').prop('disabled', true); }   
      else { $('#checkout').prop('disabled', false); }   
    }
-   function delete2(id)
+   function delete12(id)
    {
      $.ajax({
         type: "GET",
         url: "{{url('keranjang/hapusBarang')}}",
-        data: {id:id},
+        data: {id:id,kr:'kr'},
         success: function(data) {
-            if(data == 1){ $('#'+id).remove(); cekkeranjang(); }
+            if(data == 1){ $('#'+id).remove(); cekkeranjang11(); }
             else if (data == 2) { 
-                $('#keranjang1').empty();
-                $('#keranjang2').empty();
-                $('#keranjang1').append('0');
-                $('#keranjang2').append('0');
-                $('#keranjang').empty();
-                $('#keranjang').append('<h3 class="card-title wrap">Keranjang Anda Kosong</h3> <br> <button style="width: 100%; margin-top: 10px;" id="tutup2" class=" btn btn-danger" onclick="$(\'.modal-default2\').modal(\'hide\');" >Tutup</button>');
+               $('#keranjang11').empty();
+                $('#keranjang13').empty();
+                $('#keranjang12').empty();
+                $('#keranjang11').append('<button style="width: 100%; margin-top: 10px;"  class=" btn btn-dark" >Keranjang Anda Kosong</button>');
             }
             else {}; 
         }
     }); 
    }
 
-    $('#tutup2').on('click', function() {
-      $('.modal-default2').modal('hide');
-  });
-
-
-    $('#buka2').on('click', function() {
-      $('.modal-default2').modal('show');
-  });
-
-    $('#buka3').on('click', function() {
-      $('.modal-default2').modal('show');
-  });
-
-$('#clean').on('click', function() {
-    $('#keranjang').empty();
-    $('#btnkrj').empty();
-    $('#keranjang').append('<div class="spinner-border text-fik" role="status"></div><br><br><h3>Loading....</h3> ');
+$('#clean11').on('click', function() {
+    $('#keranjang11').empty();
+    $('#keranjang11').append('<div class="spinner-border text-fik" role="status"></div><br><br><h3>Loading....</h3> ');
     $.ajax({
         type: "GET",
         url: "{{url('keranjang/clean')}}",
-        data: {},
+        data: {kr:'kr'},
         success: function(data) {
-            $('#keranjang1').empty();
-            $('#keranjang2').empty();
-            $('#keranjang1').append('0');
-            $('#keranjang2').append('0');
-            $('#keranjang').empty();
-            $('#keranjang').append('<h3 class="card-title wrap">Keranjang Anda Kosong</h3> <br> <button style="width: 100%; margin-top: 10px;" id="tutup2" class=" btn btn-danger" onclick="$(\'.modal-default2\').modal(\'hide\');" >Tutup</button>');
+            $('#keranjang11').empty();
+            $('#keranjang13').empty();
+            $('#keranjang12').empty();
+            $('#keranjang11').append('<button style="width: 100%; margin-top: 10px;"  class=" btn btn-dark" >Keranjang Anda Kosong</button>');
         }
     });   
 });
 
 </script>
+@endsection

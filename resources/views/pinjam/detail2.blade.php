@@ -3,6 +3,7 @@
   function isMobile() {
       return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
   }
+ 
   ?>
 @extends('layouts.app')
 
@@ -256,6 +257,11 @@
                         <i class="bg-primary"></i>
                         <span class="status">Dalam Perbaikan</span>
                       </span>
+                       <?php } else if($sesi[$i]->status == 4 ) { ?>
+                        <span class="badge badge-dot mr-4">
+                        <i class="bg-dark"></i>
+                        <span class="status">Sudah Ada Di Keranjang</span>
+                      </span>
                       <?php } else if($sesi[$i]->status == 2 ) { ?>
                         <span class="badge badge-dot mr-4">
                         <i class="bg-success"></i>
@@ -283,10 +289,15 @@
                         <i class="bg-warning"></i>
                         <span class="status">Sedang Diproses</span>
                       </span>
-                       <?php } else if($sesi[$i]->status == 3 ) { ?>
+                       <?php } else if($sesi[$i+$jum]>status == 3 ) { ?>
                         <span class="badge badge-dot mr-4">
                         <i class="bg-primary"></i>
                         <span class="status">Dalam Perbaikan</span>
+                      </span>
+                         <?php } else if($sesi[$i+$jum]->status == 4 ) { ?>
+                        <span class="badge badge-dot mr-4">
+                        <i class="bg-dark"></i>
+                        <span class="status">Sudah Ada Di Keranjang</span>
                       </span>
                       <?php } else if($sesi[$i+$jum]->status == 2 ) { ?>
                         <span class="badge badge-dot mr-4">
@@ -310,7 +321,8 @@
   <span class="wrap badge badge-dot"><i class="bg-success"></i></span>Tersedia | Barang Dapat Dipinjam<br>
   <span class="wrap badge badge-dot "><i class="bg-danger"></i></span> Tidak Tersedia | Barang Tidak Dapat Dipinjam<br>
   <span class="wrap badge badge-dot "><i class="bg-warning"></i></span> Sedang Diproses | Barang Telah Dipinjam Oleh Pengguna Lain Namum Belum Mendapat Persetujuan<br>
-  <span class="wrap badge badge-dot"><i class="bg-primary"></i></span> Dalam Perbaikan | Barang Sedang Dalam Perbaikan
+  <span class="wrap badge badge-dot"><i class="bg-primary"></i></span> Dalam Perbaikan | Barang Sedang Dalam Perbaikan<br>
+  <span class="wrap badge badge-dot "><i class="bg-dark"></i></span> Sudah Di Keranjang | Item Sudah Ada Di Keranjang<br>
   </div>
   <button style="bottom: 5%; right: 50px; border-radius: 50px;" class=" position-fixed btn btn-fik " id="buka"><div class="text-center"><i class="icofont-settings"></i> Lihat Varian Lain</div></button>
 </div>

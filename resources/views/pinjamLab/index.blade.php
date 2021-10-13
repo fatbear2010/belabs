@@ -40,6 +40,7 @@
                     @endforeach
                   </select>
                   <br><br>
+                  @if(1==2)
                   <h5>Dapat Digunakan Pada Tanggal</h5>
                   <select class="form-control" name="tgl">
                     <option value="ALL" selected="">Semua Hari</option>
@@ -70,7 +71,8 @@
                      @endforeach
                   </select>
                   </div></div>
-                  <br><br>
+                  @endif
+                  <br>
                   <input style="width: 100%;" type="submit" class="btn btn-fik" name="submit" value="Gunakan Filter">
                 </form>
                   <button style="width: 100%;" class="btn btn-danger" id="tutup">Tutup</button>

@@ -5,6 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
+use App\Models\User;
+use App\Models\Pinjam;
+use App\Models\PinjamLab;
+use App\Models\Order;
+use App\Models\History;
+use App\Http\Controllers\PinjamController;
+use App\Http\Controllers\PinjamLabController;
+use Illuminate\Support\Facades\DB;
+use App\Mail\emailOrder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class KeranjangController extends Controller
 {
@@ -18,9 +29,13 @@ class KeranjangController extends Controller
         
     }
 
-    public function clean()
+    public function clean(Request $request)
     {
         session()->put('cart',array());
+        if(isset($request->kr))
+        {
+            session()->put('cart2',array());
+        }
         return "";
     }
 
@@ -49,6 +64,10 @@ class KeranjangController extends Controller
        
         //dd($cart);
         session()->put('cart',$cart);
+        if(isset($request->kr))
+        {
+            session()->put('cart2',$cart);
+        }
         return $status;
     }
 
@@ -65,7 +84,195 @@ class KeranjangController extends Controller
             $status = 2;
         }
         session()->put('cart',$cart);
+        if(isset($request->kr))
+        {
+            session()->put('cart2',$cart);
+        }
         return $status;
+    }
+
+    public function keranjangdetail()
+    {
+        $lihat= 0;
+        $random = random_int(100000, 999999);
+        $keranjang =Session()->get('cart');
+        session()->put('cart2',$keranjang);
+        session()->put('random',$random);
+        $dosen = DB::select('select * from users where jabatan != 1 and jabatan != 9');
+        //dd($dosen);
+        return view('order.checkout',compact('lihat','dosen','random'));
+    }
+
+    public function dosen(Request $request)
+    {
+        $dosen = DB::select('select * from users where nrpnpk = '.$request->dosen);
+        //dd($dosen);
+        return view('order.dosen',compact('dosen'));
+    }
+
+    public function checkout(Request $request)
+    {
+        $keranjang =Session()->get('cart2');
+        $value =0 ;
+        
+            if($keranjang != null){
+                foreach($keranjang as $k)
+                {
+                    foreach($k['pinjam']as $p)
+                    {
+                        if($k['tipe'] == "barang")
+                        {
+                            if(PinjamController::cekAda($k['id'],$p['tgl'],$p['mulai'],$p['selesai'])==1){$value++;}
+                        }
+                        else if($k['tipe'] == "lab")
+                        {
+                            if(PinjamLabController::cekAda($k['id'],$p['tgl'],$p['mulai'],$p['selesai'])==1){$value++;}
+                        }
+                    }
+                }
+                if($value == 0)
+                {
+                    $pesan = $request->pesan;
+                    $dosenku = $request->dosen;
+                    session()->put('cart3',$keranjang);
+                    $random = $request->random;
+                    session()->put('pesan',$request->pesan); 
+                    session()->put('dosen',$request->dosen);
+                    return view('order.checkout2',compact('keranjang','pesan','dosenku','random'));
+                }
+                else
+                {
+                    return redirect()->back();
+                    //compact('keranjang','pesan','dosenku'));
+                }
+            }
+            else 
+            {
+                return redirect()->back()->with("status",1);
+            }
+    }
+    public function final(Request $request)
+    {
+        //dd($request);
+        //echo $request->random;
+       // echo .Session()->get('random');
+        if($request->random == Session()->get('random'))
+        {
+            //do something here 
+            $keranjang =Session()->get('cart3');
+            $value =0 ;
+            
+                if($keranjang != null){
+                    foreach($keranjang as $k)
+                    {
+                        foreach($k['pinjam']as $p)
+                        {
+                            if($k['tipe'] == "barang")
+                            {
+                                if(PinjamController::cekAda($k['id'],$p['tgl'],$p['mulai'],$p['selesai'])==1){$value++;}
+                            }
+                            else if($k['tipe'] == "lab")
+                            {
+                                if(PinjamLabController::cekAda($k['id'],$p['tgl'],$p['mulai'],$p['selesai'])==1){$value++;}
+                            }
+                        }
+                    }
+                    if($value == 0)
+                    {
+                        //status order 0 = masih aktif , 1 = selesai, 2 = batal;
+                        $pesan = $request->pesan;
+                        $dosenku = $request->dosen;
+                        $order = new Order();
+                        $id = date("dmY");
+                        $nomor = DB::select("select count(idorder) as jumlah FROM .order where idorder like'".$id."%'");
+                        $id.= str_pad($nomor[0]->jumlah+1,5,"0",STR_PAD_LEFT);
+
+                        $order->idorder = $id;
+                        $order->mahasiswa = auth()->user()->nrpnpk;
+                        $order->dosen = $dosenku;
+                        $order->status = 0;
+                        $order->tanggal = date("Y-m-d H:i:s");
+                        $order->notePeminjam = $pesan;
+                        $order->save();
+                        
+                        foreach($keranjang as $k)
+                        {
+                            foreach($k['pinjam']as $p)
+                            {
+                                if($k['tipe'] == "barang")
+                                {
+                                    $dipinjam = new Pinjam();
+                                    $dipinjam->tanggal = date("Y-m-d", strtotime($p['tgl']));
+                                    $dipinjam->mulai = $p['mulai'];
+                                    $dipinjam->selesai = $p['selesai'];
+                                    $dipinjam->barang = $k['id'];
+                                    $dipinjam->order = $id;
+                                    $dipinjam->save();
+                                }
+                                else if($k['tipe'] == "lab")
+                                {
+                                    $dipinjam = new PinjamLab();
+                                    $dipinjam->tanggal = date("Y-m-d", strtotime($p['tgl']));
+                                    $dipinjam->mulai = $p['mulai'];
+                                    $dipinjam->selesai = $p['selesai'];
+                                    $dipinjam->idlab = $k['id'];
+                                    $dipinjam->idorder = $id;
+                                    $dipinjam->save();
+                                }
+                            }
+                        }
+
+                        $riwayat = new History;
+                        $riwayat->status = 1;
+                        $riwayat->tanggal = date("Y-m-d h:i:s");
+                        $riwayat->pic ='020102000';
+                        $riwayat->order = $id;
+                        $riwayat->save();
+                        $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$request->dosen.'"');
+                        $pesanankubarang = DB::select("select k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+                        $pesanankulab = DB::select("select l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+                        $orderku = Order::where('idorder',$id)->get();
+                        $pemesan = auth()->user();
+                        $pesan = "Terima Kasih <br> Pesanan Anda Telah Kami Terima";
+                        $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$id.'"');
+                        Mail::to($pemesan->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku, 'BeLABS Order Confirmation', 'Terima Kasih, Pesanan Anda Telah Kami Terima', $status));
+
+                        session()->put('cart3',array());
+                        session()->put('cart2',array());
+                        session()->put('cart',array());
+                        session()->put('pesan',""); 
+                        session()->put('dosen',"");
+                        //return view('mail.m_orderconfirmation',compact('pemesan','dosenpj','pesanankubarang','pesanankulab','orderku','pesan','status'));
+                        return redirect(url('/home'))->with("status",2);
+                    }
+                    else
+                    {
+                        return redirect(url('/keranjang/keranjangdetail'))->with("status",2);
+                        //compact('keranjang','pesan','dosenku'));
+                    }
+            }
+            else 
+            {
+                return redirect(url('/keranjang/keranjangdetail'))->with("status",1);
+            }
+        }
+        else 
+        {
+            return redirect(url('/keranjang/keranjangdetail'))->with("status",1);
+        }
+    }
+
+    public function test()
+    {
+        $id= "1310202100003";
+        $orderku = Order::where('idorder',$id)->get();// dd($orderku);
+        $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
+        $pesanankubarang = DB::select("select k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+        $pesanankulab = DB::select("select l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+        $pemesan = auth()->user();
+        $pesan = "Terima Kasih Pesanan Anda Telah Kami Terima";
+        $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$id.'"');
+        return view('mail.m_orderconfirmation',compact('pemesan','dosenpj','pesanankubarang','pesanankulab','orderku','pesan','status'));
     }
 
     /**
@@ -77,6 +284,7 @@ class KeranjangController extends Controller
     {
         
     }
+
 
     /**
      * Store a newly created resource in storage.
