@@ -24,7 +24,7 @@
                         @endif
                         @if(isset($done))
                             <div class="text-center text-muted mb-4">
-                                <h3>Halo, {{$nama}} <br> Status Akun : {{$jabatan->nama}}</h3>
+                                <h3>Halo, {{$nama}} <br> Status Akun : {{$jabatan->nama}} <br><br>{{$jurusan->namaJurusan}}  <br>{{$fakultas->namafakultas}}</h3>
                         
                             </div>
                             <span class="invalid-feedback text-center" style="display: block;" role="alert">
@@ -37,7 +37,7 @@
                         @endif
                         @if(isset($vcode))
                         <div class="text-center text-muted mb-4">
-                                <h3>Halo, {{$nama}} <br> Status Akun : {{$jabatan->nama}}</h3>
+                                <h3>Halo, {{$nama}} <br> Status Akun : {{$jabatan->nama}} <br><br>{{$jurusan->namaJurusan}} <br>{{$fakultas->namafakultas}}</h3>
                             <small>
                                     Silahkan Lengkapi Form Dibawah ini 
                             </small>

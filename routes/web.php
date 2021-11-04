@@ -88,5 +88,7 @@ Route::middleware('auth')->group(function() {
 
 	Route::get('order/showorder/','App\Http\Controllers\HomeController@showorder')->name('order.showorder');
 	Route::get('order/detail/{id}','App\Http\Controllers\HomeController@orderdetail')->name('order.detail');
+	Route::get('order/batalkan/{id}','App\Http\Controllers\HomeController@orderbatal')->name('order.batal');
+	Route::get('order/pbatalkan/{id}','App\Http\Controllers\HomeController@prosesorderbatal')->name('order.pbatal');
 });
 

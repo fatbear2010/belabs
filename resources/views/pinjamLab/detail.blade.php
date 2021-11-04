@@ -1,4 +1,4 @@
-<?php use App\Http\Controllers\PinjamController; ?>
+<?php use App\Http\Controllers\PinjamLabController; ?>
 <?php
   function isMobile() {
       return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
@@ -88,7 +88,7 @@
     <div class="col-8">
     @endif
       <h1 class="mb-0">{{$lab->namaLab}}</h1>
-      <h3>{{$lab->lokasi}} | {{$lab->fakultas}} <br>Kapasitas : {{$lab->kapasitas}}</h3>
+      <h3>{{$lab->lokasi}} | {{PinjamLabController::fakultas1($lab->fakultas)->namafakultas}} <br>Kapasitas : {{$lab->kapasitas}}</h3>
       <br>
       <h4>Kepala Lab / Laboran
       @foreach($laboran as $la)

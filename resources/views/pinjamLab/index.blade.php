@@ -36,7 +36,7 @@
                   <select class="form-control" name="fakultas">
                     <option value="ALL" selected="">Semua Fakultas</option>
                     @foreach($fak as $l)
-                    <option value="{{$l->fakultas}}" >{{$l->fakultas}}</option>
+                    <option value="{{$l->idfakultas}}" >{{$l->namafakultas}}</option>
                     @endforeach
                   </select>
                   <br><br>
@@ -110,7 +110,7 @@
                 <button class="btn-sm btn-light">Nama Lab : {{$filter['nama']}}</button>
               @endif
               @if(isset($filter['fakultas']))
-                <button class="btn-sm btn-success">Fakultas : {{$filter['fakultas']}}</button>
+                <button class="btn-sm btn-success">Fakultas : {{$filter['namafakultas']}}</button>
               @endif
               @if(isset($filter['tgl']))
                 <button class="btn-sm btn-danger">Tanggal : {{$filter['tgl']}}</button>
@@ -133,7 +133,7 @@
                 <button class="btn btn-light">Nama Lab : {{$filter['nama']}}</button>
               @endif
               @if(isset($filter['fakultas']))
-                <button class="btn btn-success">Fakultas : {{$filter['fakultas']}}</button>
+                <button class="btn btn-success">Fakultas : {{$filter['namafakultas']}}</button>
               @endif
               @if(isset($filter['tgl']))
                 <button class="btn btn-danger">Tanggal : {{$filter['tgl']}}</button>
@@ -172,7 +172,7 @@
       </div>
       <div class="card-body">
         <h5 >{{$l->namaLab}}</h5>
-        <h6 >{{$l->lokasi}}<br>{{$l->fakultas}}</h6>
+        <h6 >{{$l->lokasi}}<br>{{PinjamLabController::fakultas1($l->fakultas)->namafakultas}}</h6>
       </div></a>
     </div>
    
@@ -184,7 +184,7 @@
     </div>
       <div class="card-body">
         <h3 >{{$l->namaLab}}</h3>
-        <h4 >{{$l->lokasi}}<br>{{$l->fakultas}}</h4>
+        <h4 >{{$l->lokasi}}<br>{{PinjamLabController::fakultas1($l->fakultas)->namafakultas}}</h4>
       </div></a>
     </div>
     @endif

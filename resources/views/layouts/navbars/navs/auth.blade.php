@@ -32,7 +32,7 @@
                               <h4 class="card-title wrap">{{$item['merk']." ".$item['nama']}}</h4>
                             </div>
                             <div style="text-align:left; padding:0px 10px 0px 10px;">
-                                <h5>{{$item['barang']}}<br>{{$item['kat']}}<br><br>{{$item['lab']}}<br>{{$item['fakultas']}}</h5>
+                                <h5>{{$item['barang']}}<br>{{$item['kat']}}<br><br>{{$item['lab']}}<br>{{PinjamLabController::fakultas1($item['fakultas'])->namafakultas }}</h5>
                             </div>
                             <div class="row" style="margin-left: 10px;">
                                 <a style="margin-bottom:5px; margin-right: 5px;" href="{{ url('barang/detail2/'.$item['id']) }}" class="btn-sm btn-dark"> <i class="icofont-eye-alt"></i> Cek Barang</a>
@@ -45,7 +45,7 @@
                                     @foreach($item['pinjam'] as $pj)
                                     <div id="c{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;" id="b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
                                         <button class="btn-sm btn-fik"> 
-                                            {{$pj['tgl']}}<br>{{$pj['mulai']." - ".$pj['selesai']}} </button> 
+                                            {{$pj['tgl']}} | {{$pj['mulai']." - ".$pj['selesai']}} </button> 
                                             <button onclick="delete1('b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}','a{{$item['id']}}');" class="btn-sm btn-danger" style=" margin-left:5px;"><i class="icofont-ui-delete"></i> Hapus
                                         </button>
                                         
@@ -67,7 +67,7 @@
                                     <h3 class="card-title wrap">{{$item['merk']." ".$item['nama']}}</h3>
                                     <div class="row" style="margin-left: 5px;">
                                         <div>
-                                            <h5>{{$item['barang']." | ".$item['kat']}}<br><br>{{$item['lab']}}<br>{{$item['fakultas']}}</h5>
+                                            <h5>{{$item['barang']." | ".$item['kat']}}<br><br>{{$item['lab']}}<br>{{PinjamLabController::fakultas1($item['fakultas'])->namafakultas }}</h5>
                                         </div>
                                     </div>
                                     <a style="margin-bottom:5px;" href="{{ url('barang/detail2/'.$item['id']) }}" class="btn btn-dark"> <i class="icofont-eye-alt"></i> Cek Barang</a>
@@ -107,7 +107,7 @@
                               <h4 class="card-title wrap">{{$item['nama']}}</h4>
                             </div>
                             <div style="text-align:left; padding:0px 10px 0px 10px;">
-                                <h5>{{$item['lokasi']}}<br>{{$item['fakultas']}}</h5>
+                                <h5>{{$item['lokasi']}}<br>{{PinjamLabController::fakultas1($item['fakultas'])->namafakultas }}</h5>
                             </div>
                             <div class="row" style="margin-left: 10px;">
                                 <a style="margin-bottom:5px; margin-right: 5px;" href="{{ url('lab/detail/'.$item['id']) }}" class="btn-sm btn-dark"> <i class="icofont-eye-alt"></i> Cek Laboratorium</a>
@@ -120,7 +120,7 @@
                                     @foreach($item['pinjam'] as $pj)
                                     <div id="c{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;" id="b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
                                         <button class="btn-sm btn-fik"> 
-                                            {{$pj['tgl']}}<br>{{$pj['mulai']." - ".$pj['selesai']}} </button> 
+                                            {{$pj['tgl']}} | {{$pj['mulai']." - ".$pj['selesai']}} </button> 
                                             <button onclick="delete1('b{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}','a{{$item['id']}}');" class="btn-sm btn-danger" style=" margin-left:5px;"><i class="icofont-ui-delete"></i> Hapus
                                         </button>
                                     </div>  
@@ -141,7 +141,7 @@
                                     <h3 class="card-title wrap">{{$item['nama']}}</h3>
                                     <div class="row" style="margin-left: 5px;">
                                         <div>
-                                            <h5>{{$item['lokasi']}}<br>{{$item['fakultas']}}</h5>
+                                            <h5>{{$item['lokasi']}}<br>{{PinjamLabController::fakultas1($item['fakultas'])->namafakultas }}</h5>
                                         </div>
                                     </div>
                                     <a style="margin-bottom:5px;" href="{{ url('lab/detail/'.$item['id']) }}" class="btn btn-dark"> <i class="icofont-eye-alt"></i> Cek Laboratorium</a>

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Lab;
+use App\Models\Fakultas;
 use App\Models\Sesi;
 use App\Models\Pinjam;
 use App\Models\PinjamLab;
@@ -28,8 +29,14 @@ class PinjamLabController extends Controller
     {
         $lab = Lab::all();
         $sesi = Sesi::select("*")->orderBy('mulai', 'ASC')->get();
-        $fak = DB::select('SELECT DISTINCT fakultas FROM lab');
+        $fak = Fakultas::all();
         return view('pinjamLab.index',compact('lab','fak','sesi'));
+    }
+
+    public static function fakultas1($id)
+    {
+        $fak = Fakultas::where('idfakultas',$id)->first();
+        return $fak;
     }
 
     public static function cekSesi( $idlab, $date)
@@ -369,12 +376,13 @@ class PinjamLabController extends Controller
             $query = $query . 'fakultas= \'' . $request->fakultas . '\' ';
             $jumlah++;
             $filter['fakultas'] = $request->fakultas;
+            $filter['namafakultas'] = $this->fakultas1($request->fakultas)->namafakultas;
         }
         
        // dd($request);
         $lab = DB::select($query);
         $sesi = Sesi::all();
-        $fak = DB::select('SELECT DISTINCT fakultas FROM lab');
+        $fak = Fakultas::all();
         if($request->nama == "" && $request->fakultas == "ALL")
         {
             return view('pinjamlab.index',compact('lab','fak','sesi'));

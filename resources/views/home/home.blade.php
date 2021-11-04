@@ -18,7 +18,7 @@
     <div class="container-fluid mt--7">
         <div class="row">
             <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
-                <div class="card card-profile shadow">
+                <div class="card card-profile shadow" style=" height: 610px;">
                     <div class="row justify-content-center">
                         <div class="col-lg-3 order-lg-2">
                             <div class="card-profile-image">
@@ -39,7 +39,8 @@
                                 {{ auth()->user()->nama }}<span class="font-weight-light"></span>
                             </h2>
                             <div class="h4 font-weight-500">
-                                <i class="ni location_pin mr-2"></i>{{ auth()->user()->nrpnpk }} | {{ auth()->user()->fakultas }}
+
+                                <i class="ni location_pin mr-2"></i>{{ auth()->user()->nrpnpk }} | {{ auth()->user()->jurusan1()->namaJurusan }} <br> {{ auth()->user()->fakultas1()->namafakultas }}
                             </div>
                             <div class="h5 mt-4">
                                 <i class="ni business_briefcase-24 mr-2"></i>Jenis Akun
@@ -65,6 +66,13 @@
                                     <a href="{{url('profil/gantipassword')}}"  style="width:100%; margin-bottom:10px;" class="btn btn-fik">Ganti Password</a>
                                 </div>
                             </div>
+                                 @if(auth()->user()->jabatan1()->nama != "Mahasiswa")
+                                <div class="row">
+                                    <div class="col">
+                                   <a href="{{url('order')}}"style="width:100%; margin-bottom:10px;" class="btn btn-fik">Lihat Pesanan Yang Berkaitan Dengan Anda</a>
+                               </div>
+                               @endif
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -132,26 +140,14 @@
                             </div>
                         </div>
                     </div>
-                    <br>
                     <div class="row justify-content-center">
-                        <div class="card card-profile shadow " style="width: 98%; height: 410px;">
+                        <div class="card card-profile shadow " style="width: 98%; height: 480px;">
                           <div class="card-header"><h2>
-                            @if(auth()->user()->jabatan1()->nama != "Mahasiswa")
-                                <div class="row">
-                                    <div class="col-md-9">
-                                        Pesanan Aktif Saya<span class="font-weight-light"></span>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <a href="{{url('orders')}}" class="btn btn-fik">Lihat Pesanan Masuk</a>
-                                    </div>
-                                </div>
-                             @else
                                  <div class="row">
                                     <div class="col-md-12">
                                         Pesanan Aktif Saya<span class="font-weight-light"></span>
                                     </div>
-                                </div>
-                             @endif   
+                                </div>  
                             </h2></div>
                         <div class="overflow-auto">
                         <?php for($i = 0; $i<count($update1); $i++) {  ?>
@@ -200,7 +196,7 @@
                     </div>
                 </div>
             </h2></div>
-            <div class="overflow-auto"></div>
+            <div class="overflow-auto">
             <?php for($i = 0; $i<count($pesanan); $i++) {  ?>
                 <div class="row" style="margin: 20px 20px 5px 20px;">
                     <div class="col-md-9" >
@@ -230,7 +226,7 @@
                 </div> 
             </div> 
               <?php } ?>             
-        </div>
+        </div></div>
     </div>
         
     </div>

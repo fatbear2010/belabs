@@ -38,7 +38,7 @@
                       <?php $lab = PinjamController::lab($b->lab); ?>
                       <div style="padding:15px; text-align:center;">     
                           <h5 class="card-title">{{$b->merk." - ".$b->nama}}</h5>
-                          <h6>{{$lab->namaLab}}<br>{{$lab->fakultas}}</h6>
+                          <h6>{{$lab->namaLab}} | {{$lab->lokasi}} <br>{{PinjamController::fakultas1($lab->fakultas)->namafakultas}}</h6>
                       </div>
                    </a>
                   </div>
@@ -53,7 +53,7 @@
                       <?php $lab = PinjamController::lab($b->lab); ?>
                       <div style="padding:15px; text-align:left;">     
                           <h3 class="card-title wrap">{{$b->merk." - ".$b->nama}}</h3>
-                          <h4>{{$lab->namaLab}}<br>{{$lab->fakultas}}</h4>
+                          <h4>{{$lab->namaLab}} | {{$lab->lokasi}} <br>{{PinjamController::fakultas1($lab->fakultas)->namafakultas}}</h4>
                       </div>
                       </div>
                    </a>
@@ -154,7 +154,7 @@
       <h1 class="mb-0">{{$barangdpl->nama}}</h1>
       <h3>({{$barang[0]->nama." | ".$kategori[0]->nama}})</h3>
       <br>
-      <h3>{{$lab->namaLab}}<br>{{$lab->fakultas}}</h3>
+      <h3>{{$lab->namaLab}} | {{$lab->lokasi}} <br>{{PinjamController::fakultas1($lab->fakultas)->namafakultas}}</h3>
       <br>
       <h4>Jadwal Penggunaan</h4>
       @foreach($rutin as $r)

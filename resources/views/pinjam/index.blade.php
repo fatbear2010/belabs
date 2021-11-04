@@ -36,7 +36,7 @@
                   <select class="form-control" name="fakultas">
                     <option value="ALL" selected="">Semua Fakultas</option>
                     @foreach($fak as $l)
-                    <option value="{{$l->fakultas}}" >{{$l->fakultas}}</option>
+                    <option value="{{$l->idfakultas}}" >{{$l->namafakultas}}</option>
                     @endforeach
                   </select>
                   <br><br>
@@ -133,7 +133,7 @@
                 <button class="btn-sm btn-danger">Laboratorium : {{$filter['laboratorium']}}</button>
               @endif
               @if(isset($filter['fakultas']))
-                <button class="btn-sm btn-success">Fakultas : {{$filter['fakultas']}}</button>
+                <button class="btn-sm btn-success">Fakultas : {{$filter['namafakultas']}}</button>
               @endif
               @if(isset($filter['tgl']))
                 <button class="btn-sm btn-danger" >Tanggal : {{$filter['tgl']}}</button>
@@ -161,7 +161,7 @@
                 <button class="btn btn-danger">Laboratorium : {{$filter['laboratorium']}}</button>
               @endif
               @if(isset($filter['fakultas']))
-                <button class="btn btn-secondary">Fakultas : {{$filter['fakultas']}}</button>
+                <button class="btn btn-secondary">Fakultas : {{$filter['namafakultas']}}</button>
               @endif
               @if(isset($filter['tgl']))
                 <button class="btn btn-danger">Tanggal : {{$filter['tgl']}}</button>

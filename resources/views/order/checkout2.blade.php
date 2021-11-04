@@ -1,4 +1,5 @@
 <?php use App\Http\Controllers\PinjamController; ?>
+<?php use App\Http\Controllers\KeranjangController; ?>
 <?php
   function isMobile() {
       return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
@@ -40,7 +41,7 @@
                 <table class="table wrap">
                   <tr><td >NRP/NPK</td><td><b>{{ auth()->user()->nrpnpk }}</b></td></tr>
                   <tr><td>Nama Lengkap</td><td><b>{{ auth()->user()->nama }}</b></td></tr>
-                  <tr><td>Fakultas</td><td><b>{{ auth()->user()->fakultas }}</b></td></tr>
+                  <tr><td>Jurusan , <br> Fakultas</td><td><b>{{ auth()->user()->jurusan1()->namaJurusan}} <br> {{auth()->user()->fakultas1()->namafakultas }}</b></td></tr>
                   <tr><td>Jabatan</td><td><b>{{auth()->user()->jabatan1()->nama}}</b></td></tr>
                   <tr><td>Email</td><td><b>{{ auth()->user()->email }}</b></td></tr>
                   <tr><td>No Telp</td><td><b>{{ auth()->user()->notelp }}</b></td></tr>
@@ -59,10 +60,10 @@
                       <img alt="" style="max-width:100%; max-height:150px;" onerror="this.onerror=null; this.src='{{ asset('argon') }}/img/BL3.png'" src="https://my.ubaya.ac.id/img/krywn/{{auth()->user()->nrpnpk}}_m.jpg">
                     </div>
                     <div class="col-md-10 text-left table-responsive">
-                      <table class="table wrap" style="margin:10px;">
-                        <tr><td >NRP/NPK</td><td><b>{{ auth()->user()->nrpnpk }}</b></td></tr>
-                        <tr><td>Nama Lengkap</td><td><b>{{ auth()->user()->nama }}</b></td></tr>
-                        <tr><td>Fakultas</td><td><b>{{ auth()->user()->fakultas }}</b></td></tr>
+                      <table class="table wrap">
+                        <tr><td>NRP/NPK</td><td><b>{{ $dosenku[0]->nrpnpk }}</b></td></tr>
+                        <tr><td>Nama Lengkap</td><td><b>{{ $dosenku[0]->nama }}</b></td></tr>
+                        <tr><td>Jurusan,Fakultas</td><td><b>{{ KeranjangController::jurusan($dosenku[0]->jurusan)}}</b></td></tr>
                       </table>
                     </div>
         </div>
@@ -98,7 +99,7 @@
                                     @foreach($item['pinjam'] as $pj)
                                     <div id="f{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;" id="e{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
                                         <button class="btn-sm btn-fik"> 
-                                            {{$pj['tgl']}}<br>{{$pj['mulai']." - ".$pj['selesai']}} </button> 
+                                            {{$pj['tgl']}} | {{$pj['mulai']." - ".$pj['selesai']}} </button> 
                                     </div>  
                                     <?php $hitung++; ?>
                                     @endforeach 
@@ -164,7 +165,7 @@
                                     @foreach($item['pinjam'] as $pj)
                                     <div id="f{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}" class="btn-group" role="group" style="margin-bottom:5px;" id="e{{str_pad($hitung,4,'0',STR_PAD_LEFT).$item['id']}}">
                                         <button class="btn-sm btn-fik"> 
-                                            {{$pj['tgl']}}<br>{{$pj['mulai']." - ".$pj['selesai']}} </button> 
+                                            {{$pj['tgl']}} | {{$pj['mulai']." - ".$pj['selesai']}} </button> 
                                     </div>  
                                     <?php $hitung++; ?>
                                     @endforeach 
@@ -227,7 +228,7 @@
      <br>
       <form id="iniform" action="{{url('keranjang/final')}}" method="post"> @csrf
                     <input type="hidden" name="random" value="{{$random}}">
-                    <input type="hidden" name="dosen" value="{{$dosenku}}">
+                    <input type="hidden" name="dosen" value="{{$dosenku[0]->nrpnpk }}">
                     <input type="hidden" name="pesan" value="{{$pesan}}">
                      <input type="submit" name="ok" style="width: 100%; margin-top: 10px;" id="checkout11" class="btn btn-fik" value="Checkout" >
       </form>          

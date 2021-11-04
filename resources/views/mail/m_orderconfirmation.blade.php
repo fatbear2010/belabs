@@ -1,3 +1,4 @@
+<?php use App\Http\Controllers\PinjamController; ?>
 <!DOCTYPE html>
 
 <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
@@ -345,15 +346,17 @@
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:24px;"><strong>{{$pesanankubarang[$i]->merk}} {{$pesanankubarang[$i]->nama}}</strong></span></span></p>
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankubarang[$i]->namaBarang}} | {{$pesanankubarang[$i]->kategori}}</span></p>
 																				<br>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankubarang[$i]->namaLab}}</span></p>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankubarang[$i]->fakultas}}</span></p>
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankubarang[$i]->namaLab}} | {{$pesanankubarang[$i]->lokasi}}</span></p>
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">
+																					{{PinjamController::fakultas1($pesanankubarang[$i]->fakultas)->namafakultas}}</span></p>
 
 		<?php } } else { ?>
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:24px;"><strong>{{$pesanankubarang[$i]->merk}} {{$pesanankubarang[$i]->nama}}</strong></span></span></p>
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankubarang[$i]->namaBarang}} | {{$pesanankubarang[$i]->kategori}}</span></p>
 																				<br>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankubarang[$i]->namaLab}}</span></p>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankubarang[$i]->fakultas}}</span></p>
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankubarang[$i]->namaLab}} | {{$pesanankubarang[$i]->lokasi}}</span></p>
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">
+																					{{PinjamController::fakultas1($pesanankubarang[$i]->fakultas)->namafakultas}}</span></p>
 		<?php } ?>	
 																			</div>
 																		</div>
@@ -395,15 +398,22 @@
 																		<div style="font-family: sans-serif">
 																			<div style="font-size: 12px; color: #000000; line-height: 1.2; font-family: Lato, Tahoma, Verdana, Segoe, sans-serif;">
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><b>Dosen Penanggungjawab</b><br>
-																				@if($pesanankubarang[$i]->statusDosen == "TIDAK") Tidak Disetujui
-																				@elseif($pesanankubarang[$i]->statusDosen != "") Sudah Disetujui
+																				@if($pesanankubarang[$i]->sdosen == 2) Tidak Disetujui {{$pesanankubarang[$i]->statusDosen}} - {{PinjamController::dosen1($pesanankubarang[$i]->statusDosen)->nama}}
+																				@elseif($pesanankubarang[$i]->sdosen == 1) Sudah Disetujui {{$pesanankubarang[$i]->statusDosen}} - {{PinjamController::dosen1($pesanankubarang[$i]->statusDosen)->nama}}
 																				@else  Belum Disetujui @endif
+
+																				
 																				 </span></p>
 																				<br>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><b>Kepala Laboratorium</b><br>
-																				@if($pesanankubarang[$i]->statusKalab == "TIDAK") Tidak Disetujui
-																				@elseif($pesanankubarang[$i]->statusKalab != "") Sudah Disetujui
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><b>Laboran / Kepala Laboratorium</b><br>
+																				@if($pesanankubarang[$i]->skalab==2) 
+																				Tidak Disetujui {{$pesanankubarang[$i]->statusKalab}} - {{PinjamController::dosen1($pesanankubarang[$i]->statusKalab)->nama}}
+
+																				@elseif($pesanankubarang[$i]->skalab==1) 
+																				Sudah Disetujui {{$pesanankubarang[$i]->statusKalab}} - {{PinjamController::dosen1($pesanankubarang[$i]->statusKalab)->nama}}
+
 																				@else  Belum Disetujui @endif
+
 																				</span></p>
 																				<br>
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><b>Lainnya</b><br> 
@@ -439,12 +449,12 @@ for ($i=0; $i < count($pesanankulab) ; $i++) { $sesuatu = 0;?>
 		<?php }  else { ?>														
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:24px;"><strong>{{$pesanankulab[$i]->namaLab}}</strong></span></span></p>
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankulab[$i]->lokasi}}</span></p>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankulab[$i]->fakultas}}</span></p>
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{PinjamController::fakultas1($pesanankulab[$i]->fakultas)->namafakultas}}</span></p>
 
 		<?php } } else { ?>
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:24px;"><strong>{{$pesanankulab[$i]->namaLab}}</strong></span></span></p>
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankulab[$i]->lokasi}}</span></p>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pesanankulab[$i]->fakultas}}</span></p>
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{PinjamController::fakultas1($pesanankulab[$i]->fakultas)->namafakultas}}</span></p>
 		<?php } ?>	
 																			</div>
 																		</div>
@@ -467,10 +477,10 @@ for ($i=0; $i < count($pesanankulab) ; $i++) { $sesuatu = 0;?>
 																				@endif
 																					{{date("d-m-Y", strtotime($pesanankulab[$i]->tanggal))}} | {{$pesanankulab[$i]->mulai}} - {{$pesanankulab[$i]->selesai}}</span></p>
 																				<br>
-																				<p style="margin: 0;"><span style="font-size:14px;"><b>Diambil</b>
+																				<p style="margin: 0;"><span style="font-size:14px;"><b>Check In</b>
 																				@if($pesanankulab[$i]->checkin == "") -
 																				@else {{$pesanankulab[$i]->checkin}} @endif</span></p>
-																				<p style="margin: 0;"><span style="font-size:14px;"><b>Dikembalikan</b>
+																				<p style="margin: 0;"><span style="font-size:14px;"><b>Check Out</b>
 																					@if($pesanankulab[$i]->checkout == "") -
 																				@else {{$pesanankulab[$i]->checkout}} @endif</span></p>
 																				<br>
@@ -485,14 +495,18 @@ for ($i=0; $i < count($pesanankulab) ; $i++) { $sesuatu = 0;?>
 																		<div style="font-family: sans-serif">
 																			<div style="font-size: 12px; color: #000000; line-height: 1.2; font-family: Lato, Tahoma, Verdana, Segoe, sans-serif;">
 																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><b>Dosen Penanggungjawab</b><br>
-																				@if($pesanankulab[$i]->statusDosen == "TIDAK") Tidak Disetujui
-																				@elseif($pesanankulab[$i]->statusDosen != "") Sudah Disetujui
+																				@if($pesanankulab[$i]->sdosen == 2) Tidak Disetujui {{$pesanankulab[$i]->statusDosen}} - {{PinjamController::dosen1($pesanankulab[$i]->statusDosen)->nama}}
+																				@elseif($pesanankulab[$i]->sdosen == 1) Sudah Disetujui {{$pesanankulab[$i]->statusDosen}} - {{PinjamController::dosen1($pesanankulab[$i]->statusDosen)->nama}}
 																				@else  Belum Disetujui @endif
 																				 </span></p>
 																				<br>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><b>Kepala Laboratorium</b><br>
-																				@if($pesanankulab[$i]->statusKalab == "TIDAK") Tidak Disetujui
-																				@elseif($pesanankulab[$i]->statusKalab != "") Sudah Disetujui
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><b>Laboran / Kepala Laboratorium</b><br>
+																				@if($pesanankulab[$i]->skalab==2) 
+																				Tidak Disetujui {{$pesanankulab[$i]->statusKalab}} - {{PinjamController::dosen1($pesanankulab[$i]->statusKalab)->nama}}
+
+																				@elseif($pesanankulab[$i]->skalab==1) 
+																				Sudah Disetujui {{$pesanankulab[$i]->statusKalab}} - {{PinjamController::dosen1($pesanankulab[$i]->statusKalab)->nama}}
+
 																				@else  Belum Disetujui @endif
 																				</span></p>
 																				<br>
@@ -567,8 +581,13 @@ for ($i=0; $i < count($pesanankulab) ; $i++) { $sesuatu = 0;?>
 																				</div>
 																				<br>
 																				<div style="font-size: 12px; color: #000000; line-height: 1.2; font-family: Lato, Tahoma, Verdana, Segoe, sans-serif;">
-																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:18px;"><strong>Catatan Penanggungjawab </strong></span></span></p>
+																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:18px;"><strong>Catatan Dosen Penanggungjawab </strong></span></span></p>
 																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:12px;"><span style="font-size:14px;">{{$orderku['0']->noteDosen}}</span></span></p>
+																				</div>
+																				<br>
+																				<div style="font-size: 12px; color: #000000; line-height: 1.2; font-family: Lato, Tahoma, Verdana, Segoe, sans-serif;">
+																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:18px;"><strong>Catatan Laboran / Kepala Laboratrium </strong></span></span></p>
+																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:12px;"><span style="font-size:14px;">{{$orderku['0']->noteKalab}}</span></span></p>
 																				</div>
 																				<br>
 																				<div style="font-size: 12px; color: #000000; line-height: 1.2; font-family: Lato, Tahoma, Verdana, Segoe, sans-serif;">

@@ -12,6 +12,7 @@ use App\Models\Sesi;
 use App\Models\Pinjam;
 use App\Models\Block;
 use App\Models\Rutin;
+use App\Models\Fakultas;
 use Illuminate\Support\Facades\DB;
 use App\Models\GambarBarang;
 
@@ -29,10 +30,19 @@ class PinjamController extends Controller
         $lab = Lab::all();
         $cat = Kategori::all();
         $sesi = Sesi::select("*")->orderBy('mulai', 'ASC')->get();
-        $fak = DB::select('SELECT DISTINCT fakultas FROM lab');
+        $fak = Fakultas::all();
         return view('pinjam.index',compact('barang','lab', 'fak','cat','sesi'));
     }
-
+    public static function fakultas1($id)
+    {
+        $fak = Fakultas::where('idfakultas',$id)->first();
+        return $fak;
+    }
+    public static function dosen1($id)
+    {
+        $dos = User::where('nrpnpk',$id)->first();
+        return $dos;
+    }
     public function detail($id)
     {
         $barang = Barang::where('idbarang',$id)->first();
@@ -394,6 +404,7 @@ class PinjamController extends Controller
             $query = $query . 'l.fakultas= \'' . $request->fakultas . '\' ';
             $jumlah++;
             $filter['fakultas'] = $request->fakultas;
+            $filter['namafakultas'] = $this->fakultas1($request->fakultas)->namafakultas;
         }
         if($request->lab != "ALL")
         {
@@ -416,7 +427,7 @@ class PinjamController extends Controller
         $lab = Lab::all();
         $cat = Kategori::all();
         $sesi = Sesi::all();
-        $fak = DB::select('SELECT DISTINCT fakultas FROM lab');
+        $fak = Fakultas::all();
         
         //dd($barang);
         if($request->cat == "ALL" &&$request->lab == "ALL"&&$request->fakultas == "ALL" && $request->nama == "")

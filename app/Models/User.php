@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Jabatan;
+use App\Models\Jurusan;
+use App\Models\Fakultas;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -19,6 +21,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Jabatan::class,'jabatan','idjabatan');
     }
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class,'jurusan','idjurusan');
+    }
     public function laborans()
     {
         return $this->belongsToMany('App\Models\Lab','laboran','user','lab')
@@ -27,6 +33,14 @@ class User extends Authenticatable
     public function jabatan1()
     {
         return Jabatan::find($this->jabatan);
+    }
+    public function jurusan1()
+    {
+        return Jurusan::find($this->jurusan);
+    }
+    public function fakultas1()
+    {
+        return Fakultas::find($this->jurusan1()->fakultas);
     }
     /**
      * The attributes that are mass assignable.

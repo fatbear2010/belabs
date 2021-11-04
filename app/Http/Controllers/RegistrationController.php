@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Jabatan;
+use App\Models\Jurusan;
+use App\Models\Fakultas;
 use App\Mail\email;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -80,15 +82,18 @@ class RegistrationController extends Controller
 
     protected function aktivasi3($vcode)
     {
-        $user = User::where('vcode',$vcode)->first();
+        $user = User::where('vcode',$vcode)->where('status','0')->first();
+
         if($user)
         {
             $nama = $user->nama;
             $nrpnpk = $user->nrpnpk;
             $jabatan = Jabatan::where('idjabatan',$user->jabatan)->first();
+            $jurusan = Jurusan::where('idjurusan',$user->jurusan)->first();
+            $fakultas = Fakultas::where('idfakultas',$jurusan->fakultas)->first();
 
            // dd($jabatan);
-            return view('auth.registration',compact('nama','nrpnpk','vcode','jabatan')); 
+            return view('auth.registration',compact('nama','nrpnpk','vcode','jabatan','jurusan','fakultas')); 
         }
         else{
             $error = 'Link Verifikasi Salah Atau Sudah Tidak Berlaku';
@@ -112,9 +117,11 @@ class RegistrationController extends Controller
                 $user->vcode = Hash::make($user->nrpnpk);
                 $user->save();
                 $jabatan = Jabatan::where('idjabatan',$user->jabatan)->first();
+                $jurusan = Jurusan::where('idjurusan',$user->jurusan)->first();
+                $fakultas = Fakultas::where('idfakultas',$jurusan->fakultas)->first();
                 $done = "Selamat Proses Aktivasi Telah Selesai, Silahkan Lakukan Login";
     
-                return view('auth.registration',compact('nama','done','jabatan')); 
+                return view('auth.registration',compact('nama','done','jabatan','jurusan','fakultas')); 
             }
             else
             {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Fakultas;
 
 class Lab extends Model
 {
@@ -20,5 +21,14 @@ class Lab extends Model
     {
         return $this->belongsToMany('App\Models\User','laboran','idlab','id')
         ->withPivot('keterangan');
+    }
+
+    public function fakultas()
+    {
+        return $this->belongsTo(fakultas::class,'fakultas','idfakultas');
+    }
+    public function fakultas1()
+    {
+        return Fakultas::find($this->fakultas);
     }
 }

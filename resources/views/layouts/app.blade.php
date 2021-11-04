@@ -1,3 +1,4 @@
+<?php use App\Http\Controllers\PinjamLabController; ?>
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
   
@@ -23,6 +24,7 @@
     <link href="{{ asset('argon') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css?v={{time()}}" rel="stylesheet">
     <!-- Argon CSS -->
     <link type="text/css" href="{{ asset('argon') }}/css/argon.css?v={{time()}}" rel="stylesheet">
+    <link type="text/css" href="{{ asset('argon') }}/css/stef.css?v={{time()}}" rel="stylesheet">
 
 
     <!-- JQUERY -->

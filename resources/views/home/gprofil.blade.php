@@ -53,11 +53,11 @@
     </div>
   </div>
 </div>
-    
-<div class="card-body px-lg-5 py-lg-5">
+    <br>
+
  
                 <div class="card bg-secondary shadow">
-                    <div class="card-body">
+                    <div class="card-body" style="width:100%;">
 
                         <form method="get" action="{{ url('profil/pgantiprofil') }}" autocomplete="off">
                             @csrf
@@ -71,10 +71,47 @@
                                     <label class="form-control-label" for="line">Line ID <i class="icofont-line-messenger"></i></label>
                                     <input minlength="5" type="text" name="line" id="line" class="form-control" value="{{auth()->user()->lineId}}">
                                 </div>
+                                @if(auth()->user()->jabatan1()->nama != "Mahasiswa")
+                                <div>
+                                  <label class="form-control-label">Pengaturan Email</label>
+                                  <div class="row" style="margin: 0px 0px 10px 20px;">
+                                    <div class="custom-control custom-switch">
+                                      <input type="checkbox" class="custom-control-input" name="cb1" id="customSwitch1" value="1" 
+                                      @if($emailku->buat==1)checked="" @endif >
+                                      <label class="custom-control-label" for="customSwitch1">Terima Email Saat Pesanan Yang Berkaitan Dengan Anda Dibuat</label>
+                                    </div>
+                                  </div>
+                                  <div class="row" style="margin: 0px 0px 10px 20px;">
+                                    <div class="custom-control custom-switch">
+                                      <input type="checkbox" class="custom-control-input" name="cb2" id="customSwitch2"value="1"   @if($emailku->batal==1)checked="" @endif>
+                                      <label class="custom-control-label" for="customSwitch2">Terima Email Saat Pesanan Yang Berkaitan Dengan Anda Dibatalkan</label>
+                                    </div>
+                                  </div>
+                                   <div class="row" style="margin: 0px 0px 10px 20px;">
+                                    <div class="custom-control custom-switch">
+                                      <input type="checkbox" class="custom-control-input" name="cb3" id="customSwitch3" value="1"  @if($emailku->setuju==1)checked="" @endif>
+                                      <label class="custom-control-label" for="customSwitch3">Terima Email Anda Menyetujui Pesanan</label>
+                                    </div>
+                                  </div>
+                                  <div class="row" style="margin: 0px 0px 10px 20px;">
+                                    <div class="custom-control custom-switch">
+                                      <input type="checkbox" class="custom-control-input" name="cb4" id="customSwitch4" value="1"  @if($emailku->ambil==1)checked="" @endif>
+                                      <label class="custom-control-label" for="customSwitch4">Terima Email Pesanan Yang Berkaitan Dengan Anda Diambil</label>
+                                    </div>
+                                  </div>
+                                   <div class="row" style="margin: 0px 0px 10px 20px;">
+                                    <div class="custom-control custom-switch">
+                                      <input type="checkbox" class="custom-control-input" name="cb5" id="customSwitch5" value="1" @if($emailku->kembalikan==1)checked="" @endif>
+                                      <label class="custom-control-label" for="customSwitch5">Terima Email Pesanan Yang Berkaitan Dengan Anda Dikembalikan</label>
+                                    </div>
+                                  </div>
+                                </div>
+                                @endif
                                  <div class="form-group{{ $errors->has('email') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="pass">Masukkan Password</label>
                                     <input minlength="5" type="password" name="pass" id="pass" class="form-control" >
                                 </div>
+
 
                                 <div class="text-center">
                                     <button type="submit" style="width: 100%;" class="btn btn-success mt-4">Simpan</button>
@@ -84,7 +121,7 @@
                     </div>
                 </div>
         
-</div>
+
 
 
 @endsection

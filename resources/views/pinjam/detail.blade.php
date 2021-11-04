@@ -1,4 +1,5 @@
 <?php use App\Http\Controllers\PinjamController; ?>
+
 <?php
   function isMobile() {
       return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
@@ -41,7 +42,7 @@
                       <?php $lab = PinjamController::lab($b->lab); ?>
                       <div style="padding:15px; text-align:center;">     
                           <h5 class="card-title">{{$b->merk." - ".$b->nama}}</h5>
-                          <h6>{{$lab->namaLab}}<br>{{$lab->fakultas}}</h6>
+                          <h6>{{$lab->namaLab}} | {{$lab->lokasi}} <br>{{PinjamController::fakultas1($lab->fakultas)->namafakultas}}</h6>
                       </div>
                    </a>
                   </div>
@@ -56,7 +57,7 @@
                       <?php $lab = PinjamController::lab($b->lab); ?>
                       <div style="padding:15px; text-align:left; max-width: 80%;">     
                           <h3 class="card-title wrap">{{$b->merk." - ".$b->nama}}</h3>
-                          <h4>{{$lab->namaLab}}<br>{{$lab->fakultas}}</h4>
+                          <h4>{{$lab->namaLab}} | {{$lab->lokasi}} <br>{{PinjamController::fakultas1($lab->fakultas)->namafakultas}}</h4>
                       </div>
                       </div>
                    </a>
