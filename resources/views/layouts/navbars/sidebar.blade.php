@@ -213,7 +213,7 @@
                 </div>
             </li>
             
-
+<!-- 
                  <li class="nav-item">
                     <a class="nav-link " href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">
                         <i class="fab fa-laravel" style="color: #f4645f;"></i>
@@ -234,9 +234,9 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> -->
 
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="{{ route('icons') }}">
                         <i class="ni ni-planet text-blue"></i> {{ __('Icons') }}
                     </a>
@@ -261,7 +261,7 @@
                     <a class="nav-link text-white" href="https://www.creative-tim.com/product/argon-dashboard-pro-laravel" target="_blank">
                         <i class="ni ni-cloud-download-95"></i> Upgrade to PRO
                     </a>
-                </li> 
+                </li>  -->
             <!-- Divider
             <hr class="my-3">
              Heading 
