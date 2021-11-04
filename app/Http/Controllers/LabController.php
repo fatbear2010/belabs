@@ -7,6 +7,8 @@ use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use App\Models\Lab;
 use App\Models\User;
+use App\Models\Fakultas;
+
 use Illuminate\Support\Facades\DB;
 
 class LabController extends Controller
@@ -32,7 +34,8 @@ class LabController extends Controller
     {
         $this->authorize('check-jabatan');
         $user = User::where('jabatan','<>','1')->get();
-        return view('admin.lab.create',compact('user'));
+        $fak = Fakultas::All();
+        return view('admin.lab.create',compact('user','fak'));
     }
 
     /**
@@ -51,7 +54,7 @@ class LabController extends Controller
         
         $data->namaLab = $request->get('txtName');
         $data->lokasi = $request->get('txtLokasi');
-        $data->fakultas = $request->get('txtFakultas');
+        $data->fakultas = $request->get('comboFak');
 
         $data->save();
         
@@ -59,7 +62,7 @@ class LabController extends Controller
         {
             $userlab = explode(',', $u);
             
-            $query = DB::table('laboran')->insert(['idlab'=>$request->get('txtID'),'id'=>$userlab[0],'keterangan'=>$userlab[1]]);
+            $query = DB::table('laboran')->insert(['lab'=>$request->get('txtID'),'user'=>$userlab[0],'keterangan'=>$userlab[1]]);
             // $data->users()->attach($userlab[0],["keterangan"=>$userlab[1]]);
             
         }
@@ -88,11 +91,12 @@ class LabController extends Controller
     {
         $this->authorize('check-jabatan');
         $data = Lab::find($id);
+        $fak = Fakultas::All();
         // dd($data) ;
         //$data =$id;
 
         //dd($data);
-        return view('admin.lab.edit', compact('data'));
+        return view('admin.lab.edit', compact('data','fak'));
     }
 
     /**
@@ -110,7 +114,7 @@ class LabController extends Controller
         
         $lab->namaLab = $request->get('txtName');
         $lab->lokasi = $request->get('txtLokasi');
-        $lab->fakultas = $request->get('txtFakultas');
+        $lab->fakultas = $request->get('comboFak');
 
         $lab->save();
         return redirect()->route('lab.index')->with('status', 'Data Lab Sudah dihapus');

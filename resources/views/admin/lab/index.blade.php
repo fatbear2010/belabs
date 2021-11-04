@@ -40,7 +40,9 @@
               <td>{{ $d->idlab }}</td>
               <td>{{ $d->namaLab }}</td>
               <td>{{ $d->lokasi }}</td>
-              <td>{{ $d->fakultas }}</td>
+            
+              <td>{{ $d->fakultas1()->namafakultas }}</td>
+              
               <td>
                 @foreach($d->users as $h)
                 <br>{{$h->nama}}

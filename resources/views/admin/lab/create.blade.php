@@ -33,14 +33,20 @@
 						</div>
 						<div class="form-group">
 							<label for="exampleInputEmail1">Fakultas</label>
-							<input type="text" name="txtFakultas" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" style="width:600px;">
+							<br>
+							<select class="form-control multiple-laboran" name="comboFak" id="comboFak">
+								@foreach($fak as $f)
+								<option value="{{$f->idfakultas}}">{{$f->namafakultas}}</option>
+								@endforeach
+							</select>
+							<!-- <input type="text" name="txtFakultas" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" style="width:600px;"> -->
 						</div>
 						<div class="form-group">
 							<label>Laboran</label>
 							<br>
 							<select class="form-control multiple-laboran" name="comboLab" id="comboLab">
 								@foreach($user as $c)
-								<option value="{{$c->id}}">{{$c->nama}}</option>
+								<option value="{{$c->nrpnpk}}">{{$c->nama}}</option>
 								@endforeach
 							</select>
 						</div>
@@ -85,15 +91,18 @@
 	var lab = [];
 
 	function inputlaboran() {
-
+		
 		var laboran_id = $('#comboLab').val();
 		var keterangan = $('#txtket').val();
 		var tersedia = false;
+		console.log(laboran_id);
 
 		for (let i = 0; i < lab.length; i++) {
+			
 			if (lab[i][0] == laboran_id) {
 				lab[i][1] = keterangan
 				tersedia = true;
+				
 			}
 		}
 
@@ -108,10 +117,10 @@
 				'_token': '<?php echo csrf_token() ?>',
 				'lab': lab
 			},
-			success: function(data) {
+			success: function(data) {	
 				$('#datalaboran').html(data.msg);
-
 			}
+			
 		});
 	}
 

@@ -30,7 +30,13 @@
 						</div>
 						<div class="form-group">
 							<label for="exampleInputEmail1">Fakultas</label>
-							<input type="text" name="txtFakultas" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" style="width:600px;" value="{{$data->fakultas}}">
+							<br>
+							<select class="form-control multiple-laboran" name="comboFak" id="comboFak">
+								@foreach($fak as $f)
+								<option value="{{$f->idfakultas}}" @if($f->idfakultas == $data->fakultas) selected @endif>{{$f->namafakultas}}</option>
+								@endforeach
+							</select>
+							<!-- <input type="text" name="txtFakultas" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" style="width:600px;" value="{{$data->fakultas}}"> -->
 						</div>
 
 						<div class="text-center">

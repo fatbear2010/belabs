@@ -19,13 +19,13 @@ class Lab extends Model
 
     public function users()
     {
-        return $this->belongsToMany('App\Models\User','laboran','idlab','id')
+        return $this->belongsToMany('App\Models\User','laboran','lab','user')
         ->withPivot('keterangan');
     }
 
     public function fakultas()
     {
-        return $this->belongsTo(fakultas::class,'fakultas','idfakultas');
+        return $this->belongsTo('App\Models\Fakultas','fakultas','idfakultas');
     }
     public function fakultas1()
     {

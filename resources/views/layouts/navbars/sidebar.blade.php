@@ -141,11 +141,11 @@
                                 {{ __('Perbaikan') }}
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('status.index') }}">
                                 {{ __('Status') }}
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('lab.index') }}">
                                 {{ __('Lab') }}
@@ -194,11 +194,11 @@
                                 {{ __('Perbaikan') }}
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('status.index') }}">
                                 {{ __('Status') }}
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('lab.index') }}">
                                 {{ __('Lab') }}
