@@ -12,6 +12,7 @@ use App\Models\Sesi;
 use App\Models\Pinjam;
 use App\Models\Block;
 use App\Models\Rutin;
+use App\Models\User;
 use App\Models\Fakultas;
 use Illuminate\Support\Facades\DB;
 use App\Models\GambarBarang;

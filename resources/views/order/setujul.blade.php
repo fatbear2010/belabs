@@ -18,7 +18,7 @@
 <div class="card-header border-0">
   <div class="row align-items-center">
     <div class="col-12 text-center">
-      <h1>Membatalkan Pesanan</h1>
+      <h1>Persetujuan Kepala Lab / Laboran</h1>
       <h1>Nomor Pesanan : {{$orderku[0]->idorder}}</h1>
       <h3>Waktu Pesanan Dibuat : {{$orderku['0']->tanggal}}</h3>
       @if(session('status'))
@@ -32,7 +32,7 @@
           @elseif(session('status') == 1)
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <span class="alert-inner--icon"><i class="icofont-error"></i></span>
-          <span class="alert-inner--text">Item Gagal Dibatalkan, Terjadi Perubahan Status</a></span>
+          <span class="alert-inner--text">Persetujuan Gagal Disimpan, Terjadi Perubahan Status</a></span>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
           </div>
@@ -45,6 +45,7 @@
         </div>
           @endif
         @endif  
+
       <br>
     </div>
   </div>
@@ -68,7 +69,7 @@
         <div class="card-header text-left">
             <h2>Item Yang Dipesan</h2>
         </div>
-        <form method="post" action="{{url('order/pbatalkan')}}">
+        <form method="post" action="{{url('order/ppl')}}">
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 0px 10px 0px 10px;">
                   <?php $gambar = $item['gambar'];?>
@@ -98,12 +99,23 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                             <div class="col-12">
-                                                @if($pj['sdosen'] == 2 || $pj['status'] == 2 || $pj['checkout'] != "" || $pj['checkin'] != "" || $pj['skalab'] == 2 )
-                                                <h4 class="text-danger">Item Tidak Dapat Dibatalkan</h4>
+                                                @if($pj['sdosen'] == 2)
+                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
+                                                @elseif($pj['status'] == 2)
+                                                <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
+                                                @elseif($pj['checkout'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                @elseif($pj['checkin'] != "")
+                                                <h4 class="text-danger">Item Telah Diambil</h4>
+                                                @elseif($pj['skalab'] == 2)
+                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
                                                 @else
-                                                <div class="custom-control custom-switch" style="margin-left : 10px;">
-                                                  <input  type="checkbox" class="custom-control-input" name="cancelb[{{$pj['idp']}}]" id="b{{$pj['idp']}}" value="{{$pj['idp']}}"  >
-                                                  <label  class="custom-control-label" for="b{{$pj['idp']}}">Batalkan Pesanan</label>
+                                                <div class="form-group" style="margin-left : 10px;">
+                                                  <select class="form-control" name="setujub[{{$pj['idp']}}]">
+                                                        <option @if($pj['skalab'] == 1) selected @endif value="1">Setuju</option>
+                                                        <option value="2">Tidak Setuju</option>
+                                                        <option @if($pj['skalab'] == 0) selected @endif value="0">Setujui Nanti</option>
+                                                  </select>  
                                                 </div>
                                                 @endif
                                             </div>
@@ -143,12 +155,23 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
-                                                @if($pj['sdosen'] == 2 || $pj['status'] == 2 || $pj['checkout'] != "" || $pj['checkin'] != "" || $pj['skalab'] == 2 )
-                                                <h4 class="text-danger">Item Tidak Dapat Dibatalkan</h4>
+                                                @if($pj['sdosen'] == 2)
+                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
+                                                @elseif($pj['status'] == 2)
+                                                <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
+                                                @elseif($pj['checkout'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                @elseif($pj['checkin'] != "")
+                                                <h4 class="text-danger">Item Telah Diambil</h4>
+                                                @elseif($pj['skalab'] == 2)
+                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
                                                 @else
-                                                <div class="custom-control custom-switch">
-                                                  <input  type="checkbox" class="custom-control-input" name="cancelb[{{$pj['idp']}}]" id="b{{$pj['idp']}}" value="{{$pj['idp']}}"  >
-                                                  <label  class="custom-control-label" for="b{{$pj['idp']}}">Batalkan Pesanan</label>
+                                                <div class="form-group" style="margin-left : 10px;">
+                                                  <select class="form-control" name="setujub[{{$pj['idp']}}]">
+                                                        <option @if($pj['skalab'] == 1) selected @endif value="1">Setuju</option>
+                                                        <option value="2">Tidak Setuju</option>
+                                                        <option @if($pj['skalab'] == 0) selected @endif value="0">Setujui Nanti</option>
+                                                  </select>  
                                                 </div>
                                                 @endif
                                             </div>
@@ -187,12 +210,23 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                             <div class="col-12">
-                                                @if($pj['sdosen'] == 2 || $pj['status'] == 2 || $pj['checkout'] != "" || $pj['checkin'] != "" || $pj['skalab'] == 2 )
-                                                <h4 class="text-danger">Item Tidak Dapat Dibatalkan</h4>
+                                                @if($pj['sdosen'] == 2)
+                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
+                                                @elseif($pj['status'] == 2)
+                                                <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
+                                                @elseif($pj['checkout'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                @elseif($pj['checkin'] != "")
+                                                <h4 class="text-danger">Item Telah Diambil</h4>
+                                                @elseif($pj['skalab'] == 2)
+                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
                                                 @else
-                                                <div class="custom-control custom-switch" style="margin-left : 10px;">
-                                                  <input  type="checkbox" class="custom-control-input" name="cancell[{{$pj['idpl']}}]" id="l{{$pj['idpl']}}" value="{{$pj['idpl']}}"  >
-                                                  <label  class="custom-control-label" for="l{{$pj['idpl']}}">Batalkan Pesanan</label>
+                                               <div class="form-group" style="margin-left : 10px;">
+                                                  <select class="form-control" name="setujul[{{$pj['idpl']}}]">
+                                                        <option @if($pj['skalab'] == 1) selected @endif value="1">Setuju</option>
+                                                        <option value="2">Tidak Setuju</option>
+                                                        <option @if($pj['skalab'] == 0) selected @endif value="0">Setujui Nanti</option>
+                                                  </select>  
                                                 </div>
                                                 @endif
                                             </div>
@@ -230,12 +264,23 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
-                                                @if($pj['sdosen'] == 2 || $pj['status'] == 2 || $pj['checkout'] != "" || $pj['checkin'] != "" || $pj['skalab'] == 2 )
-                                                <h4 class="text-danger">Item Tidak Dapat Dibatalkan</h4>
+                                                @if($pj['sdosen'] == 2)
+                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
+                                                @elseif($pj['status'] == 2)
+                                                <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
+                                                @elseif($pj['checkout'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                @elseif($pj['checkin'] != "")
+                                                <h4 class="text-danger">Item Telah Diambil</h4>
+                                                @elseif($pj['skalab'] == 2)
+                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
                                                 @else
-                                                <div class="custom-control custom-switch">
-                                                  <input type="checkbox" class="custom-control-input" name="cancell[{{$pj['idpl']}}]" id="l{{$pj['idpl']}}" value="{{$pj['idpl']}}"  >
-                                                  <label class="custom-control-label" for="l{{$pj['idpl']}}">Batalkan Pesanan</label>
+                                                 <div class="form-group" style="margin-left : 10px;">
+                                                  <select class="form-control" name="setujul[{{$pj['idpl']}}]">
+                                                        <option @if($pj['skalab'] == 1) selected @endif value="1">Setuju</option>
+                                                        <option value="2">Tidak Setuju</option>
+                                                        <option @if($pj['skalab'] == 0) selected @endif value="0">Setujui Nanti</option>
+                                                  </select>  
                                                 </div>
                                                 @endif
                                             </div>
@@ -253,39 +298,56 @@
                 </div>
                     @endforeach
                     @csrf
+         <div class="row" style="margin: 0px 10px 0px 10px;">
+            <div class="col-lg-12 " style="margin-bottom:10px; ">
+                <div class="card rounded">
+                    <div style="margin-left: 1px;" class="row rounded-top" >  
+                        <h3>Pesan Kepala Lab / Laboran</h3>         
+                        <textarea id="txta" style="max-width:100%;" class="form-control" name="pesan" rows="3">{{$orderku[0]->noteKalab}}</textarea>
+                    </div>
+                </div>
+            </div>        
+        </div>
         <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">   
     @if(isMobile())                
-        <button type="submit" name="cancelselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Batalkan Pesanan Terpilih</button>
+        <button type="submit" name="agreeselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Persetujuan</button>
     @else
-     <button type="submit" name="cancelselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Batalkan Pesanan Terpilih</button>
+     <button type="submit" name="agreeselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Persetujuan</button>
     @endif  
 
     </form>  
    
-     
-
-    @if(isMobile())                
-        <form  method="post" action="{{url('order/pbatalkan')}}">
+ @if(isMobile())                
+        <form  method="post" action="{{url('order/ppl')}}">
             @csrf
-            <input type="hidden" name="cancelall" value="1">
+            <input type="hidden" name="pesan" id="txtc"  value="{{$orderku[0]->noteKalab}}">
+            <input type="hidden" name="agreeall" value="1">
             <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
-            <button type="submit" name="cancelall1" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Batalkan Seluruh Pesanan*</button>
+            <button id="btnall" type="submit" name="agreeall1" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Setujui Seluruh Pesanan*</button>
            
-            <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Membatalkan Seluruh Pesanan <b>Yang Dapat Dibatalkan</b></h5>
+            <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Menyetujui Seluruh Pesanan <b>Yang Dapat Disetujui</b></h5>
          </form>    
     @else
-    <form method="post" action="{{url('order/pbatalkan')}}">
+    <form method="post" action="{{url('order/ppl')}}">
         @csrf
+        <input type="hidden" name="pesan" id="txtc" value="{{$orderku[0]->noteKalab}}">
         <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
-        <input type="hidden" name="cancelall" value="1">
-        <button type="submit" name="cancelall1" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Batalkan Seluruh Pesanan*</button>
-        <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Membatalkan Seluruh Pesanan <b>Yang Dapat Dibatalkan</b></h5>
+        <input type="hidden" name="agreeall" value="1">
+        <button id="btnall" type="submit" name="agreeall1" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Setujui Seluruh Pesanan*</button>
+       <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Menyetujui Seluruh Pesanan <b>Yang Dapat Disetujui</b></h5>
     </form>
     @endif
+  
  
     </div>
     </div>  
     </div>
 </div></div>
-
+<script type="text/javascript">
+$('#txta').change(function() {
+     $('#txtc').val($("#txta").val());
+});    
+$(document).ready(function () {
+});
+</script>
 @endsection

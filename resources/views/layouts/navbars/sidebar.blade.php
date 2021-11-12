@@ -105,7 +105,7 @@
                
                  <li class="nav-item">
                     <a class="nav-link" href="{{ route('home') }}">
-                        <i class="icofont-heart-alt" style="color: #f4645f;"></i></i> Pesanan
+                        <i class="icofont-heart-alt" style="color: #f4645f;"></i> Pesanan
                     </a>
                 </li>
                <li class="nav-item">
@@ -156,6 +156,7 @@
                                 {{ __('User') }}
                             </a>
                         </li>
+                        
                     </ul>
                 </div>
             </li>
@@ -212,7 +213,11 @@
                     </ul>
                 </div>
             </li>
-            
+               <li class="nav-item">
+                    <a class="nav-link" href="{{ route('home') }}">
+                        <i class="icofont-code" style="color: #f4645f;"></i> About Developer
+                    </a>
+                </li>
 <!-- 
                  <li class="nav-item">
                     <a class="nav-link " href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">
@@ -256,12 +261,8 @@
                     <a class="nav-link" href="#">
                         <i class="ni ni-circle-08 text-pink"></i> {{ __('Register') }}
                     </a>
-                </li> 
-                 <li class="nav-item mb-5 mr-4 ml-4 pl-1 bg-danger" style="position: absolute; bottom: 0;">
-                    <a class="nav-link text-white" href="https://www.creative-tim.com/product/argon-dashboard-pro-laravel" target="_blank">
-                        <i class="ni ni-cloud-download-95"></i> Upgrade to PRO
-                    </a>
-                </li>  -->
+                </li> -->
+                
             <!-- Divider
             <hr class="my-3">
              Heading 
@@ -282,8 +283,8 @@
                     <a class="nav-link" href="https://argon-dashboard-laravel.creative-tim.com/docs/components/alerts.html">
                         <i class="ni ni-ui-04"></i> Components
                     </a>
-                </li>
-            </ul> -->
+                </li>-->
+            </ul> 
         </div>
     </div>
 </nav>

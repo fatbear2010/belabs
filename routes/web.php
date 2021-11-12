@@ -89,6 +89,16 @@ Route::middleware('auth')->group(function() {
 	Route::get('order/showorder/','App\Http\Controllers\HomeController@showorder')->name('order.showorder');
 	Route::get('order/detail/{id}','App\Http\Controllers\HomeController@orderdetail')->name('order.detail');
 	Route::get('order/batalkan/{id}','App\Http\Controllers\HomeController@orderbatal')->name('order.batal');
-	Route::get('order/pbatalkan/{id}','App\Http\Controllers\HomeController@prosesorderbatal')->name('order.pbatal');
+	Route::post('order/pbatalkan/','App\Http\Controllers\HomeController@prosesorderbatal')->name('order.pbatal');
+	Route::post('order/pbatalkan2/','App\Http\Controllers\HomeController@finalbatal')->name('order.finalbatal');
+
+	Route::get('order/ppj/{id}','App\Http\Controllers\HomeController@ordersetujuppj')->name('order.ordersetujuppj');
+	Route::post('order/pppj/','App\Http\Controllers\HomeController@prosesordersetujuppj')->name('order.pppj');
+	Route::post('order/pppj2/','App\Http\Controllers\HomeController@finalsetujupj')->name('order.finalsetujupj');
+
+	Route::get('order/pl/{id}','App\Http\Controllers\HomeController@ordersetujul')->name('order.ordersetujul');
+	Route::post('order/ppl/','App\Http\Controllers\HomeController@prosesordersetujul')->name('order.ppl');
+	Route::post('order/ppl2/','App\Http\Controllers\HomeController@finalsetujul')->name('order.finalsetujul');
+	
 });
 

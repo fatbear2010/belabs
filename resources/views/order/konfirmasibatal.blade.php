@@ -18,60 +18,22 @@
 <div class="card-header border-0">
   <div class="row align-items-center">
     <div class="col-12 text-center">
-      <h1>Membatalkan Pesanan</h1>
-      <h1>Nomor Pesanan : {{$orderku[0]->idorder}}</h1>
-      <h3>Waktu Pesanan Dibuat : {{$orderku['0']->tanggal}}</h3>
-      @if(session('status'))
-          @if(session('status') == 3)
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
-          <span class="alert-inner--text">Item Berhasil Dibatalkan</span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-        </div>
-          @elseif(session('status') == 1)
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <span class="alert-inner--icon"><i class="icofont-error"></i></span>
-          <span class="alert-inner--text">Item Gagal Dibatalkan, Terjadi Perubahan Status</a></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-          </div>
-          @elseif(session('status') == 2)
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <span class="alert-inner--icon"><i class="icofont-error"></i></span>
-          <span class="alert-inner--text">Tidak Ada Item Yang Dipilih</span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-        </div>
-          @endif
-        @endif  
+      <h1>Apakah Anda Yakin Untuk Membatalkan ?</h1>
+      <h3>Nomor Pesanan : {{$orderku[0]->idorder}}</h3>
+      <br>
       <br>
     </div>
   </div>
 </div>
 <br>
 <div style="margin-left: auto; margin-right: auto;">
-    <div class="card card-profile shadow " style="width: 100%;">
-        <div class="row" style="margin: 5px 10px 5px 10px;">
-            <div class="col-lg-12 text-left table-responsive">
-                <table class="table wrap">
-                  <tr><td>Pemesan </td><td><b>{{ auth()->user()->nrpnpk }} - {{ auth()->user()->nama }}</b></td></tr>
-                  <tr><td>Penanggung Jawab</td><td><b>{{ $dosenpj[0]->nrpnpk }} - {{ $dosenpj[0]->nama }}</b></td></tr>
-                </table>
-            </div>
-        </div>
-    </div>
-    <br>
 
    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;">
      <div class="card card-profile shadow " style="width: 100%;">
-        <div class="card-header text-left">
-            <h2>Item Yang Dipesan</h2>
-        </div>
-        <form method="post" action="{{url('order/pbatalkan')}}">
+        <form method="post" action="{{url('order/pbatalkan2')}}">
+            @csrf
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 0px 10px 0px 10px;">
-                  <?php $gambar = $item['gambar'];?>
                   @if($item['tipe'] == "barang")
                   @if(isMobile())
                   <div id="d{{$item['id']}}" class="col-lg-12" style=" width: 100%; max-height: 90%;">
@@ -97,16 +59,7 @@
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
-                                            <div class="col-12">
-                                                @if($pj['sdosen'] == 2 || $pj['status'] == 2 || $pj['checkout'] != "" || $pj['checkin'] != "" || $pj['skalab'] == 2 )
-                                                <h4 class="text-danger">Item Tidak Dapat Dibatalkan</h4>
-                                                @else
-                                                <div class="custom-control custom-switch" style="margin-left : 10px;">
-                                                  <input  type="checkbox" class="custom-control-input" name="cancelb[{{$pj['idp']}}]" id="b{{$pj['idp']}}" value="{{$pj['idp']}}"  >
-                                                  <label  class="custom-control-label" for="b{{$pj['idp']}}">Batalkan Pesanan</label>
-                                                </div>
-                                                @endif
-                                            </div>
+                                              <input  type="hidden" name="cancelb[{{$pj['idp']}}]" value="{{$pj['idp']}}">
                                             <br><br>
                                         </div>
                                         @endforeach
@@ -141,17 +94,8 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
-                                            <div class="col-8">
-                                                @if($pj['sdosen'] == 2 || $pj['status'] == 2 || $pj['checkout'] != "" || $pj['checkin'] != "" || $pj['skalab'] == 2 )
-                                                <h4 class="text-danger">Item Tidak Dapat Dibatalkan</h4>
-                                                @else
-                                                <div class="custom-control custom-switch">
-                                                  <input  type="checkbox" class="custom-control-input" name="cancelb[{{$pj['idp']}}]" id="b{{$pj['idp']}}" value="{{$pj['idp']}}"  >
-                                                  <label  class="custom-control-label" for="b{{$pj['idp']}}">Batalkan Pesanan</label>
-                                                </div>
-                                                @endif
-                                            </div>
+                                            <div class="col-12">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
+                                            <input  type="hidden" name="cancelb[{{$pj['idp']}}]" value="{{$pj['idp']}}">
                                         </div>
                                         @endforeach
                                     </div>
@@ -186,16 +130,7 @@
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
-                                            <div class="col-12">
-                                                @if($pj['sdosen'] == 2 || $pj['status'] == 2 || $pj['checkout'] != "" || $pj['checkin'] != "" || $pj['skalab'] == 2 )
-                                                <h4 class="text-danger">Item Tidak Dapat Dibatalkan</h4>
-                                                @else
-                                                <div class="custom-control custom-switch" style="margin-left : 10px;">
-                                                  <input  type="checkbox" class="custom-control-input" name="cancell[{{$pj['idpl']}}]" id="l{{$pj['idpl']}}" value="{{$pj['idpl']}}"  >
-                                                  <label  class="custom-control-label" for="l{{$pj['idpl']}}">Batalkan Pesanan</label>
-                                                </div>
-                                                @endif
-                                            </div>
+                                            <input  type="hidden" name="cancell[{{$pj['idpl']}}]" value="{{$pj['idpl']}}">
                                             <br><br>
                                         </div>
                                         @endforeach
@@ -228,17 +163,8 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
-                                            <div class="col-8">
-                                                @if($pj['sdosen'] == 2 || $pj['status'] == 2 || $pj['checkout'] != "" || $pj['checkin'] != "" || $pj['skalab'] == 2 )
-                                                <h4 class="text-danger">Item Tidak Dapat Dibatalkan</h4>
-                                                @else
-                                                <div class="custom-control custom-switch">
-                                                  <input type="checkbox" class="custom-control-input" name="cancell[{{$pj['idpl']}}]" id="l{{$pj['idpl']}}" value="{{$pj['idpl']}}"  >
-                                                  <label class="custom-control-label" for="l{{$pj['idpl']}}">Batalkan Pesanan</label>
-                                                </div>
-                                                @endif
-                                            </div>
+                                            <div class="col-12">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
+                                            <input  type="hidden" name="cancell[{{$pj['idpl']}}]" value="{{$pj['idpl']}}">
                                         </div>
                                         @endforeach
                                     </div>
@@ -252,40 +178,26 @@
                     @endif
                 </div>
                     @endforeach
-                    @csrf
-        <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">   
-    @if(isMobile())                
-        <button type="submit" name="cancelselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Batalkan Pesanan Terpilih</button>
+        <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}"> 
+     @if(isMobile())                
+    <button style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya Batalkan Pesanan</button>
     @else
-     <button type="submit" name="cancelselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Batalkan Pesanan Terpilih</button>
-    @endif  
-
-    </form>  
-   
-     
-
-    @if(isMobile())                
-        <form  method="post" action="{{url('order/pbatalkan')}}">
-            @csrf
-            <input type="hidden" name="cancelall" value="1">
-            <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
-            <button type="submit" name="cancelall1" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Batalkan Seluruh Pesanan*</button>
-           
-            <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Membatalkan Seluruh Pesanan <b>Yang Dapat Dibatalkan</b></h5>
-         </form>    
-    @else
-    <form method="post" action="{{url('order/pbatalkan')}}">
-        @csrf
-        <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
-        <input type="hidden" name="cancelall" value="1">
-        <button type="submit" name="cancelall1" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Batalkan Seluruh Pesanan*</button>
-        <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Membatalkan Seluruh Pesanan <b>Yang Dapat Dibatalkan</b></h5>
-    </form>
+     <button style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya Batalkan Pesanan</button>
     @endif
- 
+    </form>   
+   <form>
+    @if(isMobile())                
+    
+    <a href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" style="width: 97%; margin: 0px 10px 10px 10px;" class="btn btn-dark text-wrap">Tidak, Batalkan Pesanan Nanti</a>
+    @else
+    
+    <a href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" style="width: 97%; margin: 0px 10px 10px 10px;" class="btn btn-dark text-wrap">Tidak, Batalkan Pesanan Nanti</a>
+    @endif
+    </form>
     </div>
     </div>  
-    </div>
-</div></div>
+      </div>
+</div>
+</div>
 
 @endsection

@@ -21,12 +21,52 @@
       <h1>Detail Pesanan</h1>
       <h1>Nomor Pesanan : {{$orderku[0]->idorder}}</h1>
       <h3>Waktu Pesanan Dibuat : {{$orderku['0']->tanggal}}</h3>
-      <a href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="btn btn-danger">Batalkan Sebagian Atau Seluruh Pesanan</a>
+
+       @if(session('status'))
+          @if(session('status') == 1)
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+          <span class="alert-inner--text">Item Berhasil Dibatalkan</span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        </div>
+        @elseif(session('status') == 4)
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+          <span class="alert-inner--text">Persetujuan Berhasil Disimpan</span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        </div>
+          @elseif(session('status') == 3)
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="icofont-error"></i></span>
+          <span class="alert-inner--text">Password Salah</a></span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          </div>
+          @elseif(session('status') == 2)
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="icofont-error"></i></span>
+          <span class="alert-inner--text">Beberapa Item Sudah Tidak Tersedia</span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        </div>
+          @endif
+        @endif  
+      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-danger">Batalkan Pesanan</a>
+      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/ppj/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-dark">Setujui Pesanan (Penanggungjawab)</a>
+      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/pl/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-light">Setujui Pesanan (Laboran/Kalab)</a>
+      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-primary">Pengambilan Pesanan (Pemesan)</a>
+      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-info">Pengambilan Pesanan (Laboran/Kalab)</a>
+      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-success">Pengembalian Pesanan (Pemesan) </a>
+      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-warning">Pengambilan Pesanan (Laboran/Kalab)</a>
       <br>
+
     </div>
   </div>
 </div>
 <br>
+
 <div style="margin-left: auto; margin-right: auto;">
     <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
@@ -79,11 +119,14 @@
         <div class="row">
             <div class="col">
                 <div class="timeline p-4 block mb-4">
-<?php for ($i=0; $i < count($status) ; $i++) { ?>        
+<?php for ($i=count($status)-1; $i > -1 ; $i--) { ?>        
                     <div class="tl-item ">
                         <div class="tl-dot b-fik"></div>
                         <div class="tl-content">
-                            <div class=""><h4>{{date("d-m-Y H:i:s" , strtotime($status[$i]->tanggal))}} <br><b>{{$status[$i]->nama}}</b></h4></div>
+                            <div class="">
+                                <h4>{{date("d-m-Y H:i:s" , strtotime($status[$i]->tanggal))}} <br><b>{{$status[$i]->nama}}</b></h4>
+                                <h5>{{KeranjangController::cariorang($status[$i]->pic)}}</h5>
+                            </div>
                         </div>
                     </div>       
 <?php } ?>        
@@ -101,6 +144,7 @@
             <button style="margin-bottom:10px;" class="btn-sm btn-danger">Tidak Dietujui/Batal</button>
             <button style="margin-bottom:10px;" class="btn-sm btn-primary">Telah Diambil</button>
             <button style="margin-bottom:10px;" class="btn-sm btn-info">Telah Dikembalikan</button>
+            <button style="margin-bottom:10px;" class="btn-sm btn-ligth">Item Bermasalah</button>
         </div>
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 5px 10px 5px 10px;">
@@ -159,8 +203,8 @@
                                             </h5></div>
                                             <div class="col-4"><h5>Laboran / Kepala Laboratorium</h5></div>
                                             <div class="col-8"><h5>
-                                                @if($pj['skalab'] == 2) Tidak Disetujui {{$pj['skalab']}} - {{PinjamController::dosen1($pj['skalab'])->nama}}
-                                                @elseif($pj['skalab'] == 1) Sudah Disetujui {{$pj['skalab']}} - {{PinjamController::dosen1($pj['skalab'])->nama}}
+                                                @if($pj['skalab'] == 2) Tidak Disetujui {{$pj['statuskalab']}} - {{PinjamController::dosen1($pj['skalab'])->nama}}
+                                                @elseif($pj['skalab'] == 1) Sudah Disetujui {{$pj['statusKalab']}} - {{PinjamController::dosen1($pj['statusKalab'])->nama}}
                                                 @else  Belum Disetujui @endif
                                             </h5></div>
                                             <div class="col-4"><h5>Lainnya</h5></div>
@@ -235,7 +279,7 @@
                                             <div class="col-4"><h4>Laboran / Kepala Laboratorium</h4></div>
                                             <div class="col-8"><h4>
                                                 @if($pj['skalab'] == 2) Tidak Disetujui {{$pj['skalab']}} - {{PinjamController::dosen1($pj['skalab'])->nama}}
-                                                @elseif($pj['skalab'] == 1) Sudah Disetujui {{$pj['skalab']}} - {{PinjamController::dosen1($pj['skalab'])->nama}}
+                                                @elseif($pj['skalab'] == 1) Sudah Disetujui {{$pj['statusKalab']}} - {{PinjamController::dosen1($pj['statusKalab'])->nama}}
                                                 @else  Belum Disetujui @endif
                                             </h4></div>
                                             <div class="col-4"><h4>Lainnya</h4></div>
@@ -310,7 +354,7 @@
                                             <div class="col-4"><h5>Laboran / Kepala Laboratorium</h5></div>
                                             <div class="col-8"><h5>
                                                 @if($pj['skalab'] == 2) Tidak Disetujui {{$pj['skalab']}} - {{PinjamController::dosen1($pj['skalab'])->nama}}
-                                                @elseif($pj['skalab'] == 1) Sudah Disetujui {{$pj['skalab']}} - {{PinjamController::dosen1($pj['skalab'])->nama}}
+                                                @elseif($pj['skalab'] == 1) Sudah Disetujui {{$pj['statusKalab']}} - {{PinjamController::dosen1($pj['statusKalab'])->nama}}
                                                 @else  Belum Disetujui @endif
                                             </h5></div>
                                             <div class="col-4"><h5>Lainnya</h5></div>
@@ -385,7 +429,7 @@
                                             <div class="col-4"><h4>Laboran / Kepala Laboratorium</h4></div>
                                             <div class="col-8"><h4>
                                                 @if($pj['skalab'] == 2) Tidak Disetujui {{$pj['skalab']}} - {{PinjamController::dosen1($pj['skalab'])->nama}}
-                                                @elseif($pj['skalab'] == 1) Sudah Disetujui {{$pj['skalab']}} - {{PinjamController::dosen1($pj['skalab'])->nama}}
+                                                @elseif($pj['skalab'] == 1) Sudah Disetujui {{$pj['statusKalab']}} - {{PinjamController::dosen1($pj['statusKalab'])->nama}}
                                                 @else  Belum Disetujui @endif
                                             </h4></div>
                                             <div class="col-4"><h4>Lainnya</h4></div>

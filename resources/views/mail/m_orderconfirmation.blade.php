@@ -1,4 +1,5 @@
 <?php use App\Http\Controllers\PinjamController; ?>
+<?php use App\Http\Controllers\KeranjangController; ?>
 <!DOCTYPE html>
 
 <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
@@ -651,7 +652,7 @@ for ($i=0; $i < count($pesanankulab) ; $i++) { $sesuatu = 0;?>
 														<tr>
 															<th class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 0px; padding-bottom: 5px;" width="100%">
 																<table border="0" cellpadding="0" cellspacing="0" class="text_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<?php for ($i=0; $i < count($status) ; $i++) { ?>
+<?php for ($i=count($status)-1; $i > -1 ; $i--) { ?>  
 																	<tr>
 																		<td style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
 																			<div style="font-family: sans-serif">
@@ -659,6 +660,8 @@ for ($i=0; $i < count($pesanankulab) ; $i++) { $sesuatu = 0;?>
 																					<p style="margin: 0; font-size: 14px;"><span style="font-size:14px;">{{date("d-m-Y H:i:s" , strtotime($status[$i]->tanggal))}}
 																					</span></p>
 																					<p style="margin: 0; font-size: 14px;"><strong><span style="font-size:18px;">{{$status[$i]->nama}}</span></strong></p>
+																					<p style="margin: 0; font-size: 14px;"><span style="font-size:14px;">{{KeranjangController::cariorang($status[$i]->pic)}}
+																					</span></p>
 																				</div>
 																			</div>
 																		</td>

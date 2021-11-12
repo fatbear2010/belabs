@@ -10,8 +10,10 @@ use App\Models\Order;
 use App\Models\Jurusan;
 use App\Models\Fakultas;
 use App\Models\Email;
+use App\Models\History;
 use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\PinjamLabController;
+use App\Http\Controllers\KeranjangController;
 
 class HomeController extends Controller
 {
@@ -36,7 +38,7 @@ class HomeController extends Controller
         $total = DB::select("select count(idorder) as jumlah from .order where mahasiswa = '".auth()->user()->nrpnpk."'");
         $totalaktif = DB::select("select count(idorder) as jumlah from .order where status = 0 and mahasiswa = '".auth()->user()->nrpnpk."'");
         $totalpasif = DB::select("select count(idorder) as jumlah from .order where (status = 1 or status = 2) and mahasiswa = '".auth()->user()->nrpnpk."'");
-        $update1 = DB::select("Select h.order, h.tanggal, s.nama From .order o inner join history h on o.idorder = h.order inner join status s on s.idstatus = h.status where h.tanggal = (select max(hi.tanggal) from history hi where hi.order = h.order) and o.mahasiswa = '".auth()->user()->nrpnpk."' order by h.tanggal desc");
+        $update1 = DB::select("Select h.order, h.tanggal, s.nama From .order o inner join history h on o.idorder = h.order inner join status s on s.idstatus = h.status where h.tanggal = (select max(hi.tanggal) from history hi where hi.order = h.order) and o.mahasiswa = '".auth()->user()->nrpnpk."' and o.status = 0 order by h.tanggal desc");
         $pesanan = Order::where('mahasiswa',auth()->user()->nrpnpk)->get();
        
        
@@ -60,8 +62,8 @@ class HomeController extends Controller
     {
         return view("home.gpass");
     }
-
-    public function orderbatal($id)
+ #############################################   
+    public function ordersetujuppj($id)
     {
         $order = Order::where('idorder',$id)->where('mahasiswa',auth()->user()->nrpnpk)->get();
         if(count($order) == 0)
@@ -72,7 +74,7 @@ class HomeController extends Controller
             $orderku = Order::where('idorder',$id)->get();// dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
-            $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
             $pemesan = auth()->user();
             $keranjang = array();
             $penampung = "";
@@ -143,14 +145,1097 @@ class HomeController extends Controller
                     array_push($keranjang[$pb->idlab]['pinjam'],$pinjam);
                 }
             }
-            //dd($keranjang);
+            return view('order.setujupj',compact('pemesan','dosenpj','keranjang','orderku'));
+        }
+    }
+    public function finalsetujupj(Request $request)
+    {
+        $id = $request->orderid;
+        $helper = 0;
+        $orderku = Order::where('idorder',$id)->get();
+        if($request->setujub != null){
+            foreach($request->setujub as $cb)
+            {
+                $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.idp = '".$cb."'");
+                foreach($pesanankubarang as $pb)
+                {
+                    if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->checkin != "" || $pb->skalab == 2 )
+                    { $helper++; }
+                }
+            }
+        }
+        if($request->setujul != null) {
+            foreach($request->setujul as $cl)
+            {
+                $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
+                foreach($pesanankulab as $pb)
+                {
+                    if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->checkin != "" || $pb->skalab == 2 )
+                    { $helper++; }
+                }
+            }
+        }
+
+        if($helper >= 1)
+        {
+            return redirect('/order/ppj/'.$id)->with('status', '1');
+        }
+        else{
+            DB::statement("update .order set noteDosen = '".$request->pesan."' where idorder = '".$id."'");
+            if($request->setujub != null){
+                foreach($request->setujub as $k=>$cb)
+                {
+                    if($cb == 1)
+                    {
+                        DB::statement("update pinjam set sdosen = 1 , statusDosen = '".auth()->user()->nrpnpk."' where idp = '".$k."'");
+                    }
+                    else if($cb == 2)
+                    {
+                        DB::statement("update pinjam set sdosen = 2, statusDosen = '".auth()->user()->nrpnpk."', keterangan = 'Item Tidak Mendapat Persetujuan Penanggungjawab' where idp = '".$k."'");
+                    }
+                }
+            }
+            if($request->setujul != null) {
+                foreach($request->setujul as $k=>$cl)
+                {
+                    if($cb == 1)
+                    {
+                        DB::statement("update pinjamlab set sdosen = 1 , statusDosen = '".auth()->user()->nrpnpk."' where idpl = '".$k."'");
+                    }
+                    else if($cb == 2)
+                    {
+                        DB::statement("update pinjamlab set sdosen = 2, keterangan = 'Item Tidak Mendapat Persetujuan Penanggungjawab' , statusDosen = '".auth()->user()->nrpnpk."' where idpl = '".$k."'");
+                    }
+                }
+            }
+
+            $riwayat = new History;
+            $riwayat->status = 2;
+            $riwayat->tanggal = date("Y-m-d H:i:s");
+            $riwayat->pic =auth()->user()->nrpnpk;
+            $riwayat->order = $id;
+            $riwayat->save();
+            $this->matikan($id,auth()->user()->nrpnpk);
+            KeranjangController::kirimemail($id,'Item Pada Pesanan Anda Telah Mendapat Respon Dari Penanggungjawab','Item Pada Pesanan Anda Telah Mendapat Respon Dari Penanggungjawab','Pesanan Yang Berkaitan Dengan Anda Mendapatkan Respon Dari Penanggungjawab','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan Mendapatkan Respon Dari Penanggungjawab','setuju');
+            
+            return redirect('/order/detail/'.$id)->with('status', '4');
+        }
+    }
+    public function prosesordersetujuppj(Request $request)
+    {
+        $id = $request->orderid;
+        $keranjang = array();
+      
+        if(isset($request->agreeall))
+        {   
+            $orderku = Order::where('idorder',$id)->get();// dd($orderku);
+            $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+            $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+            $penampung = "";
+            foreach($pesanankubarang as $pb)
+            {
+                    $pinjam['tgl'] = $pb->tanggal;
+                    $pinjam['mulai'] = $pb->mulai;
+                    $pinjam['selesai'] = $pb->selesai;
+                    $pinjam['checkin'] = $pb->checkin;
+                    $pinjam['checkout'] = $pb->checkout;
+                    $pinjam['idp'] = $pb->idp;
+                    $pinjam['statusDosen'] = $pb->statusDosen;
+                    $pinjam['masalah'] = $pb->masalah;
+                    $pinjam['statusKalab'] = $pb->statusKalab;
+                    $pinjam['keterangan'] = $pb->keterangan;
+                    $pinjam['status'] = $pb->status;
+                    $pinjam['sdosen'] = $pb->sdosen;
+                    $pinjam['skalab'] = $pb->skalab;
+                    $pinjam['setuju'] = "1";
+                    
+                if(!isset($keranjang[$pb->idbarangdetail]))
+                {
+                    $help['id'] = $pb->idbarangdetail;
+                    $help['nama'] = $pb->nama;
+                    $help['merk'] = $pb->merk;
+                    $help['barang'] = $pb->namaBarang;
+                    $help['kat'] = $pb->kategori;
+                    $help['gambar'] = PinjamController::gambardt($pb->idbarangdetail);
+                    $help['pinjam'] = array($pinjam);
+                    $help['lab'] = $pb->namaLab;
+                    $help['lokasi'] = $pb->lokasi;
+                    $help['fakultas'] = $pb->fakultas;
+                    $help['tipe'] = "barang";
+
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { $keranjang[$pb->idbarangdetail] = $help; }
+                    
+                }
+                else
+                {
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { array_push($keranjang[$pb->idbarangdetail]['pinjam'],$pinjam); }
+                }
+            }
+            foreach($pesanankulab as $pb)
+            {
+                    $pinjam['tgl'] = $pb->tanggal;
+                    $pinjam['mulai'] = $pb->mulai;
+                    $pinjam['selesai'] = $pb->selesai;
+                    $pinjam['checkin'] = $pb->checkin;
+                    $pinjam['checkout'] = $pb->checkout;
+                    $pinjam['idpl'] = $pb->idpl;
+                    $pinjam['statusDosen'] = $pb->statusDosen;
+                    $pinjam['masalah'] = $pb->masalah;
+                    $pinjam['statusKalab'] = $pb->statusKalab;
+                    $pinjam['keterangan'] = $pb->keterangan;
+                    $pinjam['status'] = $pb->status;
+                    $pinjam['sdosen'] = $pb->sdosen;
+                    $pinjam['skalab'] = $pb->skalab;
+                    $pinjam['setuju'] = "1";
+                if(!isset($keranjang[$pb->idlab]))
+                {
+                    $help['id'] = $pb->idlab;
+                    $help['nama'] = $pb->namaLab;
+                    $help['lokasi'] = $pb->lokasi;
+                    $help['gambar'] = PinjamLabController::gambar($pb->idlab);
+                    $help['pinjam'] = array($pinjam);
+                    $help['fakultas'] = $pb->fakultas;
+                    $help['tipe'] = "lab";
+
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { $keranjang[$pb->idlab] = $help; }
+                }
+                else
+                {
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { array_push($keranjang[$pb->idlab]['pinjam'],$pinjam); }
+                }
+            }
+        }
+        else{
+            $orderku = Order::where('idorder',$id)->get();
+            if($request->setujub != null){
+                foreach($request->setujub as $k=>$cb)
+                {
+                    $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.idp = '".$k."'");
+                    foreach($pesanankubarang as $pb)
+                    {
+                        $pinjam['tgl'] = $pb->tanggal;
+                        $pinjam['mulai'] = $pb->mulai;
+                        $pinjam['selesai'] = $pb->selesai;
+                        $pinjam['checkin'] = $pb->checkin;
+                        $pinjam['checkout'] = $pb->checkout;
+                        $pinjam['idp'] = $pb->idp;
+                        $pinjam['statusDosen'] = $pb->statusDosen;
+                        $pinjam['masalah'] = $pb->masalah;
+                        $pinjam['statusKalab'] = $pb->statusKalab;
+                        $pinjam['keterangan'] = $pb->keterangan;
+                        $pinjam['status'] = $pb->status;
+                        $pinjam['sdosen'] = $pb->sdosen;
+                        $pinjam['skalab'] = $pb->skalab;
+                        $pinjam['setuju'] = $cb;
+                        if(!isset($keranjang[$pb->idbarangdetail]))
+                        {
+                            $help['id'] = $pb->idbarangdetail;
+                            $help['nama'] = $pb->nama;
+                            $help['merk'] = $pb->merk;
+                            $help['barang'] = $pb->namaBarang;
+                            $help['kat'] = $pb->kategori;
+                            $help['gambar'] = PinjamController::gambardt($pb->idbarangdetail);
+                            $help['pinjam'] = array($pinjam);
+                            $help['lab'] = $pb->namaLab;
+                            $help['lokasi'] = $pb->lokasi;
+                            $help['fakultas'] = $pb->fakultas;
+                            $help['tipe'] = "barang";
+
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 || $cb == 0)
+                            {}
+                            else
+                            { $keranjang[$pb->idbarangdetail] = $help; }
+                            
+                        }
+                        else
+                        {
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 || $cb == 0)
+                            {}
+                            else
+                            { array_push($keranjang[$pb->idbarangdetail]['pinjam'],$pinjam); }
+                        }
+                    }
+                }
+            }
+            if($request->setujul != null) {
+                foreach($request->setujul as $k=>$cl)
+                {
+                    $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
+                    foreach($pesanankulab as $pb)
+                    {
+                        $pinjam['tgl'] = $pb->tanggal;
+                        $pinjam['mulai'] = $pb->mulai;
+                        $pinjam['selesai'] = $pb->selesai;
+                        $pinjam['checkin'] = $pb->checkin;
+                        $pinjam['checkout'] = $pb->checkout;
+                        $pinjam['idpl'] = $pb->idpl;
+                        $pinjam['statusDosen'] = $pb->statusDosen;
+                        $pinjam['masalah'] = $pb->masalah;
+                        $pinjam['statusKalab'] = $pb->statusKalab;
+                        $pinjam['keterangan'] = $pb->keterangan;
+                        $pinjam['status'] = $pb->status;
+                        $pinjam['sdosen'] = $pb->sdosen;
+                        $pinjam['skalab'] = $pb->skalab;
+                        $pinjam['setuju'] = $cl;
+                        if(!isset($keranjang[$pb->idlab]))
+                        {
+                            $help1['id'] = $pb->idlab;
+                            $help1['nama'] = $pb->namaLab;
+                            $help1['lokasi'] = $pb->lokasi;
+                            $help1['gambar'] = PinjamLabController::gambar($pb->idlab);
+                            $help1['pinjam'] = array($pinjam);
+                            $help1['fakultas'] = $pb->fakultas;
+                            $help1['tipe'] = "lab";
+
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 || $cl == 0)
+                            {}
+                            else
+                            { $keranjang[$pb->idlab] = $help1; }
+                        }
+                        else
+                        {
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 || $cl == 0)
+                            {}
+                            else
+                            { array_push($keranjang[$pb->idlab]['pinjam'],$pinjam); }
+                        }
+                    }
+                }
+            }
+        }
+        //dd($keranjang);
+        if(count($keranjang) == 0)
+        {
+            return redirect('/order/ppj/'.$id)->with('status', '2');
+        }
+        else{
+            $pesan = $request->pesan;
+            return view("order.konfirmasisetujupj",compact('orderku','keranjang','pesan'));
+        }
+    }
+##############################################
+    public function ordersetujul($id)
+    {
+        $laboran = DB::select('select * from laboran where user = "'.auth()->user()->nrpnpk.'"');
+        $order = Order::where('idorder',$id)->where('mahasiswa',auth()->user()->nrpnpk)->get();
+        if(count($order) == 0)
+        {
+            return redirect(url('/home'))->with("status",4);
+        }
+        else{
+            $orderku = Order::where('idorder',$id)->get();// dd($orderku);
+            $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
+            $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+            $pemesan = auth()->user();
+            $keranjang = array();
+            $penampung = "";
+            foreach($pesanankubarang as $pb)
+            {
+                    $pinjam['tgl'] = $pb->tanggal;
+                    $pinjam['mulai'] = $pb->mulai;
+                    $pinjam['selesai'] = $pb->selesai;
+                    $pinjam['checkin'] = $pb->checkin;
+                    $pinjam['checkout'] = $pb->checkout;
+                    $pinjam['idp'] = $pb->idp;
+                    $pinjam['statusDosen'] = $pb->statusDosen;
+                    $pinjam['masalah'] = $pb->masalah;
+                    $pinjam['statusKalab'] = $pb->statusKalab;
+                    $pinjam['keterangan'] = $pb->keterangan;
+                    $pinjam['status'] = $pb->status;
+                    $pinjam['sdosen'] = $pb->sdosen;
+                    $pinjam['skalab'] = $pb->skalab;
+                    
+                if(!isset($keranjang[$pb->idbarangdetail]))
+                {
+                    $help['id'] = $pb->idbarangdetail;
+                    $help['nama'] = $pb->nama;
+                    $help['merk'] = $pb->merk;
+                    $help['barang'] = $pb->namaBarang;
+                    $help['kat'] = $pb->kategori;
+                    $help['gambar'] = PinjamController::gambardt($pb->idbarangdetail);
+                    $help['pinjam'] = array($pinjam);
+                    $help['lab'] = $pb->namaLab;
+                    $help['lokasi'] = $pb->lokasi;
+                    $help['fakultas'] = $pb->fakultas;
+                    $help['tipe'] = "barang";
+                    foreach($laboran as $la)
+                    {
+                        if($pb->idlab == $la->lab)
+                        $keranjang[$pb->idbarangdetail] = $help;
+                    }
+                }
+                else
+                {
+                    foreach($laboran as $la)
+                    {
+                        if($pb->idlab == $la->lab)
+                        { array_push($keranjang[$pb->idbarangdetail]['pinjam'],$pinjam); }
+                    }
+                }
+            }
+            foreach($pesanankulab as $pb)
+            {
+                    $pinjam['tgl'] = $pb->tanggal;
+                    $pinjam['mulai'] = $pb->mulai;
+                    $pinjam['selesai'] = $pb->selesai;
+                    $pinjam['checkin'] = $pb->checkin;
+                    $pinjam['checkout'] = $pb->checkout;
+                    $pinjam['idpl'] = $pb->idpl;
+                    $pinjam['statusDosen'] = $pb->statusDosen;
+                    $pinjam['masalah'] = $pb->masalah;
+                    $pinjam['statusKalab'] = $pb->statusKalab;
+                    $pinjam['keterangan'] = $pb->keterangan;
+                    $pinjam['status'] = $pb->status;
+                    $pinjam['sdosen'] = $pb->sdosen;
+                    $pinjam['skalab'] = $pb->skalab;
+                if(!isset($keranjang[$pb->idlab]))
+                {
+                    $help['id'] = $pb->idlab;
+                    $help['nama'] = $pb->namaLab;
+                    $help['lokasi'] = $pb->lokasi;
+                    $help['gambar'] = PinjamLabController::gambar($pb->idlab);
+                    $help['pinjam'] = array($pinjam);
+                    $help['fakultas'] = $pb->fakultas;
+                    $help['tipe'] = "lab";
+                    //dd($laboran);
+
+                    foreach($laboran as $la)
+                    {
+                        if($pb->idlab == $la->lab)
+                        { $keranjang[$pb->idlab] = $help; }
+                    }
+                }
+                else
+                {   
+                    foreach($laboran as $la)
+                    {
+                        if($pb->idlab == $la->lab)
+                        { array_push($keranjang[$pb->idlab]['pinjam'],$pinjam); } 
+                    }
+                }
+            }
+            return view('order.setujul',compact('pemesan','dosenpj','keranjang','orderku'));
+        }
+    }
+    public function finalsetujul(Request $request)
+    {
+        $id = $request->orderid;
+        $helper = 0;
+        $laboran = DB::select('select * from laboran where user = "'.auth()->user()->nrpnpk.'"');
+        $orderku = Order::where('idorder',$id)->get();
+        if($request->setujub != null){
+            foreach($request->setujub as $cb)
+            {
+                $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi,l.idlab, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.idp = '".$cb."'");
+                foreach($pesanankubarang as $pb)
+                {
+                    if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->checkin != "" || $pb->skalab == 2 )
+                    { 
+                        if($pb->idlab == $la->lab)
+                        { $helper++; }
+                    }
+                }
+            }
+        }
+        if($request->setujul != null) {
+            foreach($request->setujul as $cl)
+            {
+                $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
+                foreach($pesanankulab as $pb)
+                {
+                    if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->checkin != "" || $pb->skalab == 2 )
+                    {
+                        if($pb->idlab == $la->lab)
+                        { $helper++; }
+                    }    
+                }
+            }
+        }
+
+        if($helper >= 1)
+        {
+            return redirect('/order/pl/'.$id)->with('status', '1');
+        }
+        else{
+            DB::statement("update .order set noteKalab = '".$request->pesan."' where idorder = '".$id."'");
+            if($request->setujub != null){
+                foreach($request->setujub as $k=>$cb)
+                {
+                    if($cb == 1)
+                    {
+                        DB::statement("update pinjam set skalab = 1 , statusKalab = '".auth()->user()->nrpnpk."' where idp = '".$k."'");
+                    }
+                    else if($cb == 2)
+                    {
+                        DB::statement("update pinjam set skalab = 2, statusKalab = '".auth()->user()->nrpnpk."', keterangan = 'Item Tidak Mendapat Persetujuan Kalab / Laboran' where idp = '".$k."'");
+                    }
+                }
+            }
+            if($request->setujul != null) {
+                foreach($request->setujul as $k=>$cl)
+                {
+                    if($cb == 1)
+                    {
+                        DB::statement("update pinjamlab set skalab = 1 , statusKalab = '".auth()->user()->nrpnpk."' where idpl = '".$k."'");
+                    }
+                    else if($cb == 2)
+                    {
+                        DB::statement("update pinjamlab set skalab = 2, keterangan = 'Item Tidak Mendapat Persetujuan  Kalab / Laboran' , statusKalab = '".auth()->user()->nrpnpk."' where idpl = '".$k."'");
+                    }
+                }
+            }
+
+            $riwayat = new History;
+            $riwayat->status = 5;
+            $riwayat->tanggal = date("Y-m-d H:i:s");
+            $riwayat->pic =auth()->user()->nrpnpk;
+            $riwayat->order = $id;
+            $riwayat->save();
+            $this->matikan($id,auth()->user()->nrpnpk);
+            KeranjangController::kirimemail($id,'Item Pada Pesanan Anda Telah Mendapat Respon Dari Kalab / Laboran','Item Pada Pesanan Anda Telah Mendapat Respon Dari Kalab / Laboran','Pesanan Yang Berkaitan Dengan Anda Mendapatkan Respon Dari Kalab / Laboran','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan Mendapatkan Respon Dari Kalab / Laboran','setuju');
+            return redirect('/order/detail/'.$id)->with('status', '4');
+        }
+    }
+    public function prosesordersetujul(Request $request)
+    {
+        $id = $request->orderid;
+        $keranjang = array();
+        $laboran = DB::select('select * from laboran where user = "'.auth()->user()->nrpnpk.'"');
+
+        if(isset($request->agreeall))
+        {   
+            $orderku = Order::where('idorder',$id)->get();// dd($orderku);
+            $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi,l.idlab, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+            $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+            $penampung = "";
+            foreach($pesanankubarang as $pb)
+            {
+                    $pinjam['tgl'] = $pb->tanggal;
+                    $pinjam['mulai'] = $pb->mulai;
+                    $pinjam['selesai'] = $pb->selesai;
+                    $pinjam['checkin'] = $pb->checkin;
+                    $pinjam['checkout'] = $pb->checkout;
+                    $pinjam['idp'] = $pb->idp;
+                    $pinjam['statusDosen'] = $pb->statusDosen;
+                    $pinjam['masalah'] = $pb->masalah;
+                    $pinjam['statusKalab'] = $pb->statusKalab;
+                    $pinjam['keterangan'] = $pb->keterangan;
+                    $pinjam['status'] = $pb->status;
+                    $pinjam['sdosen'] = $pb->sdosen;
+                    $pinjam['skalab'] = $pb->skalab;
+                    $pinjam['setuju'] = "1";
+                    
+                if(!isset($keranjang[$pb->idbarangdetail]))
+                {
+                    $help['id'] = $pb->idbarangdetail;
+                    $help['nama'] = $pb->nama;
+                    $help['merk'] = $pb->merk;
+                    $help['barang'] = $pb->namaBarang;
+                    $help['kat'] = $pb->kategori;
+                    $help['gambar'] = PinjamController::gambardt($pb->idbarangdetail);
+                    $help['pinjam'] = array($pinjam);
+                    $help['lab'] = $pb->namaLab;
+                    $help['lokasi'] = $pb->lokasi;
+                    $help['fakultas'] = $pb->fakultas;
+                    $help['tipe'] = "barang";
+
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { 
+                        foreach($laboran as $la)
+                        {
+                            if($pb->idlab == $la->lab)
+                            { $keranjang[$pb->idbarangdetail] = $help; }
+                        }
+                    }
+                }
+                else
+                {
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { 
+                        foreach($laboran as $la)
+                        {
+                            if($pb->idlab == $la->lab)
+                            { array_push($keranjang[$pb->idbarangdetail]['pinjam'],$pinjam); }
+                        }
+                    }
+                }
+            }
+            foreach($pesanankulab as $pb)
+            {
+                    $pinjam['tgl'] = $pb->tanggal;
+                    $pinjam['mulai'] = $pb->mulai;
+                    $pinjam['selesai'] = $pb->selesai;
+                    $pinjam['checkin'] = $pb->checkin;
+                    $pinjam['checkout'] = $pb->checkout;
+                    $pinjam['idpl'] = $pb->idpl;
+                    $pinjam['statusDosen'] = $pb->statusDosen;
+                    $pinjam['masalah'] = $pb->masalah;
+                    $pinjam['statusKalab'] = $pb->statusKalab;
+                    $pinjam['keterangan'] = $pb->keterangan;
+                    $pinjam['status'] = $pb->status;
+                    $pinjam['sdosen'] = $pb->sdosen;
+                    $pinjam['skalab'] = $pb->skalab;
+                    $pinjam['setuju'] = "1";
+                if(!isset($keranjang[$pb->idlab]))
+                {
+                    $help['id'] = $pb->idlab;
+                    $help['nama'] = $pb->namaLab;
+                    $help['lokasi'] = $pb->lokasi;
+                    $help['gambar'] = PinjamLabController::gambar($pb->idlab);
+                    $help['pinjam'] = array($pinjam);
+                    $help['fakultas'] = $pb->fakultas;
+                    $help['tipe'] = "lab";
+
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { 
+                        foreach($laboran as $la)
+                        {
+                            if($pb->idlab == $la->lab)
+                            { $keranjang[$pb->idlab] = $help;  }
+                        }
+                    }
+                }
+                else
+                {
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { 
+                        foreach($laboran as $la)
+                        {
+                            if($pb->idlab == $la->lab)
+                            {array_push($keranjang[$pb->idlab]['pinjam'],$pinjam);  }
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            $orderku = Order::where('idorder',$id)->get();
+            if($request->setujub != null){
+                foreach($request->setujub as $k=>$cb)
+                {
+                    $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.idp = '".$k."'");
+                    foreach($pesanankubarang as $pb)
+                    {
+                        $pinjam['tgl'] = $pb->tanggal;
+                        $pinjam['mulai'] = $pb->mulai;
+                        $pinjam['selesai'] = $pb->selesai;
+                        $pinjam['checkin'] = $pb->checkin;
+                        $pinjam['checkout'] = $pb->checkout;
+                        $pinjam['idp'] = $pb->idp;
+                        $pinjam['statusDosen'] = $pb->statusDosen;
+                        $pinjam['masalah'] = $pb->masalah;
+                        $pinjam['statusKalab'] = $pb->statusKalab;
+                        $pinjam['keterangan'] = $pb->keterangan;
+                        $pinjam['status'] = $pb->status;
+                        $pinjam['sdosen'] = $pb->sdosen;
+                        $pinjam['skalab'] = $pb->skalab;
+                        $pinjam['setuju'] = $cb;
+                        if(!isset($keranjang[$pb->idbarangdetail]))
+                        {
+                            $help['id'] = $pb->idbarangdetail;
+                            $help['nama'] = $pb->nama;
+                            $help['merk'] = $pb->merk;
+                            $help['barang'] = $pb->namaBarang;
+                            $help['kat'] = $pb->kategori;
+                            $help['gambar'] = PinjamController::gambardt($pb->idbarangdetail);
+                            $help['pinjam'] = array($pinjam);
+                            $help['lab'] = $pb->namaLab;
+                            $help['lokasi'] = $pb->lokasi;
+                            $help['fakultas'] = $pb->fakultas;
+                            $help['tipe'] = "barang";
+
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 || $cb == 0)
+                            {}
+                            else
+                            { 
+                                foreach($laboran as $la)
+                                {
+                                    if($pb->idlab == $la->lab)
+                                    {$keranjang[$pb->idbarangdetail] = $help;  }
+                                }
+                            }        
+                        }
+                        else
+                        {
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 || $cb == 0)
+                            {}
+                            else
+                            { 
+                                foreach($laboran as $la)
+                                {
+                                    if($pb->idlab == $la->lab)
+                                    { array_push($keranjang[$pb->idbarangdetail]['pinjam'],$pinjam);  }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if($request->setujul != null) {
+                foreach($request->setujul as $k=>$cl)
+                {
+                    $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
+                    foreach($pesanankulab as $pb)
+                    {
+                        $pinjam['tgl'] = $pb->tanggal;
+                        $pinjam['mulai'] = $pb->mulai;
+                        $pinjam['selesai'] = $pb->selesai;
+                        $pinjam['checkin'] = $pb->checkin;
+                        $pinjam['checkout'] = $pb->checkout;
+                        $pinjam['idpl'] = $pb->idpl;
+                        $pinjam['statusDosen'] = $pb->statusDosen;
+                        $pinjam['masalah'] = $pb->masalah;
+                        $pinjam['statusKalab'] = $pb->statusKalab;
+                        $pinjam['keterangan'] = $pb->keterangan;
+                        $pinjam['status'] = $pb->status;
+                        $pinjam['sdosen'] = $pb->sdosen;
+                        $pinjam['skalab'] = $pb->skalab;
+                        $pinjam['setuju'] = $cl;
+                        if(!isset($keranjang[$pb->idlab]))
+                        {
+                            $help1['id'] = $pb->idlab;
+                            $help1['nama'] = $pb->namaLab;
+                            $help1['lokasi'] = $pb->lokasi;
+                            $help1['gambar'] = PinjamLabController::gambar($pb->idlab);
+                            $help1['pinjam'] = array($pinjam);
+                            $help1['fakultas'] = $pb->fakultas;
+                            $help1['tipe'] = "lab";
+
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 || $cl == 0)
+                            {}
+                            else
+                            { 
+                                foreach($laboran as $la)
+                                {
+                                    if($pb->idlab == $la->lab)
+                                    {  $keranjang[$pb->idlab] = $help1;    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 || $cl == 0)
+                            {}
+                            else
+                            { 
+                                foreach($laboran as $la)
+                                {
+                                    if($pb->idlab == $la->lab)
+                                    {  array_push($keranjang[$pb->idlab]['pinjam'],$pinjam);   }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //dd($keranjang);
+        if(count($keranjang) == 0)
+        {
+            return redirect('/order/pl/'.$id)->with('status', '2');
+        }
+        else{
+            $pesan = $request->pesan;
+            return view("order.konfirmasisetujul",compact('orderku','keranjang','pesan'));
+        }
+    }
+#############################################
+    public function orderbatal($id)
+    {
+        $order = Order::where('idorder',$id)->where('mahasiswa',auth()->user()->nrpnpk)->get();
+        if(count($order) == 0)
+        {
+            return redirect(url('/home'))->with("status",4);
+        }
+        else{
+            $orderku = Order::where('idorder',$id)->get();// dd($orderku);
+            $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
+            $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+            $pemesan = auth()->user();
+            $keranjang = array();
+            $penampung = "";
+            foreach($pesanankubarang as $pb)
+            {
+                    $pinjam['tgl'] = $pb->tanggal;
+                    $pinjam['mulai'] = $pb->mulai;
+                    $pinjam['selesai'] = $pb->selesai;
+                    $pinjam['checkin'] = $pb->checkin;
+                    $pinjam['checkout'] = $pb->checkout;
+                    $pinjam['idp'] = $pb->idp;
+                    $pinjam['statusDosen'] = $pb->statusDosen;
+                    $pinjam['masalah'] = $pb->masalah;
+                    $pinjam['statusKalab'] = $pb->statusKalab;
+                    $pinjam['keterangan'] = $pb->keterangan;
+                    $pinjam['status'] = $pb->status;
+                    $pinjam['sdosen'] = $pb->sdosen;
+                    $pinjam['skalab'] = $pb->skalab;
+                    
+                if(!isset($keranjang[$pb->idbarangdetail]))
+                {
+                    $help['id'] = $pb->idbarangdetail;
+                    $help['nama'] = $pb->nama;
+                    $help['merk'] = $pb->merk;
+                    $help['barang'] = $pb->namaBarang;
+                    $help['kat'] = $pb->kategori;
+                    $help['gambar'] = PinjamController::gambardt($pb->idbarangdetail);
+                    $help['pinjam'] = array($pinjam);
+                    $help['lab'] = $pb->namaLab;
+                    $help['lokasi'] = $pb->lokasi;
+                    $help['fakultas'] = $pb->fakultas;
+                    $help['tipe'] = "barang";
+                    $keranjang[$pb->idbarangdetail] = $help;
+                }
+                else
+                {
+                    array_push($keranjang[$pb->idbarangdetail]['pinjam'],$pinjam);
+                }
+            }
+            foreach($pesanankulab as $pb)
+            {
+                    $pinjam['tgl'] = $pb->tanggal;
+                    $pinjam['mulai'] = $pb->mulai;
+                    $pinjam['selesai'] = $pb->selesai;
+                    $pinjam['checkin'] = $pb->checkin;
+                    $pinjam['checkout'] = $pb->checkout;
+                    $pinjam['idpl'] = $pb->idpl;
+                    $pinjam['statusDosen'] = $pb->statusDosen;
+                    $pinjam['masalah'] = $pb->masalah;
+                    $pinjam['statusKalab'] = $pb->statusKalab;
+                    $pinjam['keterangan'] = $pb->keterangan;
+                    $pinjam['status'] = $pb->status;
+                    $pinjam['sdosen'] = $pb->sdosen;
+                    $pinjam['skalab'] = $pb->skalab;
+                if(!isset($keranjang[$pb->idlab]))
+                {
+                    $help['id'] = $pb->idlab;
+                    $help['nama'] = $pb->namaLab;
+                    $help['lokasi'] = $pb->lokasi;
+                    $help['gambar'] = PinjamLabController::gambar($pb->idlab);
+                    $help['pinjam'] = array($pinjam);
+                    $help['fakultas'] = $pb->fakultas;
+                    $help['tipe'] = "lab";
+                   $keranjang[$pb->idlab] = $help;
+                }
+                else
+                {
+                    array_push($keranjang[$pb->idlab]['pinjam'],$pinjam);
+                }
+            }
             return view('order.batalkan',compact('pemesan','dosenpj','keranjang','orderku'));
         }
     }
 
-    public function prosesorderbatal()
+    public function prosesorderbatal(Request $request)
     {
-        return view("home.gpass");
+        $id = $request->orderid;
+        $keranjang = array();
+      
+        if(isset($request->cancelall))
+        {   
+            $orderku = Order::where('idorder',$id)->get();// dd($orderku);
+            $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+            $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+            $penampung = "";
+            foreach($pesanankubarang as $pb)
+            {
+                    $pinjam['tgl'] = $pb->tanggal;
+                    $pinjam['mulai'] = $pb->mulai;
+                    $pinjam['selesai'] = $pb->selesai;
+                    $pinjam['checkin'] = $pb->checkin;
+                    $pinjam['checkout'] = $pb->checkout;
+                    $pinjam['idp'] = $pb->idp;
+                    $pinjam['statusDosen'] = $pb->statusDosen;
+                    $pinjam['masalah'] = $pb->masalah;
+                    $pinjam['statusKalab'] = $pb->statusKalab;
+                    $pinjam['keterangan'] = $pb->keterangan;
+                    $pinjam['status'] = $pb->status;
+                    $pinjam['sdosen'] = $pb->sdosen;
+                    $pinjam['skalab'] = $pb->skalab;
+                    
+                if(!isset($keranjang[$pb->idbarangdetail]))
+                {
+                    $help['id'] = $pb->idbarangdetail;
+                    $help['nama'] = $pb->nama;
+                    $help['merk'] = $pb->merk;
+                    $help['barang'] = $pb->namaBarang;
+                    $help['kat'] = $pb->kategori;
+                    $help['gambar'] = PinjamController::gambardt($pb->idbarangdetail);
+                    $help['pinjam'] = array($pinjam);
+                    $help['lab'] = $pb->namaLab;
+                    $help['lokasi'] = $pb->lokasi;
+                    $help['fakultas'] = $pb->fakultas;
+                    $help['tipe'] = "barang";
+
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { $keranjang[$pb->idbarangdetail] = $help; }
+                    
+                }
+                else
+                {
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { array_push($keranjang[$pb->idbarangdetail]['pinjam'],$pinjam); }
+                }
+            }
+            foreach($pesanankulab as $pb)
+            {
+                    $pinjam['tgl'] = $pb->tanggal;
+                    $pinjam['mulai'] = $pb->mulai;
+                    $pinjam['selesai'] = $pb->selesai;
+                    $pinjam['checkin'] = $pb->checkin;
+                    $pinjam['checkout'] = $pb->checkout;
+                    $pinjam['idpl'] = $pb->idpl;
+                    $pinjam['statusDosen'] = $pb->statusDosen;
+                    $pinjam['masalah'] = $pb->masalah;
+                    $pinjam['statusKalab'] = $pb->statusKalab;
+                    $pinjam['keterangan'] = $pb->keterangan;
+                    $pinjam['status'] = $pb->status;
+                    $pinjam['sdosen'] = $pb->sdosen;
+                    $pinjam['skalab'] = $pb->skalab;
+                if(!isset($keranjang[$pb->idlab]))
+                {
+                    $help1['id'] = $pb->idlab;
+                    $help1['nama'] = $pb->namaLab;
+                    $help1['lokasi'] = $pb->lokasi;
+                    $help1['gambar'] = PinjamLabController::gambar($pb->idlab);
+                    $help1['pinjam'] = array($pinjam);
+                    $help1['fakultas'] = $pb->fakultas;
+                    $help1['tipe'] = "lab";
+
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { $keranjang[$pb->idlab] = $help1; }
+                }
+                else
+                {
+                    if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                    {}
+                    else
+                    { array_push($keranjang[$pb->idlab]['pinjam'],$pinjam); }
+                }
+            }
+        }
+        else{
+            $orderku = Order::where('idorder',$id)->get();
+            if($request->cancelb != null){
+                foreach($request->cancelb as $cb)
+                {
+                    $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.idp = '".$cb."'");
+                    foreach($pesanankubarang as $pb)
+                    {
+                        $pinjam['tgl'] = $pb->tanggal;
+                        $pinjam['mulai'] = $pb->mulai;
+                        $pinjam['selesai'] = $pb->selesai;
+                        $pinjam['checkin'] = $pb->checkin;
+                        $pinjam['checkout'] = $pb->checkout;
+                        $pinjam['idp'] = $pb->idp;
+                        $pinjam['statusDosen'] = $pb->statusDosen;
+                        $pinjam['masalah'] = $pb->masalah;
+                        $pinjam['statusKalab'] = $pb->statusKalab;
+                        $pinjam['keterangan'] = $pb->keterangan;
+                        $pinjam['status'] = $pb->status;
+                        $pinjam['sdosen'] = $pb->sdosen;
+                        $pinjam['skalab'] = $pb->skalab;
+                        
+                        if(!isset($keranjang[$pb->idbarangdetail]))
+                        {
+                            $help['id'] = $pb->idbarangdetail;
+                            $help['nama'] = $pb->nama;
+                            $help['merk'] = $pb->merk;
+                            $help['barang'] = $pb->namaBarang;
+                            $help['kat'] = $pb->kategori;
+                            $help['gambar'] = PinjamController::gambardt($pb->idbarangdetail);
+                            $help['pinjam'] = array($pinjam);
+                            $help['lab'] = $pb->namaLab;
+                            $help['lokasi'] = $pb->lokasi;
+                            $help['fakultas'] = $pb->fakultas;
+                            $help['tipe'] = "barang";
+
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                            {}
+                            else
+                            { $keranjang[$pb->idbarangdetail] = $help; }
+                            
+                        }
+                        else
+                        {
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                            {}
+                            else
+                            { array_push($keranjang[$pb->idbarangdetail]['pinjam'],$pinjam); }
+                        }
+                    }
+                }
+            }
+            if($request->cancell != null) {
+                foreach($request->cancell as $cl)
+                {
+                    $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
+                    foreach($pesanankulab as $pb)
+                    {
+                        $pinjam['tgl'] = $pb->tanggal;
+                        $pinjam['mulai'] = $pb->mulai;
+                        $pinjam['selesai'] = $pb->selesai;
+                        $pinjam['checkin'] = $pb->checkin;
+                        $pinjam['checkout'] = $pb->checkout;
+                        $pinjam['idpl'] = $pb->idpl;
+                        $pinjam['statusDosen'] = $pb->statusDosen;
+                        $pinjam['masalah'] = $pb->masalah;
+                        $pinjam['statusKalab'] = $pb->statusKalab;
+                        $pinjam['keterangan'] = $pb->keterangan;
+                        $pinjam['status'] = $pb->status;
+                        $pinjam['sdosen'] = $pb->sdosen;
+                        $pinjam['skalab'] = $pb->skalab;
+                        if(!isset($keranjang[$pb->idlab]))
+                        {
+                            $help['id'] = $pb->idlab;
+                            $help['nama'] = $pb->namaLab;
+                            $help['lokasi'] = $pb->lokasi;
+                            $help['gambar'] = PinjamLabController::gambar($pb->idlab);
+                            $help['pinjam'] = array($pinjam);
+                            $help['fakultas'] = $pb->fakultas;
+                            $help['tipe'] = "lab";
+
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                            {}
+                            else
+                            { $keranjang[$pb->idlab] = $help; }
+                        }
+                        else
+                        {
+                            if($pinjam['sdosen'] == 2 || $pinjam['status'] == 2 || $pinjam['checkout'] != "" || $pinjam['checkin'] != "" || $pinjam['skalab'] == 2 )
+                            {}
+                            else
+                            { array_push($keranjang[$pb->idlab]['pinjam'],$pinjam); }
+                        }
+                    }
+                }
+            }
+        }
+        if(count($keranjang) == 0)
+        {
+            return redirect('/order/batalkan/'.$id)->with('status', '2');
+        }
+        else{
+            return view("order.konfirmasibatal",compact('orderku','keranjang'));
+        }
+        
+    }
+    public function matikan($orderid,$pic)
+    {
+        $helper = 0;
+        $orderku = Order::where('idorder',$orderid)->get();// dd($orderku);
+        $pesanankubarang = DB::select("select p.sdosen, p.skalab, p.idp, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$orderid."' order by b.nama");
+        $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, p.idpl, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$orderid."' order by l.namaLab");
+        foreach($pesanankubarang as $pb)
+        {
+            if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->skalab == 2 )
+            { $helper++; }
+        }
+        foreach($pesanankulab as $pb)
+        {
+            if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->skalab == 2 )
+            { $helper++; }
+        }
+
+        if($helper == (count($pesanankubarang)+count($pesanankulab)))
+        {
+            DB::statement("update .order  set status = 2 where idorder = '".$orderid."'");
+            $riwayat = new History;
+            $riwayat->status = 4;
+            $riwayat->tanggal = date("Y-m-d H:i:s");
+            $riwayat->pic =$pic;
+            $riwayat->order = $orderid;
+            $riwayat->save();
+            return 1;
+        }
+        else { return 0; }
+    }
+
+    public function finalbatal(Request $request)
+    {
+        $id = $request->orderid;
+        $helper = 0;
+        $orderku = Order::where('idorder',$id)->get();
+        if($request->cancelb != null){
+            foreach($request->cancelb as $cb)
+            {
+                $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.idp = '".$cb."'");
+                foreach($pesanankubarang as $pb)
+                {
+                    if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->checkin != "" || $pb->skalab == 2 )
+                    { $helper++; }
+                }
+            }
+        }
+        if($request->cancell != null) {
+            foreach($request->cancell as $cl)
+            {
+                $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
+                foreach($pesanankulab as $pb)
+                {
+                    if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->checkin != "" || $pb->skalab == 2 )
+                    { $helper++; }
+                }
+            }
+        }
+
+        if($helper >= 1)
+        {
+            return redirect('/order/batalkan/'.$id)->with('status', '1');
+        }
+        else{
+            if($request->cancelb != null){
+                foreach($request->cancelb as $cb)
+                {
+                    DB::statement("update pinjam set status = 2, keterangan = 'Item Dibatalkan Oleh Pemesan' where idp = '".$cb."'");
+                }
+            }
+            if($request->cancell != null) {
+                foreach($request->cancell as $cl)
+                {
+                    DB::statement("update pinjamlab set status = 2, keterangan = 'Item Dibatalkan Oleh Pemesan' where idpl = '".$cl."'");
+                }
+            }
+
+            $riwayat = new History;
+            $riwayat->status = 3;
+            $riwayat->tanggal = date("Y-m-d H:i:s");
+            $riwayat->pic =auth()->user()->nrpnpk;
+            $riwayat->order = $id;
+            $riwayat->save();
+            $this->matikan($id,auth()->user()->nrpnpk);
+            KeranjangController::kirimemail($id,'Item Pada Pesanan Anda Berhasil Dibatalkan','Item Pada Pesanan Anda Berhasil Dibatalkan','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan','batal');
+            
+            return redirect('/order/detail/'.$id)->with('status', '1');
+        }
+        
     }
 
     public function gantiprofil2(Request $request)
@@ -209,6 +1294,7 @@ class HomeController extends Controller
     public function showorder(Request $request)
     {
         $order = Order::where('idorder',$request->ido)->where('mahasiswa',auth()->user()->nrpnpk)->get();
+       
         if(count($order) == 0)
         {
             return("<h3 style='padding: 0px 20px 0px 20px;'>Order Tidak Tersedia</h3>");
@@ -233,7 +1319,9 @@ class HomeController extends Controller
     public function orderdetail($id)
     {
         $order = Order::where('idorder',$id)->where('mahasiswa',auth()->user()->nrpnpk)->get();
-        if(count($order) == 0)
+        $order1 = Order::where('idorder',$id)->where('dosen',auth()->user()->nrpnpk)->get();
+        
+        if(count($order)+ count($order1) + KeranjangController::laborannya($id,auth()->user()->nrpnpk) == 0)
         {
             return redirect(url('/home'))->with("status",4);
         }
