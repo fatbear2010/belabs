@@ -21,6 +21,9 @@
       <h1>Persetujuan Penanggungjawab</h1>
       <h1>Nomor Pesanan : {{$orderku[0]->idorder}}</h1>
       <h3>Waktu Pesanan Dibuat : {{$orderku['0']->tanggal}}</h3>
+      <a style="margin-bottom: 5px; width: 100%;" href="{{url('order/detail/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-dark">Kembali</a>
+      <br>
+
       @if(session('status'))
           @if(session('status') == 3)
           <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -104,8 +107,12 @@
                                                 @elseif($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
                                                 @elseif($pj['checkout'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
                                                 @elseif($pj['checkin'] != "")
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
+                                                @elseif($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                @elseif($pj['checkin1'] != "")
                                                 <h4 class="text-danger">Item Telah Diambil</h4>
                                                 @elseif($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
@@ -160,8 +167,12 @@
                                                 @elseif($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
                                                 @elseif($pj['checkout'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
                                                 @elseif($pj['checkin'] != "")
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
+                                                @elseif($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                @elseif($pj['checkin1'] != "")
                                                 <h4 class="text-danger">Item Telah Diambil</h4>
                                                 @elseif($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
@@ -215,8 +226,12 @@
                                                 @elseif($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
                                                 @elseif($pj['checkout'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
                                                 @elseif($pj['checkin'] != "")
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
+                                                @elseif($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                @elseif($pj['checkin1'] != "")
                                                 <h4 class="text-danger">Item Telah Diambil</h4>
                                                 @elseif($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
@@ -264,13 +279,17 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
-                                                @if($pj['sdosen'] == 2)
+                                               @if($pj['sdosen'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
                                                 @elseif($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
                                                 @elseif($pj['checkout'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
                                                 @elseif($pj['checkin'] != "")
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
+                                                @elseif($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                @elseif($pj['checkin1'] != "")
                                                 <h4 class="text-danger">Item Telah Diambil</h4>
                                                 @elseif($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>

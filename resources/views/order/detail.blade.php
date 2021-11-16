@@ -110,10 +110,10 @@
     <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
             <div class="row">
-            <div class="col-12 col-md-5"><h2>Pengambilan Barang / Absen</h2></div>
+            <div class="col-12 col-md-5"><h2>Pengambilan Barang / Kehadiran</h2></div>
             <div class="col-12 col-md-7">
             @if( KeranjangController::laborannya($orderku[0]->idorder,auth()->user()->nrpnpk) > 0)
-            <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('ambil/all/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-fik float-right">Pengambilan Pesanan (Laboran/Kalab)</a>
+            <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('ambil/all/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-fik float-right">Pengambilan Pesanan / Kehadiran (Laboran/Kalab)</a>
             @endif
             </div>
         </div>
@@ -139,7 +139,7 @@
             @endif
             @if( KeranjangController::laborannya($orderku[0]->idorder,auth()->user()->nrpnpk) > 0)
             <br>
-            <h3>Daftar Pengambilan / Absen</h3>
+            <h3>Daftar Pengambilan / Kehadiran</h3>
             <div class="table-responsive">
             <table class="table">
                 <thead class="thead-light">
@@ -219,7 +219,7 @@
                                         @if($pj['status'] == 2) class="btn-sm btn-danger text-left " 
                                         @elseif($pj['checkout'] != "") class="btn-sm btn-info text-left " 
                                         @elseif($pj['checkin'] != "") class="btn-sm btn-primary text-left " 
-                                        @elseif($pj['status'] == 1) class="btn-sm btn-success text-left " 
+                                        @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn-sm btn-success text-left " 
                                         @else class="btn-sm btn-fik text-left " @endif
 
                                         type="button" data-toggle="collapse" data-target="#z{{$hitung.$item['id']}}" aria-expanded="true" aria-controls="z{{$hitung.$item['id']}}" style="width:100%;">
@@ -294,7 +294,7 @@
                                         @if($pj['status'] == 2) class="btn btn-danger text-left " 
                                         @elseif($pj['checkout'] != "") class="btn btn-info text-left " 
                                         @elseif($pj['checkin'] != "") class="btn btn-primary text-left " 
-                                        @elseif($pj['status'] == 1) class="btn btn-success text-left " 
+                                        @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn btn-success text-left " 
                                         @else class="btn btn-fik text-left " @endif
 
                                         type="button" data-toggle="collapse" data-target="#y{{$hitung.$item['id']}}" aria-expanded="true" aria-controls="y{{$hitung.$item['id']}}" style="width:100%;">
@@ -369,7 +369,7 @@
                                         @if($pj['status'] == 2) class="btn-sm btn-danger text-left " 
                                         @elseif($pj['checkout'] != "") class="btn-sm btn-info text-left " 
                                         @elseif($pj['checkin'] != "") class="btn-sm btn-primary text-left " 
-                                        @elseif($pj['status'] == 1) class="btn-sm btn-success text-left " 
+                                        @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn-sm btn-success text-left " 
                                         @else class="btn-sm btn-fik text-left " @endif
 
                                         type="button" data-toggle="collapse" data-target="#y{{$hitung.$item['id']}}" aria-expanded="true" aria-controls="y{{$hitung.$item['id']}}" style="width:100%;">
@@ -444,7 +444,7 @@
                                         @if($pj['status'] == 2) class="btn btn-danger text-left " 
                                         @elseif($pj['checkout'] != "") class="btn btn-info text-left " 
                                         @elseif($pj['checkin'] != "") class="btn btn-primary text-left " 
-                                        @elseif($pj['status'] == 1) class="btn btn-success text-left " 
+                                        @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn btn-success text-left " 
                                         @else class="btn btn-fik text-left " @endif
 
                                         type="button" data-toggle="collapse" data-target="#y{{$hitung.$item['id']}}" aria-expanded="true" aria-controls="y{{$hitung.$item['id']}}" style="width:100%;">

@@ -102,6 +102,8 @@ Route::middleware('auth')->group(function() {
 
 	Route::get('ambil/all/{id}','App\Http\Controllers\AmbilbalikController@ambil')->name('ambil.ambil');
 	Route::post('ambil/labku/','App\Http\Controllers\AmbilbalikController@ambillab')->name('ambil.ambillab');
+	Route::post('ambil/pambil/','App\Http\Controllers\AmbilbalikController@prosesambil')->name('ambil.pambil');
+	Route::post('ambil/ambilfinal/','App\Http\Controllers\AmbilbalikController@finalambil')->name('ambil.ambilfinal');
 	
 });
 

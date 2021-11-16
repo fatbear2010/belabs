@@ -236,10 +236,10 @@
 																	<td style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
 																		<div style="font-family: sans-serif">
 																			<div style="font-size: 12px; color: #000000; line-height: 1.2; font-family: Lato, Tahoma, Verdana, Segoe, sans-serif;">
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:24px;"><strong>{{$pemesan->nrpnpk}}</strong></span></span></p>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><span style="font-size:24px;"><strong>{{$pemesan->nama}}</strong></span></span></p>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pemesan->email}}</span></p>
-																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pemesan->notelp}} - {{$pemesan->lineId}}</span></p>
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:24px;"><strong>{{$pemesan[0]->nrpnpk}}</strong></span></span></p>
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><span style="font-size:24px;"><strong>{{$pemesan[0]->nama}}</strong></span></span></p>
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pemesan[0]->email}}</span></p>
+																				<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;">{{$pemesan[0]->notelp}} - {{$pemesan[0]->lineId}}</span></p>
 																			</div>
 																		</div>
 																	</td>
