@@ -40,6 +40,19 @@
 								@endforeach
 							</select>
 						</div>
+
+						<div class="form-group">
+							<label>Jurusan</label>
+							<br>
+							<select class="form-control" name="comboJurusan">
+								@foreach($jurusan as $j)
+								@if($j->fakultas != 10)
+								<option value="{{$j->idjurusan}}">{{$j->namaJurusan}}</option>
+								@endif
+								@endforeach
+							</select>
+						</div>
+
 						<div class="form-group">
 							<label for="form-control-label">Email</label>
 							<input type="text" name="txtEmail" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text">

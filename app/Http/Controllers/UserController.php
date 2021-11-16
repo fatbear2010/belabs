@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
 use App\Models\Jabatan;
+use App\Models\Jurusan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 class UserController extends Controller
@@ -25,23 +26,25 @@ class UserController extends Controller
     {
         $this->authorize('check-jabatan');
         $jabatan = Jabatan::All();
-        return view('admin.user.create', compact('jabatan'));
+        $jurusan = Jurusan::All();
+
+        return view('admin.user.create', compact('jabatan','jurusan'));
     }
     public function store(Request $request)
     {
         $this->authorize('check-jabatan');
         $data= new User();
        // $data->id=$request->get('txtID');
-        $data->id=$request->get('txtNRP');
+        $data->nrpnpk=$request->get('txtNRP');
         $data->nama=$request->get('txtNama');
         $data->email=$request->get('txtEmail');
         
         $data->status=2;
         //$data->password=hash::make($request->get('txtPassword'));
+        //dd($request->get('comboJabatan'));
         $data->jabatan=$request->get('comboJabatan');
-        
-
-
+        $data->jurusan=$request->get('comboJurusan');
+        //dd($data);
         $data->save();
         return redirect()->route('users.index')->with('status','User is added');
     }
@@ -50,7 +53,16 @@ class UserController extends Controller
         $this->authorize('check-jabatan');
         $jabatan = Jabatan::All();
         $data =User::find($id);
-        return view('admin.user.edit',compact('data','jabatan'));
+        if($data->jabatan != 9)
+        {
+            return view('admin.user.edit',compact('data','jabatan'));
+        }
+        //else ngasih notif kalau user jabatan admin tidak bisa diedit --> lupa carae :)
+        // else
+        // {
+        //     return redirect()->route('users.index')->with('status','User dengan jabatan admin tidak bisa diedit');
+        // }
+       
     }
     public function update(Request $request, $id)
     {
