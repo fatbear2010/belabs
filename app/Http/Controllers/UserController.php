@@ -31,13 +31,13 @@ class UserController extends Controller
     {
         $this->authorize('check-jabatan');
         $data= new User();
-        $data->id=$request->get('txtID');
-        $data->nrpnpk=$request->get('txtNRP');
+       // $data->id=$request->get('txtID');
+        $data->id=$request->get('txtNRP');
         $data->nama=$request->get('txtNama');
         $data->email=$request->get('txtEmail');
         
         $data->status=2;
-        $data->password=hash::make($request->get('txtPassword'));
+        //$data->password=hash::make($request->get('txtPassword'));
         $data->jabatan=$request->get('comboJabatan');
         
 

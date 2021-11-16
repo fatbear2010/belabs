@@ -19,10 +19,10 @@
 
 
 					<div class="pl-lg-4">
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="form-control-label">ID User</label>
 							<input type="text" name="txtID" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text">
-						</div>
+						</div> -->
 						<div class="form-group">
 							<label for="form-control-label">NRP/NPK</label>
 							<input type="text" name="txtNRP" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text">
@@ -44,10 +44,10 @@
 							<label for="form-control-label">Email</label>
 							<input type="text" name="txtEmail" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text">
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="form-control-label">Password</label>
 							<input type="text" name="txtPassword" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text">
-						</div>
+						</div> -->
 
 						<div class="text-center">
 							<button type="submit" class="btn btn-warning">Submit</button>
