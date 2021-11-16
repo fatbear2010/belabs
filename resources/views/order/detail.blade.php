@@ -18,7 +18,7 @@
 <div class="card-header border-0">
   <div class="row align-items-center">
     <div class="col-12 text-center">
-      <h1>Detail Pesanan</h1>
+      <h1>Pengambilan Barang</h1>
       <h1>Nomor Pesanan : {{$orderku[0]->idorder}}</h1>
       <h3>Waktu Pesanan Dibuat : {{$orderku['0']->tanggal}}</h3>
 
@@ -53,9 +53,6 @@
         </div>
           @endif
         @endif  
-      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-danger">Batalkan Pesanan</a>
-      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/ppj/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-dark">Setujui Pesanan (Penanggungjawab)</a>
-      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/pl/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-light">Setujui Pesanan (Laboran/Kalab)</a>
       <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-primary">Pengambilan Pesanan (Pemesan)</a>
       <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-info">Pengambilan Pesanan (Laboran/Kalab)</a>
       <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-success">Pengembalian Pesanan (Pemesan) </a>
@@ -82,18 +79,17 @@
           </div>
             <div class="col-lg-10 text-left table-responsive">
                 <table class="table wrap">
-                  <tr><td >NRP/NPK</td><td><b>{{ auth()->user()->nrpnpk }}</b></td></tr>
-                  <tr><td>Nama Lengkap</td><td><b>{{ auth()->user()->nama }}</b></td></tr>
-                  <tr><td>Jurusan , <br> Fakultas</td><td><b>{{ auth()->user()->jurusan1()->namaJurusan}} <br> {{auth()->user()->fakultas1()->namafakultas }}</b></td></tr>
-                  <tr><td>Jabatan</td><td><b>{{auth()->user()->jabatan1()->nama}}</b></td></tr>
-                  <tr><td>Email</td><td><b>{{ auth()->user()->email }}</b></td></tr>
-                  <tr><td>No Telp</td><td><b>{{ auth()->user()->notelp }}</b></td></tr>
-                  <tr><td>Line ID</td><td><b>{{ auth()->user()->lineid }}</b></td></tr>
+                  <tr><td >NRP/NPK</td><td><b>{{ $pemesan[0]->nrpnpk }}</b></td></tr>
+                  <tr><td>Nama Lengkap</td><td><b>{{ $pemesan[0]->nama }}</b></td></tr>
+                  <tr><td>Jurusan , <br> Fakultas</td><td><b>{{ $pemesan[0]->jurusan1()->namaJurusan}} <br> {{$pemesan[0]->fakultas1()->namafakultas }}</b></td></tr>
+                  <tr><td>Jabatan</td><td><b>{{$pemesan[0]->jabatan1()->nama}}</b></td></tr>
+                  <tr><td>Email</td><td><b>{{ $pemesan[0]->email }}</b></td></tr>
+                  <tr><td>No Telp</td><td><b>{{ $pemesan[0]->notelp }}</b></td></tr>
+                  <tr><td>Line ID</td><td><b>{{ $pemesan[0]->lineid }}</b></td></tr>
                 </table>
             </div>
         </div>
     </div>
-    <br>
     <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
             <h2>Dosen Penanggungjawab</h2><span class="font-weight-light"></span>
@@ -111,34 +107,80 @@
                     </div>
         </div>
     </div>
-    <br>
     <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
-            <h2>Riwayat Pesanan</h2><span class="font-weight-light"></span>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="timeline p-4 block mb-4">
-<?php for ($i=count($status)-1; $i > -1 ; $i--) { ?>        
-                    <div class="tl-item ">
-                        <div class="tl-dot b-fik"></div>
-                        <div class="tl-content">
-                            <div class="">
-                                <h4>{{date("d-m-Y H:i:s" , strtotime($status[$i]->tanggal))}} <br><b>{{$status[$i]->nama}}</b></h4>
-                                <h5>{{KeranjangController::cariorang($status[$i]->pic)}}</h5>
-                            </div>
-                        </div>
-                    </div>       
-<?php } ?>        
-                </div>
+            <div class="row">
+            <div class="col-12 col-md-5"><h2>Pengambilan Barang / Absen</h2></div>
+            <div class="col-12 col-md-7">
+            @if( KeranjangController::laborannya($orderku[0]->idorder,auth()->user()->nrpnpk) > 0)
+            <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('ambil/all/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-fik float-right">Pengambilan Pesanan (Laboran/Kalab)</a>
+            @endif
             </div>
         </div>
-    </div>  
-    <br>
+        </div>
+        <div class="row" style="margin: 5px 10px 5px 10px;">
+            <div class="col-12" >
+            @if($orderku[0]->mahasiswa == auth()->user()->nrpnpk)
+            <br>
+                <form>
+                    @csrf
+                    <div class="row">
+                        <div class="col-12 col-md-2">Kode Pengambilan</div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <input minlength="6" maxlength="6" type="password" name="acode" class="form-control" required autofocus >
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <input type="submit" name="ok" class="btn btn-fik text-wrap " value="Cek Kode Pengambilan" style="width: 100%">
+                        </div>
+                    </div>
+                </form>
+            @endif
+            @if( KeranjangController::laborannya($orderku[0]->idorder,auth()->user()->nrpnpk) > 0)
+            <br>
+            <h3>Daftar Pengambilan / Absen</h3>
+            <div class="table-responsive">
+            <table class="table">
+                <thead class="thead-light">
+                    <th>Kode Pengambilan</th><th>Diajukan</th><th>Diambil</th><th>PIC</th><th>Action</th>
+                </thead>
+                <tbody class="list">
+                    @foreach($ambil as $am)
+                    <tr>
+                        <td>102188265626288<h3>AL67GY</h3></td>
+                        <td>15 Oktober 2021 : 17.00</td>
+                        <td>15 Oktober 2021 : 17.00</td>
+                        <td>Daniel Yanuar Surjadi</td>
+                        <td>
+                            <a href="" class="text-wrap btn btn-fik">Detail</a>
+                        </td>
+                    </tr>
+                     @endforeach
+                </tbody>    
+            </table>
+        </div>
+        <br>
+            @endif
+        </div>
+        </div>
+    </div>
    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;">
      <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
+            <div class="row"></div>
             <h2>Item Yang Dipesan</h2>
+            @if($orderku[0]->mahasiswa == auth()->user()->nrpnpk)
+                <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-danger">Batalkan Pesanan</a>
+            @endif
+            @if($orderku[0]->dosen == auth()->user()->nrpnpk)
+                <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/ppj/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-primary">Setujui Pesanan (Penanggungjawab)</a>
+            @endif
+            @if( KeranjangController::laborannya($orderku[0]->idorder,auth()->user()->nrpnpk) > 0)
+                 <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/pl/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-info">Setujui Pesanan (Laboran/Kalab)</a>
+            @endif
+             
+            <h5>Keterangan Warna Item:</h5>
             <button style="margin-bottom:10px;" class="btn-sm btn-fik">Sedang Diproses</button>
             <button style="margin-bottom:10px;" class="btn-sm btn-success">Disetujui</button>
             <button style="margin-bottom:10px;" class="btn-sm btn-danger">Tidak Dietujui/Batal</button>
@@ -190,9 +232,9 @@
                                         <br>
                                         <div class="row">
                                             <div class="col-4"><h5>Checkin</h5></div>
-                                            <div class="col-8"><h5>{{$pj['checkin']}}</h4></div>
+                                            <div class="col-8"><h5>{{$pj['checkin']}} | {{$pj['checkin1']}}</h4></div>
                                             <div class="col-4"><h5>Checkout</h5></div>
-                                            <div class="col-8"><h5>{{$pj['checkout']}}</h4></div>
+                                            <div class="col-8"><h5>{{$pj['checkout']}} | {{$pj['checkout1']}}</h4></div>
                                             <div class="col-4"><h5>Catatan</h5></div>
                                             <div class="col-8"><h5>{{$pj['masalah']}}</h5></div>
                                             <div class="col-4"><h5>Dosen Penanggungjawab</h5></div>
@@ -265,9 +307,9 @@
                                         <br>
                                         <div class="row">
                                             <div class="col-4"><h4>Checkin</h4></div>
-                                            <div class="col-8"><h4>{{$pj['checkin']}}</h4></div>
+                                            <div class="col-8"><h4>{{$pj['checkin']}} | {{$pj['checkin1']}}</h4></div>
                                             <div class="col-4"><h4>Checkout</h4></div>
-                                            <div class="col-8"><h4>{{$pj['checkout']}}</h4></div>
+                                            <div class="col-8"><h4>{{$pj['checkout']}} | {{$pj['checkout1']}}</h4></div>
                                             <div class="col-4"><h4>Catatan</h4></div>
                                             <div class="col-8"><h4>{{$pj['masalah']}}</h4></div>
                                             <div class="col-4"><h4>Dosen Penanggungjawab</h4></div>
@@ -340,9 +382,9 @@
                                         <br>
                                         <div class="row">
                                             <div class="col-4"><h5>Checkin</h5></div>
-                                            <div class="col-8"><h5>{{$pj['checkin']}}</h5></div>
+                                            <div class="col-8"><h5>{{$pj['checkin']}} | {{$pj['checkin1']}}</h5></div>
                                             <div class="col-4"><h5>Checkout</h5></div>
-                                            <div class="col-8"><h5>{{$pj['checkout']}}</h5></div>
+                                            <div class="col-8"><h5>{{$pj['checkout']}} | {{$pj['checkout1']}}</h5></div>
                                             <div class="col-4"><h5>Catatan</h5></div>
                                             <div class="col-8"><h5>{{$pj['masalah']}}</h5></div>
                                             <div class="col-4"><h5>Dosen Penanggungjawab</h5></div>
@@ -415,9 +457,9 @@
                                         <br>
                                         <div class="row">
                                             <div class="col-4"><h4>Checkin</h4></div>
-                                            <div class="col-8"><h4>{{$pj['checkin']}}</h4></div>
+                                            <div class="col-8"><h4>{{$pj['checkin']}} | {{$pj['checkin1']}}</h4></div>
                                             <div class="col-4"><h4>Checkout</h4></div>
-                                            <div class="col-8"><h4>{{$pj['checkout']}}</h4></div>
+                                            <div class="col-8"><h4>{{$pj['checkout']}} | {{$pj['checkout1']}}</h4></div>
                                             <div class="col-4"><h4>Catatan</h4></div>
                                             <div class="col-8"><h4>{{$pj['masalah']}}</h4></div>
                                             <div class="col-4"><h4>Dosen Penanggungjawab</h4></div>
@@ -456,7 +498,6 @@
     </div>
     </div>  
 
-    <br>
     <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
             <h2>Catatan Pemesanan</h2><span class="font-weight-light"></span>
@@ -474,16 +515,42 @@
                 <h4>{{$orderku[0]->noteKalab}}</h4>
                 <br>
                 <h3><b>Catatan Pengambilan</b></h3>
-                <h4>{{$orderku[0]->notePengambilan}}</h4>
+                @foreach($ambil as $am)
+                <h4>{{$am->idambilbalik}} | {{$am->note}}</h4>
+                @endforeach
                 <br>
                 <h3><b>Catatan Pengembalian</b></h3>
-                <h4>{{$orderku[0]->notePengembalian}}</h4>
+                 @foreach($balik as $bl)
+                <h4>{{$bl->idambilbalik}} | {{$bl->note}}</h4>
+                @endforeach
                 <br>
             </div>
         </div>
     </div>
-     <br>
-                  
+
+    <div class="card card-profile shadow " style="width: 100%;">
+        <div class="card-header text-left">
+            <h2>Riwayat Pesanan</h2><span class="font-weight-light"></span>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="timeline p-4 block mb-4">
+<?php for ($i=count($status)-1; $i > -1 ; $i--) { ?>        
+                    <div class="tl-item ">
+                        <div class="tl-dot b-fik"></div>
+                        <div class="tl-content">
+                            <div class="">
+                                <h4>{{date("d-m-Y H:i:s" , strtotime($status[$i]->tanggal))}} <br><b>{{$status[$i]->nama}}</b></h4>
+                                <h5>{{KeranjangController::cariorang($status[$i]->pic)}}</h5>
+                            </div>
+                        </div>
+                    </div>       
+<?php } ?>        
+                </div>
+            </div>
+        </div>
+    </div>  
+    <br>            
 
 
 </div>

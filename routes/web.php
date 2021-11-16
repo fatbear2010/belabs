@@ -99,6 +99,9 @@ Route::middleware('auth')->group(function() {
 	Route::get('order/pl/{id}','App\Http\Controllers\HomeController@ordersetujul')->name('order.ordersetujul');
 	Route::post('order/ppl/','App\Http\Controllers\HomeController@prosesordersetujul')->name('order.ppl');
 	Route::post('order/ppl2/','App\Http\Controllers\HomeController@finalsetujul')->name('order.finalsetujul');
+
+	Route::get('ambil/all/{id}','App\Http\Controllers\AmbilbalikController@ambil')->name('ambil.ambil');
+	Route::post('ambil/labku/','App\Http\Controllers\AmbilbalikController@ambillab')->name('ambil.ambillab');
 	
 });
 

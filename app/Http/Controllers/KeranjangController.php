@@ -13,6 +13,7 @@ use App\Models\PinjamLab;
 use App\Models\Order;
 use App\Models\History;
 use App\Models\Email;
+use App\Models\Ambilbalik;
 use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\PinjamLabController;
 use Illuminate\Support\Facades\DB;
@@ -258,23 +259,25 @@ class KeranjangController extends Controller
 
                         $riwayat = new History;
                         $riwayat->status = 1;
-                        $riwayat->tanggal = date("Y-m-d h:i:s");
+                        $riwayat->tanggal = date("Y-m-d H:i:s");
                         $riwayat->pic ='020102000';
                         $riwayat->order = $id;
                         $riwayat->save();
                         $dosenpj = DB::select('select * from users where nrpnpk = "'.$request->dosen.'"');
-                        $pesanankubarang = DB::select("select p.sdosen, p.skalab, l.lokasi, k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
-                        $pesanankulab = DB::select("select p.sdosen, p.skalab,l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+                        $pesanankubarang = DB::select("select p.sdosen, p.skalab,p.checkin1, p.checkout1, l.lokasi, k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+                        $pesanankulab = DB::select("select p.sdosen, p.skalab,p.checkin1, p.checkout1, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
                         $orderku = Order::where('idorder',$id)->get();
                         $pemesan = auth()->user();
+                        $ambil = Ambilbalik::where('order',$id)->where('tipe','AMBIL')->get();
+                        $balik = Ambilbalik::where('order',$id)->where('tipe','BALIK')->get();
                         $pesan = "Terima Kasih <br> Pesanan Anda Telah Kami Terima";
                         $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$id.'"');
-                        Mail::to($pemesan->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS Order Confirmation', 'Terima Kasih, Pesanan Anda Telah Kami Terima', $status));
+                        Mail::to($pemesan->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS Order Confirmation', 'Terima Kasih, Pesanan Anda Telah Kami Terima', $status,$ambil,$balik));
                        
                         $emaild = Email::where('nrpnpk',$dosenku)->get();
                         if($emaild[0]->buat == 1)
                         {
-                            Mail::to($dosenpj[0]->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id. ' BeLABS Pesanan Ini Memerlukan Persetujuan Anda', 'Pesanan Ini Memerlukan Persetujuan Anda', $status));
+                            Mail::to($dosenpj[0]->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id. ' BeLABS Pesanan Ini Memerlukan Persetujuan Anda', 'Pesanan Ini Memerlukan Persetujuan Anda', $status,$ambil,$balik));
                         }
                         
                         $emaillab = DB::select("select DISTINCT user from laboran la left join (select DISTINCT bd.lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.lab = lb.lab");
@@ -284,7 +287,7 @@ class KeranjangController extends Controller
                             
                             if($emailaboran[0]->buat == 1)
                             {
-                                Mail::to($laboran[0]->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS Pesanan Ini Memerlukan Persetujuan Anda', 'Pesanan Ini Memerlukan Persetujuan Anda', $status));
+                                Mail::to($laboran[0]->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS Pesanan Ini Memerlukan Persetujuan Anda', 'Pesanan Ini Memerlukan Persetujuan Anda', $status,$ambil,$balik));
                             }
                         }
 
@@ -317,9 +320,11 @@ class KeranjangController extends Controller
     {
         $orderku = Order::where('idorder',$id)->get();// dd($orderku);
         $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
-        $pesanankubarang = DB::select("select p.sdosen, p.skalab, l.lokasi, k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
-        $pesanankulab = DB::select("select p.sdosen, p.skalab,l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
-        $pemesan = auth()->user();
+        $pesanankubarang = DB::select("select p.sdosen, p.skalab, l.lokasi,p.checkin1, p.checkout1, k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+        $pesanankulab = DB::select("select p.sdosen, p.skalab,l.namaLab,p.checkin1, p.checkout1, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+        $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa);
+        $ambil = Ambilbalik::where('order',$id)->where('tipe','AMBIL')->get();
+        $balik = Ambilbalik::where('order',$id)->where('tipe','BALIK')->get();
         $pesan = "Terima Kasih Pesanan Anda Telah Kami Terima";
         $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$id.'"');
         $emaillab = DB::select("select DISTINCT user from laboran la left join (select DISTINCT bd.lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.lab = lb.lab");
@@ -328,30 +333,32 @@ class KeranjangController extends Controller
             //dd($emailaboran);
             if($emailaboran[0]->$action == 1)
             {
-                Mail::to($dosenpj->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek2, $pesan2, $status));
+                Mail::to($dosenpj->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek2, $pesan2, $status,$ambil,$balik));
             }
         }
 
-        Mail::to($pemesan->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek1, $pesan1, $status));
+        Mail::to($pemesan->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek1, $pesan1, $status,$ambil,$balik));
                      
         $emaild = Email::where('nrpnpk',$orderku[0]->dosen)->get();
         if($emaild[0]->$action == 1)
         {
-            Mail::to($dosenpj[0]->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek2, $pesan2, $status));
+            Mail::to($dosenpj[0]->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek2, $pesan2, $status,$ambil,$balik));
         }
        
     }
 
     public function test()
     {
-        $id= "1310202100003";
+        $id= "1410202100003";
         $orderku = Order::where('idorder',$id)->get();// dd($orderku);
         $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
-        $pesanankubarang = DB::select("select p.sdosen, p.skalab, l.lokasi, k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
-        $pesanankulab = DB::select("select p.sdosen, p.skalab,l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
-        $pemesan = auth()->user();
+        $pesanankubarang = DB::select("select p.sdosen, p.skalab, l.lokasi,p.checkin1, p.checkout1, k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+        $pesanankulab = DB::select("select p.sdosen, p.skalab,l.namaLab,p.checkin1, p.checkout1, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+        $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa);
         $pesan = "Terima Kasih Pesanan Anda Telah Kami Terima";
         $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$id.'"');
+        $ambil = Ambilbalik::where('order',$id)->where('tipe','AMBIL')->get();
+        $balik = Ambilbalik::where('order',$id)->where('tipe','BALIK')->get();
         $emaillab = DB::select("select DISTINCT user from laboran la left join (select DISTINCT bd.lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.lab = lb.lab");
         for ($i=0; $i <count($emaillab) ; $i++) { 
             $emailaboran = Email::where('nrpnpk',$emaillab[$i]->user)->get();
@@ -363,7 +370,7 @@ class KeranjangController extends Controller
             }
         }
         
-        return view('mail.m_orderconfirmation',compact('pemesan','dosenpj','pesanankubarang','pesanankulab','orderku','pesan','status'));
+        return view('mail.m_orderconfirmation',compact('pemesan','dosenpj','pesanankubarang','pesanankulab','ambil','balik','orderku','pesan','status'));
     }
 
     /**

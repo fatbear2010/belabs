@@ -11,6 +11,7 @@ use App\Models\Jurusan;
 use App\Models\Fakultas;
 use App\Models\Email;
 use App\Models\History;
+use App\Models\Ambilbalik;
 use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\PinjamLabController;
 use App\Http\Controllers\KeranjangController;
@@ -65,7 +66,7 @@ class HomeController extends Controller
  #############################################   
     public function ordersetujuppj($id)
     {
-        $order = Order::where('idorder',$id)->where('mahasiswa',auth()->user()->nrpnpk)->get();
+        $order = Order::where('idorder',$id)->where('dosen',auth()->user()->nrpnpk)->get();
         if(count($order) == 0)
         {
             return redirect(url('/home'))->with("status",4);
@@ -75,7 +76,8 @@ class HomeController extends Controller
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
             $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
-            $pemesan = auth()->user();
+            $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
+    
             $keranjang = array();
             $penampung = "";
             foreach($pesanankubarang as $pb)
@@ -215,7 +217,7 @@ class HomeController extends Controller
             $riwayat->pic =auth()->user()->nrpnpk;
             $riwayat->order = $id;
             $riwayat->save();
-            $this->matikan($id,auth()->user()->nrpnpk);
+            $this->matikan($id);
             KeranjangController::kirimemail($id,'Item Pada Pesanan Anda Telah Mendapat Respon Dari Penanggungjawab','Item Pada Pesanan Anda Telah Mendapat Respon Dari Penanggungjawab','Pesanan Yang Berkaitan Dengan Anda Mendapatkan Respon Dari Penanggungjawab','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan Mendapatkan Respon Dari Penanggungjawab','setuju');
             
             return redirect('/order/detail/'.$id)->with('status', '4');
@@ -429,8 +431,8 @@ class HomeController extends Controller
     public function ordersetujul($id)
     {
         $laboran = DB::select('select * from laboran where user = "'.auth()->user()->nrpnpk.'"');
-        $order = Order::where('idorder',$id)->where('mahasiswa',auth()->user()->nrpnpk)->get();
-        if(count($order) == 0)
+        $order = Order::where('idorder',$id)->get();
+        if(count($order) + KeranjangController::laborannya($id,auth()->user()->nrpnpk) == 0)
         {
             return redirect(url('/home'))->with("status",4);
         }
@@ -439,7 +441,8 @@ class HomeController extends Controller
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
             $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
-            $pemesan = auth()->user();
+            $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
+         
             $keranjang = array();
             $penampung = "";
             foreach($pesanankubarang as $pb)
@@ -604,7 +607,7 @@ class HomeController extends Controller
             $riwayat->pic =auth()->user()->nrpnpk;
             $riwayat->order = $id;
             $riwayat->save();
-            $this->matikan($id,auth()->user()->nrpnpk);
+            $this->matikan($id);
             KeranjangController::kirimemail($id,'Item Pada Pesanan Anda Telah Mendapat Respon Dari Kalab / Laboran','Item Pada Pesanan Anda Telah Mendapat Respon Dari Kalab / Laboran','Pesanan Yang Berkaitan Dengan Anda Mendapatkan Respon Dari Kalab / Laboran','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan Mendapatkan Respon Dari Kalab / Laboran','setuju');
             return redirect('/order/detail/'.$id)->with('status', '4');
         }
@@ -873,7 +876,8 @@ class HomeController extends Controller
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
             $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
-            $pemesan = auth()->user();
+            $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
+        
             $keranjang = array();
             $penampung = "";
             foreach($pesanankubarang as $pb)
@@ -1147,7 +1151,7 @@ class HomeController extends Controller
         }
         
     }
-    public function matikan($orderid,$pic)
+    public function matikan($orderid)
     {
         $helper = 0;
         $orderku = Order::where('idorder',$orderid)->get();// dd($orderku);
@@ -1170,7 +1174,7 @@ class HomeController extends Controller
             $riwayat = new History;
             $riwayat->status = 4;
             $riwayat->tanggal = date("Y-m-d H:i:s");
-            $riwayat->pic =$pic;
+            $riwayat->pic ='020102000';
             $riwayat->order = $orderid;
             $riwayat->save();
             return 1;
@@ -1230,7 +1234,7 @@ class HomeController extends Controller
             $riwayat->pic =auth()->user()->nrpnpk;
             $riwayat->order = $id;
             $riwayat->save();
-            $this->matikan($id,auth()->user()->nrpnpk);
+            $this->matikan($id);
             KeranjangController::kirimemail($id,'Item Pada Pesanan Anda Berhasil Dibatalkan','Item Pada Pesanan Anda Berhasil Dibatalkan','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan','batal');
             
             return redirect('/order/detail/'.$id)->with('status', '1');
@@ -1300,8 +1304,8 @@ class HomeController extends Controller
             return("<h3 style='padding: 0px 20px 0px 20px;'>Order Tidak Tersedia</h3>");
         }
         else{
-            $pesanankubarang = DB::select("select k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$request->ido."' order by b.nama");
-            $pesanankulab = DB::select("select l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$request->ido."' order by l.namaLab");
+            $pesanankubarang = DB::select("select k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama,p.checkin1, p.checkout1, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$request->ido."' order by b.nama");
+            $pesanankulab = DB::select("select l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai,p.checkin1, p.checkout1, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$request->ido."' order by l.namaLab");
             $out = "<table>";
             foreach ($pesanankubarang as $pb)
             { 
@@ -1328,9 +1332,11 @@ class HomeController extends Controller
         else{
             $orderku = Order::where('idorder',$id)->get();// dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
-            $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
-            $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
-            $pemesan = auth()->user();
+            $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang,p.checkin1, p.checkout1, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' order by b.nama");
+            $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas,p.checkin1, p.checkout1, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' order by l.namaLab");
+            $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
+            $ambil = Ambilbalik::where('order',$id)->where('tipe','AMBIL')->get();
+            $balik = Ambilbalik::where('order',$id)->where('tipe','BALIK')->get();
             $pesan = "Terima Kasih Pesanan Anda Telah Kami Terima";
             $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$id.'"');
             $keranjang = array();
@@ -1350,6 +1356,8 @@ class HomeController extends Controller
                     $pinjam['status'] = $pb->status;
                     $pinjam['sdosen'] = $pb->sdosen;
                     $pinjam['skalab'] = $pb->skalab;
+                    $pinjam['checkin1'] = $pb->checkin1;
+                    $pinjam['checkout1'] = $pb->checkout1;
                     
                 if(!isset($keranjang[$pb->idbarangdetail]))
                 {
@@ -1386,6 +1394,8 @@ class HomeController extends Controller
                     $pinjam['status'] = $pb->status;
                     $pinjam['sdosen'] = $pb->sdosen;
                     $pinjam['skalab'] = $pb->skalab;
+                    $pinjam['checkin1'] = $pb->checkin1;
+                    $pinjam['checkout1'] = $pb->checkout1;
                 if(!isset($keranjang[$pb->idlab]))
                 {
                     $help['id'] = $pb->idlab;
@@ -1402,8 +1412,7 @@ class HomeController extends Controller
                     array_push($keranjang[$pb->idlab]['pinjam'],$pinjam);
                 }
             }
-            //dd($keranjang);
-            return view('order.detail',compact('pemesan','dosenpj','keranjang','orderku','pesan','status'));
+            return view('order.detail',compact('pemesan','dosenpj','keranjang','orderku','pesan','status','ambil','balik'));
         }
     }
 }

@@ -1,9 +1,11 @@
+isi Tabel status di databse jangan diganti 
+
 status pada cek sesi 
 0 tidak tersedia, 1 belum disetujui ,2 aman, 3 perbaikan
 
 status barang detail : 
 0 tersedia, 1 tidak tersedia
--kondisi 1 rusak, 0 baik baik saja 
+-kondisi 1 rusak, 0 baik baik saja   
 -perbaikan 1 sedang diperbaiki , 0 aman 
 
 status lab

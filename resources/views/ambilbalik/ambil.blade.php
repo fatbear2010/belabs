@@ -1,4 +1,5 @@
 <?php use App\Http\Controllers\PinjamController; ?>
+<?php use App\Http\Controllers\PinjamLabController; ?>
 <?php use App\Http\Controllers\KeranjangController; ?>
 <?php
   function isMobile() {
@@ -56,7 +57,7 @@
         <div class="row" style="margin: 5px 10px 5px 10px;">
             <div class="col-lg-12 text-left table-responsive">
                 <table class="table wrap">
-                  <tr><td>Pemesan </td><td><b>{{ $pemesan[0]->nrpnpk }} - {{ $pemesan[0]->nama }}</b></td></tr>
+                  <tr><td>Pemesan </td><td><b>{{ auth()->user()->nrpnpk }} - {{ auth()->user()->nama }}</b></td></tr>
                   <tr><td>Penanggung Jawab</td><td><b>{{ $dosenpj[0]->nrpnpk }} - {{ $dosenpj[0]->nama }}</b></td></tr>
                 </table>
             </div>
@@ -69,6 +70,25 @@
         <div class="card-header text-left">
             <h2>Item Yang Dipesan</h2>
         </div>
+        <div class="row" style="margin: 0px 20px 0px 20px;">
+            <h4>Silahkan Pilih Lab</h4>
+            <form action="{{url('ambil/labku')}}" method="post" style="width: 100%;" > @csrf
+                <div class="row">
+                <div class="col-12 col-md-9">
+                <select class="form-control" name="lab" id="idlabdpl" style="margin-bottom: 10px;">
+                    @foreach($lab as $l)
+                      <option value="{{$l->idlab}}">{{$l->namaLab}} | {{PinjamLabController::fakultas1($l->fakultas)->namafakultas}}</option>
+                    @endforeach
+                </select>
+                <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
+                </div>
+                <div class="col-12 col-md-3">
+                    <input type="submit" name="pilihan" value="Pilih Lab" style="width: 100%;" class="text-wrap btn btn-fik">
+                </div>
+                </div>
+            </form>
+        </div>
+
         <form method="post" action="{{url('order/ppl')}}">
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 0px 10px 0px 10px;">
@@ -310,9 +330,9 @@
         </div>
         <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">   
     @if(isMobile())                
-        <button type="submit" name="agreeselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Persetujuan</button>
+        <button type="submit" name="agreeselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Aktifkan Pengambilan Item / Absen</button>
     @else
-     <button type="submit" name="agreeselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Persetujuan</button>
+     <button type="submit" name="agreeselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Aktifkan Pengambilan Item / Absen</button>
     @endif  
 
     </form>  
@@ -323,9 +343,9 @@
             <input type="hidden" name="pesan" id="txtc"  value="{{$orderku[0]->noteKalab}}">
             <input type="hidden" name="agreeall" value="1">
             <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
-            <button id="btnall" type="submit" name="agreeall1" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Setujui Seluruh Pesanan*</button>
+            <button id="btnall" type="submit" name="agreeall1" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Aktifkan Seluruh Pengambilan Item / Absen*</button>
            
-            <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Menyetujui Seluruh Pesanan <b>Yang Dapat Disetujui</b></h5>
+            <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Mengaktifkan Seluruh Pesanan <b>Yang Dapat Diambil</b></h5>
          </form>    
     @else
     <form method="post" action="{{url('order/ppl')}}">
@@ -333,17 +353,20 @@
         <input type="hidden" name="pesan" id="txtc" value="{{$orderku[0]->noteKalab}}">
         <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
         <input type="hidden" name="agreeall" value="1">
-        <button id="btnall" type="submit" name="agreeall1" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Setujui Seluruh Pesanan*</button>
-       <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Menyetujui Seluruh Pesanan <b>Yang Dapat Disetujui</b></h5>
+        <button id="btnall" type="submit" name="agreeall1" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Aktifkan Seluruh Pengambilan Item / Absen*</button>
+       <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Mengaktifkan Seluruh Pesanan <b>Yang Dapat Diambil</b></h5>
     </form>
     @endif
-  
+
  
     </div>
     </div>  
     </div>
 </div></div>
 <script type="text/javascript">
+
+ 
+
 $('#txta').change(function() {
      $('#txtc').val($("#txta").val());
 });    

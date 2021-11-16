@@ -55,7 +55,7 @@
         <div class="row" style="margin: 5px 10px 5px 10px;">
             <div class="col-lg-12 text-left table-responsive">
                 <table class="table wrap">
-                  <tr><td>Pemesan </td><td><b>{{ auth()->user()->nrpnpk }} - {{ auth()->user()->nama }}</b></td></tr>
+                  <tr><td>Pemesan </td><td><b>{{ $pemesan[0]->nrpnpk }} - {{ $pemesan[0]->nama }}</b></td></tr>
                   <tr><td>Penanggung Jawab</td><td><b>{{ $dosenpj[0]->nrpnpk }} - {{ $dosenpj[0]->nama }}</b></td></tr>
                 </table>
             </div>

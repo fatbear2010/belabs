@@ -383,10 +383,10 @@
 																				<br>
 																				<p style="margin: 0;"><span style="font-size:14px;"><b>Diambil</b>
 																				@if($pesanankubarang[$i]->checkin == "") -
-																				@else {{$pesanankubarang[$i]->checkin}} @endif</span></p>
+																				@else {{$pesanankubarang[$i]->checkin}} | {{$pesanankubarang[$i]->checkin1}} @endif</span></p>
 																				<p style="margin: 0;"><span style="font-size:14px;"><b>Dikembalikan</b>
 																					@if($pesanankubarang[$i]->checkout == "") -
-																				@else {{$pesanankubarang[$i]->checkout}} @endif</span></p>
+																				@else {{$pesanankubarang[$i]->checkout}} | {{$pesanankubarang[$i]->checkout1}} @endif</span></p>
 																				<br>
 																				<p style="margin: 0;"><span style="font-size:14px;"><b>Catatan</b><br> 
 																					@if($pesanankubarang[$i]->masalah == "") -
@@ -480,10 +480,10 @@ for ($i=0; $i < count($pesanankulab) ; $i++) { $sesuatu = 0;?>
 																				<br>
 																				<p style="margin: 0;"><span style="font-size:14px;"><b>Check In</b>
 																				@if($pesanankulab[$i]->checkin == "") -
-																				@else {{$pesanankulab[$i]->checkin}} @endif</span></p>
+																				@else {{$pesanankulab[$i]->checkin}} | {{$pesanankulab[$i]->checkin1}} @endif</span></p>
 																				<p style="margin: 0;"><span style="font-size:14px;"><b>Check Out</b>
 																					@if($pesanankulab[$i]->checkout == "") -
-																				@else {{$pesanankulab[$i]->checkout}} @endif</span></p>
+																				@else {{$pesanankulab[$i]->checkout}} | {{$pesanankulab[$i]->checkout1}} @endif</span></p>
 																				<br>
 																				<p style="margin: 0;"><span style="font-size:14px;"><b>Catatan</b><br> 
 																					@if($pesanankulab[$i]->masalah == "") -
@@ -593,12 +593,16 @@ for ($i=0; $i < count($pesanankulab) ; $i++) { $sesuatu = 0;?>
 																				<br>
 																				<div style="font-size: 12px; color: #000000; line-height: 1.2; font-family: Lato, Tahoma, Verdana, Segoe, sans-serif;">
 																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:18px;"><strong>Catatan Pengambilan </strong></span></span></p>
-																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:12px;"><span style="font-size:14px;">{{$orderku['0']->notePengambilan}}</span></span></p>
+																					 @foreach($ambil as $am)
+																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:12px;"><span style="font-size:14px;">{{$am->idambilbalik}} | {{$am->note}}</span></span></p>
+																					@endforeach
 																				</div>
 																				<br>
 																				<div style="font-size: 12px; color: #000000; line-height: 1.2; font-family: Lato, Tahoma, Verdana, Segoe, sans-serif;">
 																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:14px;"><a href="https://beefree.io" rel="noopener" style="text-decoration:none;color:#000000;" target="_blank"></a><span style="font-size:18px;"><strong>Catatan Pengembalian </strong></span></span></p>
-																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:12px;"><span style="font-size:14px;">{{$orderku['0']->notePengembalian}}</span></span></p>
+																					 @foreach($balik as $bl)
+																					<p style="margin: 0; font-size: 14px;"><span style="color:#000000;font-size:12px;"><span style="font-size:14px;">{{$bl->idambilbalik}} | {{$bl->note}}</span></span></p>
+																					@endforeach
 																				</div>
 
 																			</div>

@@ -16,7 +16,7 @@ class emailOrder extends Mailable
      *
      * @return void
      */
-    public function __construct($pemesan , $dosen , $pesananbrg, $pesananlab, $order, $subjek, $pesan, $status)
+    public function __construct($pemesan , $dosen , $pesananbrg, $pesananlab, $order, $subjek, $pesan, $status,$ambil,$balik)
     {
         $this->pemesan = $pemesan;
         $this->dosen = $dosen;
@@ -26,6 +26,8 @@ class emailOrder extends Mailable
         $this->subjek = $subjek;
         $this->pesan = $pesan;
         $this->status = $status;
+        $this->ambil = $ambil;
+        $this->balik = $balik;
     }
 
     /**
@@ -42,7 +44,9 @@ class emailOrder extends Mailable
         $orderku = $this->order;
         $pesan = $this->pesan;
         $status = $this->status;
-        return $this->from(env('MAIL_USERNAME','BeLABS'))->subject($this->subjek)->view('mail.m_orderconfirmation',compact('pemesan','dosenpj','pesanankubarang','pesanankulab','orderku','pesan','status')); 
+        $ambil = $this->ambil;
+        $balik = $this->balik;
+        return $this->from(env('MAIL_USERNAME','BeLABS'))->subject($this->subjek)->view('mail.m_orderconfirmation',compact('pemesan','dosenpj','pesanankubarang','pesanankulab','orderku','pesan','status','ambil','balik')); 
        // return $this->from(env('MAIL_USERNAME','BeLabs'))->subject('Verifikasi Akun BeLabs')->view('mail.m_verifikasi', compact('')); 
     }
 }
