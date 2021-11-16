@@ -2,7 +2,9 @@
 
 @section('content')
 @include('layouts.headers.cards')
+<?php
 
+use App\Http\Controllers\PinjamController; ?>
 <div class="container-fluid mt--7">
     <div class="row">
         <div class="col-xl-12 mb-5 mb-xl-0">
@@ -14,7 +16,7 @@
                         <h3 class="mb-0">BARANG DETAIL</h3>
                     </div>
                     <div class="col-12 col-md-4 text-right">
-                        <a href="{{route('barang.create')}}" class="btn btn-warning">Tambah Barang Detail</a>
+                        <a href="{{route('barangdetail.create')}}" class="btn btn-warning">Tambah Barang Detail</a>
                     </div>
                 </div>
             </div>
@@ -34,9 +36,9 @@
                             <th scope="col">Perbaikan</th>
                             <th scope="col">Status</th>
                             <th scope="col">Lab</th>
-                            <th scope="col">Jumlah Pakai</th>
+                            <!-- <th scope="col">Jumlah Pakai</th>
                             <th scope="col">Durasi Pakai</th>
-                            <th scope="col">Waktu Pakai</th>
+                            <th scope="col">Waktu Pakai</th> -->
                             <th scope="col">Gambar</th>
                             <th scope="col"></th>
                         </tr>
@@ -45,17 +47,17 @@
                         @foreach($queryBuilder as $d)
                         <tr>
                             <td>{{ $d->idbarangDetail }}</td>
-                            <td>{{ $d->idbarang }}</td>
-                            <td>{{ $d->merk }}</td>
-                            <td>{{ $d->kondisi }}</td>
-                            <td>{{ $d->perbaikan }}</td>
-                            <td>{{ $d->status }}</td>
-                            <td>{{ $d->lab }}</td>
-                            <td>{{ $d->jumPakai }}</td>
+                            <td class="text-wrap">{{ $d->nama }}</td>
+                            <td class="text-wrap">{{ $d->merk }}</td>
+                            <td>@if($d->kondisi == 1)Rusak @else Bagus @endif</td>
+                            <td>@if($d->perbaikan ==1)Sedang Diperbaiki @else Bisa Dipakai @endif</td>
+                            <td>@if($d->status==1)Tidak tersedia @else Tersedia @endif</td>
+                            <td class="text-wrap">{{ PinjamController::lab($d->lab)->namaLab }}</td>
+                            <!-- <td>{{ $d->jumPakai }}</td>
                             <td>{{ $d->durasiPakai }}</td>
-                            <td>{{ $d->wktPakai1 }}</td>
+                            <td>{{ $d->wktPakai1 }}</td> -->
                             <td><button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal_{{$d->idbarangDetail}}">
-                                    Show Gambar
+                                    Lihat Gambar
                                 </button></td>
 
                             <div class="modal fade" id="exampleModal_{{$d->idbarangDetail}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -97,7 +99,7 @@
                                             </div>
 
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -108,6 +110,8 @@
                                         <i class="fas fa-ellipsis-v"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                        <a class="dropdown-item" href="{{url('admin/barangdetail/waktu/'.$d->idbarangDetail)}}">Waktu Penggunaan</a>
+
                                         <a class="dropdown-item" href="{{route('barangdetail.edit',$d->idbarangDetail)}}">Edit</a>
                                         <form method='Post' action="{{route('barangdetail.destroy',$d->idbarangDetail)}}">
                                             @csrf

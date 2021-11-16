@@ -53,15 +53,7 @@ class UserController extends Controller
         $this->authorize('check-jabatan');
         $jabatan = Jabatan::All();
         $data =User::find($id);
-        if($data->jabatan != 9)
-        {
-            return view('admin.user.edit',compact('data','jabatan'));
-        }
-        //else ngasih notif kalau user jabatan admin tidak bisa diedit --> lupa carae :)
-        // else
-        // {
-        //     return redirect()->route('users.index')->with('status','User dengan jabatan admin tidak bisa diedit');
-        // }
+        
        
     }
     public function update(Request $request, $id)

@@ -6,6 +6,8 @@ use App\Models\BarangDetail;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
 use App\Models\Lab;
+use App\Models\Sesi;
+
 use DB;
 use App\Models\Barang;
 
@@ -43,7 +45,9 @@ class BarangDetailController extends Controller
     public function create()
     {
         $this->authorize('check-jabatan');
-        //
+        $lab = Lab::All();
+        $barang = Barang::All();
+        return view('admin.barangdetail.create', compact( 'barang','lab'));
     }
 
     /**
@@ -54,7 +58,23 @@ class BarangDetailController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       // $this->authorize('check-jabatan');
+        $data= new BarangDetail();
+        $data->idbarangDetail=$request->get('txtIDdetail');
+        $data->idbarang=$request->get('comboBarang');
+        $data->nama=$request->get('txtNama');
+        $data->merk=$request->get('txtMerk');
+        $data->kondisi=$request->get('txtKondisi');
+        $data->perbaikan=$request->get('txtPerbaikan');
+        $data->status=$request->get('txtStatus');
+        $data->lab=$request->get('comboLab');
+        $data->jumPakai=$request->get('txtJum1');
+        $data->durasiPakai=$request->get('txtJum2');
+        $data->wktPakai1=$request->get('txtWkt1');
+
+
+        $data->save();
+        return redirect()->route('barangdetail.index')->with('status','Barang Detail is added');
     }
 
     /**
@@ -122,4 +142,34 @@ class BarangDetailController extends Controller
     {
         //
     }
+    public function sesiPenggunaan($id)
+    {
+        $this->authorize('check-jabatan');
+        $data = BarangDetail::find($id);
+        $sesi = Sesi::All();
+        return view('admin.barangdetail.penggunaan', compact('sesi','data'));
+    }
+
+    public function showsesi()
+    {
+        $arr = $_POST['sesi'];
+        $table = "";
+        foreach ($arr as $a) {
+            $sesi = Sesi::find($a[1]);
+            $table .= "<tr><td>$a[0]</td><td>$sesi->mulai</td><td>$sesi->selesai</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2]'>";
+        }
+        return response()->json(array('status' => 'oke', 'msg' => $table), 200);
+    }
+    public function storesesi(Request $request)
+    {
+       // $this->authorize('check-jabatan');
+        // $data= new BarangDetail();
+        // $data->idbarangDetail=$request->get('txtIDdetail');
+        // $data->idbarang=$request->get('comboBarang');
+        // $data->nama=$request->get('txtNama');
+        // $data->save();
+        // return redirect()->route('barangdetail.index')->with('status','Barang Detail is added');
+    }
+
+    
 }

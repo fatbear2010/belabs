@@ -55,6 +55,10 @@ Route::middleware('auth')->group(function() {
 	Route::resource('admin/barangdetail','App\Http\Controllers\BarangDetailController');
 	Route::resource('admin/users','App\Http\Controllers\UserController');
 
+	Route::get('admin/barangdetail/waktu/{id}','App\Http\Controllers\BarangDetailController@sesiPenggunaan')->name('barangdetail.waktu');
+	Route::post('admin/barangdetail/showsesi','App\Http\Controllers\BarangDetailController@showsesi')->name('barangdetail.showsesi');
+
+
 	//::resource('category','CategoryController');
 
 	Route::resource('barang/all','App\Http\Controllers\PinjamController');

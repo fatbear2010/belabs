@@ -33,6 +33,7 @@
     </thead>
     <tbody>
       @foreach($queryBuilder as $d)
+      @if($d->jabatan != 9)
       <tr>
         <td>{{ $d->nrpnpk}}</td>
         <td>{{ $d->nama }}</td>
@@ -50,7 +51,7 @@
             </div>
           </div>
         </td>
-
+          @endif
         @endforeach
     </tbody>
 
