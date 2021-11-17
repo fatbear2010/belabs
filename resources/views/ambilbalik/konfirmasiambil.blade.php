@@ -62,6 +62,7 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                         </div>
+                                        <input  type="hidden" name="ambilb[{{$pj['idp']}}]" value="{{$pj['idp']}}">
                                         @endforeach
                                     </div>
                              
@@ -95,6 +96,7 @@
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
                                             <div class="col-12">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
+                                            <input  type="hidden" name="ambilb[{{$pj['idp']}}]" value="{{$pj['idp']}}">
                                         </div>
                                         @endforeach
                                     </div>
@@ -130,6 +132,7 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                         </div>
+                                        <input  type="hidden" name="ambill[{{$pj['idpl']}}]" value="{{$pj['idpl']}}">
                                         @endforeach
                                     </div>
                              
@@ -162,6 +165,7 @@
                                         <div class="row">
                                             <div class="col-12">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                         </div>
+                                        <input  type="hidden" name="ambil1[{{$pj['idpl']}}]" value="{{$pj['idpl']}}">
                                         @endforeach
                                     </div>
                              
@@ -184,7 +188,7 @@
                 </div>
             </div>        
         </div>
-        <input type="hidden" name="kodep" value="{{kodep}}">            
+        <input type="hidden" name="kodep" value="{{$kodep}}">            
         <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}"> 
         <input type="hidden" name="pesan" value="{{$pesan}}"> 
      @if(isMobile())                

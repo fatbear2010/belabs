@@ -36,7 +36,7 @@
           @elseif(session('status') == 1)
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <span class="alert-inner--icon"><i class="icofont-error"></i></span>
-          <span class="alert-inner--text">Persetujuan Gagal Disimpan, Terjadi Perubahan Status</a></span>
+          <span class="alert-inner--text">Pengambilan Gagal Disimpan, Terjadi Perubahan Status</a></span>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
           </div>
@@ -139,6 +139,8 @@
                                                 <h4 class="text-danger">Item Belum Disetuji Oleh Kalab / Laboran</h4>
                                                 @elseif($pj['sdosen'] == 0) 
                                                  <h4 class="text-danger">Item Belum Disetuji Oleh Penanggungjawab</h4>
+                                                 @elseif($pj['okay'] != 0) 
+                                                 <h4 class="text-danger">Item Belum Dikelmbalikan</h4>
                                                 @else
                                                 <div class="custom-control custom-switch">
                                                   <input type="checkbox" class="custom-control-input" name="diambilb[{{$pj['idp']}}]" id="b{{$pj['idp']}}" value="{{$pj['idp']}}"  >
@@ -200,6 +202,8 @@
                                                 <h4 class="text-danger">Item Belum Disetuji Oleh Kalab / Laboran</h4>
                                                 @elseif($pj['sdosen'] == 0) 
                                                  <h4 class="text-danger">Item Belum Disetuji Oleh Penanggungjawab</h4>
+                                                 @elseif($pj['okay'] != 0) 
+                                                 <h4 class="text-danger">Item Belum Dikelmbalikan</h4>
                                                 @else
                                                 <div class="custom-control custom-switch">
                                                   <input type="checkbox" class="custom-control-input" name="diambilb[{{$pj['idp']}}]" id="b{{$pj['idp']}}" value="{{$pj['idp']}}"  >
