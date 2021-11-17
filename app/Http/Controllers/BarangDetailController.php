@@ -156,19 +156,25 @@ class BarangDetailController extends Controller
         $table = "";
         foreach ($arr as $a) {
             $sesi = Sesi::find($a[1]);
-            $table .= "<tr><td>$a[0]</td><td>$sesi->mulai</td><td>$sesi->selesai</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2]'>";
+            $table .= "<tr><td>$a[4]</td><td>$sesi->mulai</td><td>$sesi->selesai</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2],$a[3],$a[4],$a[5]'>";
         }
         return response()->json(array('status' => 'oke', 'msg' => $table), 200);
     }
     public function storesesi(Request $request)
     {
-       // $this->authorize('check-jabatan');
-        // $data= new BarangDetail();
-        // $data->idbarangDetail=$request->get('txtIDdetail');
-        // $data->idbarang=$request->get('comboBarang');
-        // $data->nama=$request->get('txtNama');
-        // $data->save();
-        // return redirect()->route('barangdetail.index')->with('status','Barang Detail is added');
+        $this->authorize('check-jabatan');
+        $sesi =$request->get('sesi');
+       // dd($sesi);
+        foreach($sesi as $u)
+        {
+            $sesiL = explode(',', $u);
+            //dd($sesiL[5]);
+            $query = DB::table('rutin')->insert(['hari'=>$sesiL[4],'jamMulai'=>$sesiL[2],'jamSelesai'=>$sesiL[3],'idbarangDetail'=>$sesiL[5],'hariint'=>$sesiL[0]]);
+            // $data->users()->attach($userlab[0],["keterangan"=>$userlab[1]]);
+            
+        }
+        
+        return redirect()->route('barangdetail.index')->with('status', 'Barang Detail Waktu Penggunaan Berhasil');
     }
 
     

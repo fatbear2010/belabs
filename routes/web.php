@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function() {
 
 	Route::get('admin/barangdetail/waktu/{id}','App\Http\Controllers\BarangDetailController@sesiPenggunaan')->name('barangdetail.waktu');
 	Route::post('admin/barangdetail/showsesi','App\Http\Controllers\BarangDetailController@showsesi')->name('barangdetail.showsesi');
+	Route::post('admin/barangdetail/storewaktu/','App\Http\Controllers\BarangDetailController@storesesi')->name('barangdetail.storewaktu');
+
 
 
 	//::resource('category','CategoryController');

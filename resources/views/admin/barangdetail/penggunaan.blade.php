@@ -11,10 +11,10 @@
             <div class="card bg-secondary shadow">
                 <div class="card-header bg-white border-0">
                     <div class="row align-items-center">
-                        <h3 class="mb-0">Jabatan Baru</h3>
+                        <h3 class="mb-0">Tambah Waktu	</h3>
                     </div>
                 </div>
-                <form enctype="multipart/form-data" role="form" method="POST" action="{{route('jabatan.store')}}">
+                <form enctype="multipart/form-data" role="form" method="POST" action="{{route('barangdetail.storewaktu')}}">
                     @csrf
                     <h6 class="heading-small text-muted mb-4"> &nbsp Tambah Waktu Penggunaan</h6>
 
@@ -87,19 +87,25 @@
 
 <script>
 	var sesi = [];
-
+	
 	function inputsesi() {
 		var hari= $('#comboHari').val();
-		var mulai = $('#comboMulai').val();
-		var selesai = $('#comboSelesai').val();
+		var IDsesi = $('#comboMulai').val();
+		var mulai = $('#comboMulai :selected').text();
+		var selesai = $('#comboSelesai :selected').text();
+		var haritxt = $('#comboHari :selected').text();
+		var idBarangdetail = "<?php echo $data->idbarangDetail?>"
 		var tersedia = false;
-		//console.log(laboran_id);
+		//console.log(idBarangdetail);
 
 		for (let i = 0; i < sesi.length; i++) {
 			
 			if (sesi[i][0] == hari) {
-				sesi[i][1] = mulai
-				sesi[i][2] = selesai
+				sesi[i][1] = IDsesi
+				sesi[i][2] = mulai
+				sesi[i][3] = selesai
+				sesi[i][4] = haritxt
+				sesi[i][5] = idBarangdetail
 
 				tersedia = true;
 				
@@ -107,7 +113,7 @@
 		}
 
 		if (!tersedia) {
-			sesi.push([hari,mulai, selesai]);
+			sesi.push([hari,IDsesi,mulai, selesai,haritxt,idBarangdetail]);
 		}
 
 		$.ajax({
