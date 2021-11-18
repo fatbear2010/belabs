@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class emaila extends Mailable
+class emailb extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -45,8 +45,7 @@ class emaila extends Mailable
         $pesan = $this->pesan;
         $kalab = $this->kalab;
         
-        return $this->from(env('MAIL_USERNAME','BeLABS'))->subject($this->subjek)->view('mail.m_ambil',compact('pemesan','dosenpj','pesanankubarang','pesanankulab','ambil','orderku','pesan','kalab')); 
+        return $this->from(env('MAIL_USERNAME','BeLABS'))->subject($this->subjek)->view('mail.m_balik',compact('pemesan','dosenpj','pesanankubarang','pesanankulab','ambil','orderku','pesan','kalab')); 
        // return $this->from(env('MAIL_USERNAME','BeLabs'))->subject('Verifikasi Akun BeLabs')->view('mail.m_verifikasi', compact('')); 
     }
 }
-

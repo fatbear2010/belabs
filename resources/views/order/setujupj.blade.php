@@ -102,21 +102,33 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                             <div class="col-12">
+                                               <?php $count =0;  ?>
                                                 @if($pj['sdosen'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
-                                                @elseif($pj['status'] == 2)
+                                                <?php $count++;  ?> @endif
+
+                                                 @if($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
+                                                 <?php $count++;  ?> @endif
+
+                                                 @if($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                 <?php $count++;  ?> 
                                                 @elseif($pj['checkout'] != "")
                                                 <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
+                                                 <?php $count++;  ?>
+                                                 @elseif($pj['checkin1'] != "")
+                                                <h4 class="text-danger">Item Telah Diambil</h4>
+                                                 <?php $count++;  ?> 
                                                 @elseif($pj['checkin'] != "")
                                                 <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
-                                                @elseif($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
-                                                @elseif($pj['checkin1'] != "")
-                                                <h4 class="text-danger">Item Telah Diambil</h4>
-                                                @elseif($pj['skalab'] == 2)
+                                                 <?php $count++;  ?> @endif
+
+                                                @if($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
-                                                @else
+                                                 <?php $count++;  ?> @endif
+
+                                                  @if($count == 0)
                                                 <div class="form-group" style="margin-left : 10px;">
                                                   <select class="form-control" name="setujub[{{$pj['idp']}}]">
                                                         <option @if($pj['sdosen'] == 1) selected @endif value="1">Setuju</option>
@@ -162,21 +174,32 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
+                                                <?php $count =0;  ?>
                                                 @if($pj['sdosen'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
-                                                @elseif($pj['status'] == 2)
+                                                <?php $count++;  ?> @endif
+
+                                                 @if($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
+                                                 <?php $count++;  ?> @endif
+
+                                                 @if($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                 <?php $count++;  ?> 
                                                 @elseif($pj['checkout'] != "")
                                                 <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
+                                                 <?php $count++;  ?>
+                                                 @elseif($pj['checkin1'] != "")
+                                                <h4 class="text-danger">Item Telah Diambil</h4>
+                                                 <?php $count++;  ?> 
                                                 @elseif($pj['checkin'] != "")
                                                 <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
-                                                @elseif($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
-                                                @elseif($pj['checkin1'] != "")
-                                                <h4 class="text-danger">Item Telah Diambil</h4>
-                                                @elseif($pj['skalab'] == 2)
+                                                 <?php $count++;  ?> @endif
+
+                                                @if($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
-                                                @else
+                                                 <?php $count++;  ?> @endif
+                                                  @if($count == 0)
                                                 <div class="form-group" style="margin-left : 10px;">
                                                   <select class="form-control" name="setujub[{{$pj['idp']}}]">
                                                         <option @if($pj['sdosen'] == 1) selected @endif value="1">Setuju</option>
@@ -221,21 +244,33 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                             <div class="col-12">
+                                                <?php $count =0;  ?>
                                                 @if($pj['sdosen'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
-                                                @elseif($pj['status'] == 2)
+                                                <?php $count++;  ?> @endif
+
+                                                 @if($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
+                                                 <?php $count++;  ?> @endif
+
+                                                 @if($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                 <?php $count++;  ?> 
                                                 @elseif($pj['checkout'] != "")
                                                 <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
+                                                 <?php $count++;  ?>
+                                                 @elseif($pj['checkin1'] != "")
+                                                <h4 class="text-danger">Item Telah Diambil</h4>
+                                                 <?php $count++;  ?> 
                                                 @elseif($pj['checkin'] != "")
                                                 <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
-                                                @elseif($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
-                                                @elseif($pj['checkin1'] != "")
-                                                <h4 class="text-danger">Item Telah Diambil</h4>
-                                                @elseif($pj['skalab'] == 2)
+                                                 <?php $count++;  ?> @endif
+
+                                                @if($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
-                                                @else
+                                                 <?php $count++;  ?> @endif
+
+                                                  @if($count == 0)
                                                <div class="form-group" style="margin-left : 10px;">
                                                   <select class="form-control" name="setujul[{{$pj['idpl']}}]">
                                                         <option @if($pj['sdosen'] == 1) selected @endif value="1">Setuju</option>
@@ -279,21 +314,32 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
-                                               @if($pj['sdosen'] == 2)
+                                              <?php $count =0;  ?>
+                                                @if($pj['sdosen'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
-                                                @elseif($pj['status'] == 2)
+                                                <?php $count++;  ?> @endif
+
+                                                 @if($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
+                                                 <?php $count++;  ?> @endif
+
+                                                 @if($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                 <?php $count++;  ?> 
                                                 @elseif($pj['checkout'] != "")
                                                 <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
+                                                 <?php $count++;  ?>
+                                                 @elseif($pj['checkin1'] != "")
+                                                <h4 class="text-danger">Item Telah Diambil</h4>
+                                                 <?php $count++;  ?> 
                                                 @elseif($pj['checkin'] != "")
                                                 <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
-                                                @elseif($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
-                                                @elseif($pj['checkin1'] != "")
-                                                <h4 class="text-danger">Item Telah Diambil</h4>
-                                                @elseif($pj['skalab'] == 2)
+                                                 <?php $count++;  ?> @endif
+
+                                                @if($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
-                                                @else
+                                                 <?php $count++;  ?> @endif
+                                                  @if($count == 0)
                                                  <div class="form-group" style="margin-left : 10px;">
                                                   <select class="form-control" name="setujul[{{$pj['idpl']}}]">
                                                         <option @if($pj['sdosen'] == 1) selected @endif value="1">Setuju</option>

@@ -19,7 +19,7 @@ skalab 0 blm, 1 setuju, 2 tidak
 status di pinjam dan pinjamlab
 null/0 = tidak dibatalkan 
 2 = dibatalkan 
-
+3 item bermasalah
 
 status akun
  1 = valid , 2 = blm diaktivassi, 3 = diblokir, 

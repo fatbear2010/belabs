@@ -120,6 +120,10 @@ Route::middleware('auth')->group(function() {
 	Route::post('ambil/gantifinal/','App\Http\Controllers\AmbilbalikController@gantiambilfinal')->name('ambil.gantiambilfinal');
 	Route::post('ambil/konfirmasi/','App\Http\Controllers\AmbilbalikController@konfirmasiambil')->name('ambil.konfirmasiambil');
 	Route::post('ambil/konfirmasipemesanfinal/','App\Http\Controllers\AmbilbalikController@konfirmasipemesanfinal')->name('ambil.konfirmasipemesanfinal');
+
+	Route::get('balik/all/{id}','App\Http\Controllers\AmbilbalikController@balik')->name('balik.balik');
+	Route::post('balik/pbalik/','App\Http\Controllers\AmbilbalikController@prosesbalik')->name('ambil.pbalik');
+	Route::post('balik/balikfinal/','App\Http\Controllers\AmbilbalikController@finalbalik')->name('ambil.balikfinal');
 	
 });
 

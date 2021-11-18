@@ -18,8 +18,8 @@
 <div class="card-header border-0">
   <div class="row align-items-center">
     <div class="col-12 text-center">
-      <h1>Konfirmasi</h1>
-      <h1>Pengambilan Item / Kehadiran Masuk</h1>
+      <h1>Apakah Anda Yakin ?</h1>
+      <h1>Pengembalian Item / Kehadiran Keluar</h1>
       <h3>Nomor Pesanan : {{$orderku[0]->idorder}}</h3>
     </div>
   </div>
@@ -29,7 +29,7 @@
 
    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;">
      <div class="card card-profile shadow " style="width: 100%;">
-        <form method="post" action="{{url('ambil/konfirmasipemesanfinal')}}">
+        <form method="post" action="{{url('balik/balikfinal')}}">
             @csrf
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 0px 10px 0px 10px;">
@@ -180,26 +180,26 @@
                 <div class="card rounded">
                     <div style="margin-left: 10px;" class=" rounded-top text-left" >  
                         <h3>Catatan Pengambilan / Kehadiran Masuk</h3>         
-                        <h4>{{$ambilin[0]->note}}</h4>
+                        <h4>{{$pesan}}</h4>
                     </div>
                 </div>
             </div>        
-        </div>  
+        </div>
         <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}"> 
-        <input type="hidden" name="idambilbalik" value="{{$ambilin[0]->idambilbalik}}"> 
+        <input type="hidden" name="pesan" value="{{$pesan}}"> 
      @if(isMobile())                
-    <button style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Konfirmasi Pengambilan / Kehadiran Masuk</button>
+    <button style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya, Simpan Pengembalian / Kehadiran Keluar</button>
     @else
-     <button style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Konfirmasi Pengambilan / Kehadiran Masuk</button>
+     <button style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya, Simpan Pengembalian / Kehadiran Keluar</button>
     @endif
     </form>   
    <form>
     @if(isMobile())                
     
-    <a href="{{url('order/detail/'.$orderku[0]->idorder)}}" style="width: 90%; margin: 0px 10px 10px 10px;" class="btn btn-dark text-wrap">Kembali Ke Halaman Sebelumnya</a>
+    <a href="{{url('ambil/all/'.$orderku[0]->idorder)}}" style="width: 90%; margin: 0px 10px 10px 10px;" class="btn btn-dark text-wrap">Tidak, Kembali Ke Halaman Sebelumnya</a>
     @else
     
-    <a href="{{url('order/detail/'.$orderku[0]->idorder)}}" style="width: 97%; margin: 0px 10px 10px 10px;" class="btn btn-dark">Kembali Ke Halaman Sebelumnya</a>
+    <a href="{{url('ambil/all/'.$orderku[0]->idorder)}}" style="width: 97%; margin: 0px 10px 10px 10px;" class="btn btn-dark">Tidak, Kembali Ke Halaman Sebelumnya</a>
     @endif
     </form>
     </div>

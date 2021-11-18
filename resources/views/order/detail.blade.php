@@ -15,7 +15,7 @@
   <div class="row">
       <div class="col-xl-12 mb-5 mb-xl-0">
 <!--div -->
-<div class="card-header border-0">
+<div class="card-header border-0" id="halo">
   <div class="row align-items-center">
     <div class="col-12 text-center">
       <h1>Pengambilan Barang</h1>
@@ -40,7 +40,14 @@
         @elseif(session('status') == 5)
           <div class="alert alert-success alert-dismissible fade show" role="alert">
           <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
-          <span class="alert-inner--text">Data Pengambilan Item / Kehadiran Berhasil Disimpan</span>
+          <span class="alert-inner--text">Data Pengambilan Item / Kehadiran Masuk Berhasil Disimpan</span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        </div>
+         @elseif(session('status') == 10)
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+          <span class="alert-inner--text">Pengajuan Pengembalian Item / Kehadiran Keluar Berhasil Disimpan</span>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
         </div>
@@ -54,7 +61,7 @@
          @elseif(session('status') == 6)
           <div class="alert alert-success alert-dismissible fade show" role="alert">
           <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
-          <span class="alert-inner--text">Perubahan Data Pengambilan Item / Kehadiran Berhasil Disimpan</span>
+          <span class="alert-inner--text">Perubahan Data Pengambilan Item / Kehadiran Masuk Berhasil Disimpan</span>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
         </div>
@@ -72,6 +79,13 @@
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
           </div>
+          @elseif(session('status') == 7)
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <span class="alert-inner--icon"><i class="icofont-error"></i></span>
+              <span class="alert-inner--text">Kode Pengambilan Salah Atau Pengambilan Telah Dikonfirmasi</span>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            </div>
           @elseif(session('status') == 2)
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <span class="alert-inner--icon"><i class="icofont-error"></i></span>
@@ -82,10 +96,7 @@
         
           @endif
         @endif  
-      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-primary">Pengambilan Pesanan (Pemesan)</a>
-      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-info">Pengambilan Pesanan (Laboran/Kalab)</a>
-      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-success">Pengembalian Pesanan (Pemesan) </a>
-      <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-warning">Pengambilan Pesanan (Laboran/Kalab)</a>
+      
       <br>
 
     </div>
@@ -136,28 +147,22 @@
                     </div>
         </div>
     </div>
+
     <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
             <div class="row">
-            <div class="col-12 col-md-5"><h2>Pengambilan Barang / Kehadiran</h2></div>
+            <div class="col-12 col-md-5"><h2>Pengambilan Barang / Kehadiran Masuk</h2></div>
             <div class="col-12 col-md-7">
             @if( KeranjangController::laborannya($orderku[0]->idorder,auth()->user()->nrpnpk) > 0)
-            <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('ambil/all/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-fik float-right">Pengambilan Pesanan / Kehadiran (Laboran/Kalab)</a>
+            <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('ambil/all/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-info float-right">Pengembalian Pesanan / Kehadiran (Laboran/Kalab)</a>
             @endif
             </div>
         </div>
         </div>
         <div class="row" style="margin: 5px 10px 5px 10px;">
             <div class="col-12" >
-            @if($orderku[0]->mahasiswa == auth()->user()->nrpnpk)
-             @if(session('status') == 7)
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-              <span class="alert-inner--icon"><i class="icofont-error"></i></span>
-              <span class="alert-inner--text">Kode Pengambilan Salah Atau Pengambilan Telah Dikonfirmasi</span>
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span></button>
-            </div>
-            @endif
+            @if($orderku[0]->mahasiswa == auth()->user()->nrpnpk )
+             
             <br>
                 <form method="post" action="{{url('ambil/konfirmasi')}}">
                     @csrf
@@ -165,20 +170,20 @@
                         <div class="col-12 col-md-2">Kode Pengambilan</div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <input minlength="6" maxlength="6" type="password" name="acode" class="form-control" required autofocus >
+                                <input minlength="6" maxlength="6" type="password" name="acode" class="form-control" required >
                             </div>
                         </div>
                         <div class="col-12 col-md-4">
                             <input type="hidden" name="idorder" value="{{$orderku[0]->idorder}}">
-                            <input type="submit" name="ok" class="btn btn-fik text-wrap " value="Cek Kode Pengambilan" style="width: 100%">
+                            <input type="submit" name="ok" class="btn btn-info text-wrap " value="Cek Kode Pengambilan" style="width: 100%">
                         </div>
                     </div>
                 </form>
             @endif
 
-            @if( KeranjangController::laborannya($orderku[0]->idorder,auth()->user()->nrpnpk) > 0)
+            @if( KeranjangController::laborannya($orderku[0]->idorder,auth()->user()->nrpnpk) > 0 )
             <br>
-            <h3>Daftar Pengambilan / Kehadiran (Kalab / Laboran)</h3>
+            <h3>Daftar Pengambilan / Kehadiran Masuk (Kalab / Laboran)</h3>
            
             <div class="table-responsive">
             <table class="table">
@@ -195,7 +200,107 @@
                         <td class="text-wrap">{{KeranjangController::cariorang($am->PIC)}} <br>
                             {{ KeranjangController::labaja($am->lab)}}</td>
                         <td>
-                            <a href="{{url('ambil/detail/'.$am->idambilbalik)}}" class="text-wrap btn btn-fik">Detail</a>
+                            <a href="{{url('ambil/detail/'.$am->idambilbalik)}}" class="text-wrap btn btn-info">Detail</a>
+                        </td>
+                    </tr>
+                    @endif
+                     @endforeach
+                </tbody>    
+            </table>
+        </div>
+        <br>
+            @endif
+         @if( $orderku[0]->dosen == auth()->user()->nrpnpk)
+            <h3>Daftar Pengambilan / Kehadiran Masuk (Penanggungjawab)</h3>
+           
+            <div class="table-responsive">
+            <table class="table">
+                <thead class="thead-light">
+                    <th>Kode Pengambilan</th><th>Diproses</th><th>Diambil / Hadir</th><th>Kalab / Laboran</th><th>Action</th>
+                </thead>
+                <tbody class="list">
+                    @foreach($ambil as $am)
+                    <tr>
+                        <td>{{$am->idambilbalik}}</td>
+                        <td>{{$am->time}}</td>
+                        <td class="text-wrap">@if($am->time2 == "") Item Belum Diambil / Belum Hadir @else {{$am->time2}}@endif</td>
+                        <td class="text-wrap">{{KeranjangController::cariorang($am->PIC)}} <br>
+                            {{ KeranjangController::labaja($am->lab)}}</td>
+                        <td>
+                            <a href="{{url('ambil/ambildetaildosen/'.$am->idambilbalik)}}" class="text-wrap btn btn-info">Detail</a>
+                        </td>
+                    </tr>
+                     @endforeach
+                </tbody>    
+            </table>
+        </div>
+        <br>
+            @endif   
+        </div>
+        </div>
+    </div>
+    
+    <div class="card card-profile shadow " style="width: 100%;">
+        <div class="card-header text-left">
+            <div class="row">
+            <div class="col-12 col-md-5"><h2>Pengembalian Barang / Kehadiran Keluar</h2></div>
+            <div class="col-12 col-md-7">
+            @if( $pemesan[0]->nrpnpk == auth()->user()->nrpnpk)
+            <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('balik/all/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-primary float-right">Pengembalian Pesanan / Kehadiran (Pemesan)</a>
+            @endif
+            </div>
+        </div>
+        </div>
+        <div class="row" style="margin: 5px 10px 5px 10px;">
+            <div class="col-12" >
+            @if($orderku[0]->mahasiswa == auth()->user()->nrpnpk )
+             
+            <br>
+                <h3>Daftar Pengambilan / Kehadiran (Pemesan)</h3>
+           
+            <div class="table-responsive">
+            <table class="table">
+                <thead class="thead-light">
+                    <th>Kode Pengambilan</th><th>Diproses</th><th>Diambil / Hadir</th><th>Kalab / Laboran</th><th>Action</th>
+                </thead>
+                <tbody class="list">
+                    @foreach($balik as $am)
+                    <tr>
+                        <td>{{$am->idambilbalik}}<h3>{{$am->abcode}}</h3></td>
+                        <td>{{$am->time}}</td>
+                        <td class="text-wrap">@if($am->time2 == "") Item Belum Diambil / Belum Hadir @else {{$am->time2}}@endif</td>
+                        <td class="text-wrap">{{KeranjangController::cariorang($am->PIC)}} <br>
+                            {{ KeranjangController::labaja($am->lab)}}</td>
+                        <td>
+                            <a href="{{url('ambil/detail/'.$am->idambilbalik)}}" class="text-wrap btn btn-primary">Detail</a>
+                        </td>
+                    </tr>                
+                     @endforeach
+                </tbody>    
+            </table>
+        </div>
+            @endif
+
+            @if( KeranjangController::laborannya($orderku[0]->idorder,auth()->user()->nrpnpk) > 0 )
+            <br>
+            <h3>Daftar Pengambilan / Kehadiran (Kalab / Laboran)</h3>
+           
+            <div class="table-responsive">
+            <table class="table">
+                <thead class="thead-light">
+                    <th>Kode Pengambilan</th><th>Diproses</th><th>Diambil / Hadir</th><th>Kalab / Laboran</th><th>Action</th>
+                </thead>
+                <tbody class="list">
+                    @foreach($balik as $am)
+                    @if(KeranjangController::laborannya2($am->lab,auth()->user()->nrpnpk) != 0)
+                    <tr>
+                        <td>{{$am->idambilbalik}}<h3>{{$am->abcode}}</h3></td>
+                        <td>{{$am->time}}</td>
+                        <td class="text-wrap">@if($am->time2 == "") Item Belum Diambil / Belum Hadir @else {{$am->time2}}@endif</td>
+                        <td class="text-wrap">{{KeranjangController::cariorang($am->PIC)}} <br>
+                            {{ KeranjangController::labaja($am->lab)}}</td>
+                        <td>
+                            <a href="{{url('ambil/detail/'.$am->idambilbalik)}}" class="text-wrap btn btn-primary">Detail</a>
                         </td>
                     </tr>
                     @endif
@@ -214,7 +319,7 @@
                     <th>Kode Pengambilan</th><th>Diproses</th><th>Diambil / Hadir</th><th>Kalab / Laboran</th><th>Action</th>
                 </thead>
                 <tbody class="list">
-                    @foreach($ambil as $am)
+                    @foreach($balik as $am)
                     <tr>
                         <td>{{$am->idambilbalik}}</td>
                         <td>{{$am->time}}</td>
@@ -222,7 +327,7 @@
                         <td class="text-wrap">{{KeranjangController::cariorang($am->PIC)}} <br>
                             {{ KeranjangController::labaja($am->lab)}}</td>
                         <td>
-                            <a href="{{url('ambil/ambildetaildosen/'.$am->idambilbalik)}}" class="text-wrap btn btn-fik">Detail</a>
+                            <a href="{{url('ambil/ambildetaildosen/'.$am->idambilbalik)}}" class="text-wrap btn btn-primary">Detail</a>
                         </td>
                     </tr>
                      @endforeach
@@ -234,6 +339,7 @@
         </div>
         </div>
     </div>
+
    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;">
      <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
@@ -255,7 +361,7 @@
             <button style="margin-bottom:10px;" class="btn-sm btn-danger">Tidak Dietujui/Batal</button>
             <button style="margin-bottom:10px;" class="btn-sm btn-primary">Telah Diambil</button>
             <button style="margin-bottom:10px;" class="btn-sm btn-info">Telah Dikembalikan</button>
-            <button style="margin-bottom:10px;" class="btn-sm btn-ligth">Item Bermasalah</button>
+            <button style="margin-bottom:10px;" class="btn-sm btn-light">Item Bermasalah</button>
         </div>
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 5px 10px 5px 10px;">
@@ -286,6 +392,7 @@
                                    
                                         <button 
                                         @if($pj['status'] == 2) class="btn-sm btn-danger text-left " 
+                                        @elseif($pj['status'] == 3) class="btn-sm btn-light text-left " 
                                         @elseif($pj['checkout1'] != "") class="btn-sm btn-info text-left " 
                                         @elseif($pj['checkin1'] != "") class="btn-sm btn-primary text-left " 
                                         @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn-sm btn-success text-left " 
@@ -361,6 +468,7 @@
                                    
                                         <button 
                                         @if($pj['status'] == 2) class="btn btn-danger text-left " 
+                                        @elseif($pj['status'] == 3) class="btn-sm btn-light text-left " 
                                         @elseif($pj['checkout1'] != "") class="btn btn-info text-left " 
                                         @elseif($pj['checkin1'] != "") class="btn btn-primary text-left " 
                                         @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn btn-success text-left " 
@@ -435,7 +543,8 @@
                                     <div class="card">
                                    
                                         <button 
-                                        @if($pj['status'] == 2) class="btn-sm btn-danger text-left " 
+                                        @if($pj['status'] == 2) class="btn-sm btn-danger text-left "
+                                        @elseif($pj['status'] == 3) class="btn-sm btn-light text-left "  
                                         @elseif($pj['checkout1'] != "") class="btn-sm btn-info text-left " 
                                         @elseif($pj['checkin1'] != "") class="btn-sm btn-primary text-left " 
                                         @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn-sm btn-success text-left " 
@@ -511,6 +620,7 @@
                                    
                                         <button 
                                         @if($pj['status'] == 2) class="btn btn-danger text-left " 
+                                        @elseif($pj['status'] == 3) class="btn-sm btn-light text-left " 
                                         @elseif($pj['checkout1'] != "") class="btn btn-info text-left " 
                                         @elseif($pj['checkin1'] != "") class="btn btn-primary text-left " 
                                         @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn btn-success text-left " 
@@ -583,12 +693,12 @@
                 <h3><b>Catatan Laboran / Kepala Laboratorium</b></h3>
                 <h4>{{$orderku[0]->noteKalab}}</h4>
                 <br>
-                <h3><b>Catatan Pengambilan</b></h3>
+                <h3><b>Catatan Pengambilan / Kehadiran Masuk</b></h3>
                 @foreach($ambil as $am)
                 <h4>{{$am->idambilbalik}} | {{$am->note}}</h4>
                 @endforeach
                 <br>
-                <h3><b>Catatan Pengembalian</b></h3>
+                <h3><b>Catatan Pengembalian / Kehadiran Keluar</b></h3>
                  @foreach($balik as $bl)
                 <h4>{{$bl->idambilbalik}} | {{$bl->note}}</h4>
                 @endforeach

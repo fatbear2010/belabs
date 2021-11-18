@@ -1,4 +1,5 @@
 <?php use App\Http\Controllers\PinjamController; ?>
+<?php use App\Http\Controllers\PinjamLabController; ?>
 <?php use App\Http\Controllers\KeranjangController; ?>
 <?php
   function isMobile() {
@@ -18,7 +19,7 @@
 <div class="card-header border-0">
   <div class="row align-items-center">
     <div class="col-12 text-center">
-      <h1>Persetujuan Kepala Lab / Laboran</h1>
+      <h1>Pengembalian Item Dan Kehadiran Keluar</h1>
       <h1>Nomor Pesanan : {{$orderku[0]->idorder}}</h1>
       <h3>Waktu Pesanan Dibuat : {{$orderku['0']->tanggal}}</h3>
       <a style="margin-bottom: 5px; width: 100%;" href="{{url('order/detail/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-dark">Kembali</a>
@@ -26,16 +27,16 @@
 
       @if(session('status'))
           @if(session('status') == 3)
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
-          <span class="alert-inner--text">Item Berhasil Dibatalkan</span>
+          <span class="alert-inner--text">Kode Pengambilan Sudah Ada Atau Tidak Valid</span>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
         </div>
           @elseif(session('status') == 1)
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <span class="alert-inner--icon"><i class="icofont-error"></i></span>
-          <span class="alert-inner--text">Persetujuan Gagal Disimpan, Terjadi Perubahan Status</a></span>
+          <span class="alert-inner--text">Pengembalian Gagal Disimpan, Terjadi Perubahan Status</a></span>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
           </div>
@@ -59,20 +60,38 @@
         <div class="row" style="margin: 5px 10px 5px 10px;">
             <div class="col-lg-12 text-left table-responsive">
                 <table class="table wrap">
-                  <tr><td>Pemesan </td><td><b>{{ $pemesan[0]->nrpnpk }} - {{ $pemesan[0]->nama }}</b></td></tr>
+                  <tr><td>Pemesan </td><td><b>{{ auth()->user()->nrpnpk }} - {{ auth()->user()->nama }}</b></td></tr>
                   <tr><td>Penanggung Jawab</td><td><b>{{ $dosenpj[0]->nrpnpk }} - {{ $dosenpj[0]->nama }}</b></td></tr>
                 </table>
             </div>
         </div>
     </div>
-    <br>
 
    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;">
      <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
             <h2>Item Yang Dipesan</h2>
         </div>
-        <form method="post" action="{{url('order/ppl')}}">
+        <div class="row" style="margin: 0px 20px 0px 20px;">
+            <h4>Silahkan Pilih Lab</h4>
+            <form action="{{url('ambil/labku')}}" method="post" style="width: 100%;" > @csrf
+                <div class="row">
+                <div class="col-12 col-md-9">
+                <select class="form-control" name="lab" id="idlabdpl" style="margin-bottom: 10px;">
+                    @foreach($lab as $l)
+                      <option @if($l->idlab == $labdpl) selected @endif value="{{$l->idlab}}">{{$l->namaLab}} | {{PinjamLabController::fakultas1($l->fakultas)->namafakultas}}</option>
+                    @endforeach
+                </select>
+                <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
+                </div>
+                <div class="col-12 col-md-3">
+                    <input type="submit" name="pilihan" value="Pilih Lab" style="width: 100%;" class="text-wrap btn btn-fik">
+                </div>
+                </div>
+            </form>
+        </div>
+
+        <form method="post" action="{{url('balik/pbalik')}}">
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 0px 10px 0px 10px;">
                   <?php $gambar = $item['gambar'];?>
@@ -102,40 +121,29 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                             <div class="col-12">
-                                               <?php $count =0;  ?>
-                                                @if($pj['sdosen'] == 2)
-                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
-                                                <?php $count++;  ?> @endif
-
-                                                 @if($pj['status'] == 2)
+                                                @if($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
-                                                 <?php $count++;  ?> @endif
-
-                                                 @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
-                                                 <?php $count++;  ?> 
-                                                @elseif($pj['checkout'] != "")
-                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
-                                                 <?php $count++;  ?>
-                                                 @elseif($pj['checkin1'] != "")
-                                                <h4 class="text-danger">Item Telah Diambil</h4>
-                                                 <?php $count++;  ?> 
-                                                @elseif($pj['checkin'] != "")
-                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
-                                                 <?php $count++;  ?> @endif
-
-                                                @if($pj['skalab'] == 2)
+                                                @elseif($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
-                                                 <?php $count++;  ?> @endif
-
-
-                                                @if($count == 0)
-                                                <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujub[{{$pj['idp']}}]">
-                                                        <option @if($pj['skalab'] == 1) selected @endif value="1">Setuju</option>
-                                                        <option value="2">Tidak Setuju</option>
-                                                        <option @if($pj['skalab'] == 0) selected @endif value="0">Setujui Nanti</option>
-                                                  </select>  
+                                                @elseif($pj['sdosen'] == 2) 
+                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
+                                                 @elseif($pj['skalab'] == 0)
+                                                <h4 class="text-danger">Item Belum Disetuji Oleh Kalab / Laboran</h4>
+                                                @elseif($pj['sdosen'] == 0) 
+                                                 <h4 class="text-danger">Item Belum Disetuji Oleh Penanggungjawab</h4>
+                                                 @elseif($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                @elseif($pj['checkout'] == "")
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
+                                                @elseif($pj['checkin'] == "")
+                                                <h4 class="text-danger">Pengambilan Item Belum Diproses Oleh Kalab / Laboran</h4>
+                                                @elseif($pj['checkin1'] == "")
+                                                <h4 class="text-danger">Item Belum Diambil</h4>
+                                                 
+                                                @else
+                                                <div class="custom-control custom-switch">
+                                                  <input type="checkbox" class="custom-control-input" name="diambilb[{{$pj['idp']}}]" id="b{{$pj['idp']}}" value="{{$pj['idp']}}"  >
+                                                  <label class="custom-control-label" for="b{{$pj['idp']}}">Ambil Pesanan</label>
                                                 </div>
                                                 @endif
                                             </div>
@@ -175,41 +183,29 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
-                                                <?php $count =0;  ?>
-                                                <?php $count =0;  ?>
-                                                @if($pj['sdosen'] == 2)
-                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
-                                                <?php $count++;  ?> @endif
-
-                                                 @if($pj['status'] == 2)
+                                                @if($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
-                                                 <?php $count++;  ?> @endif
-
-                                                 @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
-                                                 <?php $count++;  ?> 
-                                                @elseif($pj['checkout'] != "")
-                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
-                                                 <?php $count++;  ?>
-                                                 @elseif($pj['checkin1'] != "")
-                                                <h4 class="text-danger">Item Telah Diambil</h4>
-                                                 <?php $count++;  ?> 
-                                                @elseif($pj['checkin'] != "")
-                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
-                                                 <?php $count++;  ?> @endif
-
-                                                @if($pj['skalab'] == 2)
+                                                @elseif($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
-                                                 <?php $count++;  ?> @endif
+                                                @elseif($pj['sdosen'] == 2) 
+                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
+                                                 @elseif($pj['skalab'] == 0)
+                                                <h4 class="text-danger">Item Belum Disetuji Oleh Kalab / Laboran</h4>
+                                                @elseif($pj['sdosen'] == 0) 
+                                                 <h4 class="text-danger">Item Belum Disetuji Oleh Penanggungjawab</h4>
+                                                 @elseif($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
+                                                @elseif($pj['checkout'] == "")
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
+                                                @elseif($pj['checkin'] == "")
+                                                <h4 class="text-danger">Pengambilan Item Belum Diproses Oleh Kalab / Laboran</h4>
+                                                @elseif($pj['checkin1'] == "")
+                                                <h4 class="text-danger">Item Belum Diambil</h4>
                                                  
-
-                                                @if($count == 0)
-                                                <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujub[{{$pj['idp']}}]">
-                                                        <option @if($pj['skalab'] == 1) selected @endif value="1">Setuju</option>
-                                                        <option value="2">Tidak Setuju</option>
-                                                        <option @if($pj['skalab'] == 0) selected @endif value="0">Setujui Nanti</option>
-                                                  </select>  
+                                                @else
+                                                <div class="custom-control custom-switch">
+                                                  <input type="checkbox" class="custom-control-input" name="diambilb[{{$pj['idp']}}]" id="b{{$pj['idp']}}" value="{{$pj['idp']}}"  >
+                                                  <label class="custom-control-label" for="b{{$pj['idp']}}">Ambil Pesanan</label>
                                                 </div>
                                                 @endif
                                             </div>
@@ -248,41 +244,28 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                             <div class="col-12">
-
-                                                <?php $count =0;  ?>
-                                                @if($pj['sdosen'] == 2)
-                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
-                                                <?php $count++;  ?> @endif
-
                                                  @if($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
-                                                 <?php $count++;  ?> @endif
-
-                                                 @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
-                                                 <?php $count++;  ?> 
-                                                @elseif($pj['checkout'] != "")
-                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
-                                                 <?php $count++;  ?>
-                                                 @elseif($pj['checkin1'] != "")
-                                                <h4 class="text-danger">Item Telah Diambil</h4>
-                                                 <?php $count++;  ?> 
-                                                @elseif($pj['checkin'] != "")
-                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
-                                                 <?php $count++;  ?> @endif
-
-                                                @if($pj['skalab'] == 2)
+                                                @elseif($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
-                                                 <?php $count++;  ?> @endif
-                                                 
-
-                                                @if($count == 0)
-                                               <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujul[{{$pj['idpl']}}]">
-                                                        <option @if($pj['skalab'] == 1) selected @endif value="1">Setuju</option>
-                                                        <option value="2">Tidak Setuju</option>
-                                                        <option @if($pj['skalab'] == 0) selected @endif value="0">Setujui Nanti</option>
-                                                  </select>  
+                                                @elseif($pj['sdosen'] == 2) 
+                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
+                                                 @elseif($pj['skalab'] == 0)
+                                                <h4 class="text-danger">Item Belum Disetuji Oleh Kalab / Laboran</h4>
+                                                @elseif($pj['sdosen'] == 0) 
+                                                 <h4 class="text-danger">Item Belum Disetuji Oleh Penanggungjawab</h4>
+                                                 @elseif($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Pemesan Telah Meninggalkan Lab</h4>
+                                                @elseif($pj['checkout'] != "")
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Kehadiran Keluar</h4>
+                                                @elseif($pj['checkin'] == "")
+                                                <h4 class="text-danger">Kehadiran Masuk Belum Diproses Oleh Kalab / Laboran</h4>
+                                                @elseif($pj['checkin1'] == "")
+                                                <h4 class="text-danger">Pemesan Belum Hadir</h4>
+                                                @else
+                                               <div class="custom-control custom-switch">
+                                                  <input type="checkbox" class="custom-control-input" name="diambill[{{$pj['idpl']}}]" id="l{{$pj['idpl']}}" value="{{$pj['idpl']}}"  >
+                                                  <label class="custom-control-label" for="l{{$pj['idpl']}}">Kehadiran Keluar</label>
                                                 </div>
                                                 @endif
                                             </div>
@@ -320,39 +303,28 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
-                                               <?php $count =0;  ?>
-                                                @if($pj['sdosen'] == 2)
-                                                <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
-                                                <?php $count++;  ?> @endif
-
-                                                 @if($pj['status'] == 2)
+                                                  @if($pj['status'] == 2)
                                                 <h4 class="text-danger">Item Dibatalkan Oleh Pemesan</h4>
-                                                 <?php $count++;  ?> @endif
-
-                                                 @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan</h4>
-                                                 <?php $count++;  ?> 
-                                                @elseif($pj['checkout'] != "")
-                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengembalian</h4>
-                                                 <?php $count++;  ?>
-                                                 @elseif($pj['checkin1'] != "")
-                                                <h4 class="text-danger">Item Telah Diambil</h4>
-                                                 <?php $count++;  ?> 
-                                                @elseif($pj['checkin'] != "")
-                                                <h4 class="text-danger">Item Sedang Dalam Proses Pengambilan</h4>
-                                                 <?php $count++;  ?> @endif
-
-                                                @if($pj['skalab'] == 2)
+                                                @elseif($pj['skalab'] == 2)
                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Kalab / Laboran</h4>
-                                                 <?php $count++;  ?> @endif
-                                                 
-                                                @if($count == 0)
-                                                 <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujul[{{$pj['idpl']}}]">
-                                                        <option @if($pj['skalab'] == 1) selected @endif value="1">Setuju</option>
-                                                        <option value="2">Tidak Setuju</option>
-                                                        <option @if($pj['skalab'] == 0) selected @endif value="0">Setujui Nanti</option>
-                                                  </select>  
+                                                @elseif($pj['sdosen'] == 2) 
+                                                 <h4 class="text-danger">Item Tidak Disetuji Oleh Penanggungjawab</h4>
+                                                 @elseif($pj['skalab'] == 0)
+                                                <h4 class="text-danger">Item Belum Disetuji Oleh Kalab / Laboran</h4>
+                                                @elseif($pj['sdosen'] == 0) 
+                                                 <h4 class="text-danger">Item Belum Disetuji Oleh Penanggungjawab</h4>
+                                                 @elseif($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Pemesan Telah Meninggalkan Lab</h4>
+                                                @elseif($pj['checkout'] != "")
+                                                <h4 class="text-danger">Item Sedang Dalam Proses Kehadiran Keluar</h4>
+                                                @elseif($pj['checkin'] == "")
+                                                <h4 class="text-danger">Kehadiran Masuk Belum Diproses Oleh Kalab / Laboran</h4>
+                                                @elseif($pj['checkin1'] == "")
+                                                <h4 class="text-danger">Pemesan Belum Hadir</h4>
+                                                @else
+                                                 <div class="custom-control custom-switch">
+                                                  <input type="checkbox" class="custom-control-input" name="diambill[{{$pj['idpl']}}]" id="l{{$pj['idpl']}}" value="{{$pj['idpl']}}"  >
+                                                  <label class="custom-control-label" for="l{{$pj['idpl']}}">Kehadiran Keluar</label>
                                                 </div>
                                                 @endif
                                             </div>
@@ -374,51 +346,62 @@
             <div class="col-lg-12 " style="margin-bottom:10px; ">
                 <div class="card rounded">
                     <div style="margin-left: 1px;" class="row rounded-top" >  
-                        <h3>Pesan Kepala Lab / Laboran</h3>         
-                        <textarea id="txta" style="max-width:100%;" class="form-control" name="pesan" rows="3">{{$orderku[0]->noteKalab}}</textarea>
+                        <h3>Catatan Pengembalian / Kehadiran Keluar</h3>         
+                        <textarea id="txta" style="max-width:100%;" class="form-control" name="pesan" rows="3"></textarea>
                     </div>
                 </div>
             </div>        
         </div>
+        <input type="hidden" name="labdpl" value="{{$labdpl}}">
         <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">   
     @if(isMobile())                
-        <button type="submit" name="agreeselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Persetujuan</button>
+        <button type="submit" name="agreeselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Aktifkan Pengambilan Item / Kehadiran Masuk</button>
     @else
-     <button type="submit" name="agreeselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Persetujuan</button>
+     <button type="submit" name="agreeselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Aktifkan Pengambilan Item / Kehadiran Masuk</button>
     @endif  
 
     </form>  
    
  @if(isMobile())                
-        <form  method="post" action="{{url('order/ppl')}}">
+        <form  method="post" action="{{url('ambil/pambil')}}">
             @csrf
-            <input type="hidden" name="pesan" id="txtc"  value="{{$orderku[0]->noteKalab}}">
-            <input type="hidden" name="agreeall" value="1">
+            <input type="hidden" name="pesan" id="txtc"  value="">
+            <input type="hidden" name="kodep" id="txtd"  value="" >
+            <input type="hidden" name="ambilall" value="1">
+            <input type="hidden" name="labdpl" value="{{$labdpl}}">
             <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
-            <button id="btnall" type="submit" name="agreeall1" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Setujui Seluruh Pesanan*</button>
+            <button id="btnall" type="submit" name="ambilall1" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Aktifkan Seluruh Pengembalian Item / Kehadiran Keluar*</button>
            
-            <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Menyetujui Seluruh Pesanan <b>Yang Dapat Disetujui</b></h5>
+            <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Mengaktifkan Seluruh Pesanan <b>Yang Dapat Dikembalikan</b></h5>
          </form>    
     @else
-    <form method="post" action="{{url('order/ppl')}}">
+    <form method="post" action="{{url('ambil/pambil')}}">
         @csrf
-        <input type="hidden" name="pesan" id="txtc" value="{{$orderku[0]->noteKalab}}">
+        <input type="hidden" name="pesan" id="txtc" value="">
+        <input type="hidden" name="kodep" id="txtd"  value="" >
         <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
-        <input type="hidden" name="agreeall" value="1">
-        <button id="btnall" type="submit" name="agreeall1" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Setujui Seluruh Pesanan*</button>
-       <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Menyetujui Seluruh Pesanan <b>Yang Dapat Disetujui</b></h5>
+        <input type="hidden" name="labdpl" value="{{$labdpl}}">
+        <input type="hidden" name="ambilall" value="1">
+        <button id="btnall" type="submit" name="ambilall1" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Aktifkan Seluruh Pengembalian Item / Kehadiran Keluar*</button>
+       <h5 style="width: 90%; margin-left: auto; margin-right: auto;">*Hanya Mengaktifkan Seluruh Pesanan <b>Yang Dapat Dikembalikan</b></h5>
     </form>
     @endif
-  
+
  
     </div>
     </div>  
     </div>
 </div></div>
 <script type="text/javascript">
+
+ 
+
 $('#txta').change(function() {
      $('#txtc').val($("#txta").val());
-});    
+});   
+$('#txtb').change(function() {
+     $('#txtd').val($("#txtb").val());
+});   
 $(document).ready(function () {
 });
 </script>

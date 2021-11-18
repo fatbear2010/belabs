@@ -19,7 +19,7 @@
   <div class="row align-items-center">
     <div class="col-12 text-center">
    
-      <h1>Detail Pengambilan Item / Kehadiran</h1>
+      <h1>Detail Pengambilan Item / Kehadiran Masuk</h1>
       <h1>Nomor Pesanan : {{$orderku[0]->idorder}}</h1>
        @if(!isset($apa))
       <h3>Waktu Pesanan Dibuat : {{$orderku['0']->tanggal}}</h3>
@@ -77,7 +77,7 @@
    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;">
      <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
-            <h2>Item Yang Diambil / Kehadiran</h2>
+            <h2>Item Yang Diambil / Kehadiran Masuk</h2>
         </div>
         <form method="post" action="{{url('ambil/proses')}}">
            @foreach($keranjang as $item)
@@ -293,16 +293,16 @@
         </div>
         <input type="hidden" name="idambilbalik" value="{{$ambilin[0]->idambilbalik}}">   
     @if(isMobile())                
-        <button type="submit" name="agreeselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Pengambilan</button>
+        <button type="submit" name="agreeselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Pengambilan / Kehadiran Masuk</button>
     @else
-     <button type="submit" name="agreeselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Pengambilan</button>
+     <button type="submit" name="agreeselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Pengambilan / Kehadiran Masuk</button>
     @endif 
 @else
    <div class="row" style="margin: 0px 10px 0px 10px;">
             <div class="col-lg-12 " style="margin-bottom:10px; ">
                 <div class="card rounded">
                     <div style="margin-left: 1px;" class="row rounded-top" >  
-                        <h3>Catatan Pengambilan</h3>         
+                        <h3>Catatan Pengambilan / Kehadiran Masuk</h3>         
                         <h5>{{$ambilin[0]->note}}</h5>
                     </div>
                 </div>

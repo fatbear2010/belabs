@@ -19,7 +19,7 @@
   <div class="row align-items-center">
     <div class="col-12 text-center">
       <h1>Apakah Anda Yakin ?</h1>
-      <h1>Perubahan Pengambilan Barang / Kehadiran</h1>
+      <h1>Perubahan Pengambilan Barang / Kehadiran Masuk</h1>
       <h3>Nomor Pesanan : {{$orderku[0]->idorder}}</h3>
       <br>
       <br>
@@ -227,7 +227,7 @@
             <div class="col-lg-12 " style="margin-bottom:10px; ">
                 <div class="card rounded">
                     <div style="margin-left: 10px;" class=" rounded-top text-left" >  
-                        <h3>Catatan Pengambilan</h3>         
+                        <h3>Catatan Pengambilan / Kehadiran Masuk</h3>         
                         <h4>{{$pesan}}</h4>
                     </div>
                 </div>
@@ -236,9 +236,9 @@
         <input type="hidden" name="idambilbalik" value="{{$ambilin[0]->idambilbalik}}"> 
         <input type="hidden" name="pesan" value="{{$pesan}}"> 
      @if(isMobile())                
-    <button style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya, Simpan Pengambilan / Kehadiran</button>
+    <button style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya, Simpan Pengambilan / Kehadiran Masuk</button>
     @else
-     <button style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya, Simpan Pengambilan / Kehadiran</button>
+     <button style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya, Simpan Pengambilan / Kehadiran Masuk</button>
     @endif
     </form>   
    <form>
