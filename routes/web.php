@@ -110,6 +110,12 @@ Route::middleware('auth')->group(function() {
 	Route::post('ambil/labku/','App\Http\Controllers\AmbilbalikController@ambillab')->name('ambil.ambillab');
 	Route::post('ambil/pambil/','App\Http\Controllers\AmbilbalikController@prosesambil')->name('ambil.pambil');
 	Route::post('ambil/ambilfinal/','App\Http\Controllers\AmbilbalikController@finalambil')->name('ambil.ambilfinal');
+	Route::get('ambil/detail/{id}','App\Http\Controllers\AmbilbalikController@ambildetail')->name('ambil.ambildetail');
+	Route::get('ambil/ambildetaildosen/{id}','App\Http\Controllers\AmbilbalikController@ambildetaildosen')->name('ambil.ambildetaildosen');
+	Route::post('ambil/proses/','App\Http\Controllers\AmbilbalikController@gantiambil')->name('ambil.gantiambil');
+	Route::post('ambil/gantifinal/','App\Http\Controllers\AmbilbalikController@gantiambilfinal')->name('ambil.gantiambilfinal');
+	Route::post('ambil/konfirmasi/','App\Http\Controllers\AmbilbalikController@konfirmasiambil')->name('ambil.konfirmasiambil');
+	Route::post('ambil/konfirmasipemesanfinal/','App\Http\Controllers\AmbilbalikController@konfirmasipemesanfinal')->name('ambil.konfirmasipemesanfinal');
 	
 });
 

@@ -10,6 +10,7 @@ use App\Models\Pinjam;
 use App\Models\Fakultas;
 use App\Models\Jurusan;
 use App\Models\PinjamLab;
+use App\Models\Lab;
 use App\Models\Order;
 use App\Models\History;
 use App\Models\Email;
@@ -18,7 +19,7 @@ use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\PinjamLabController;
 use Illuminate\Support\Facades\DB;
 use App\Mail\emailOrder;
-use App\Mail\emailab;
+use App\Mail\emaila;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -51,6 +52,18 @@ class KeranjangController extends Controller
     {
         $fak = Fakultas::where('idfakultas',$id)->first();
         return $fak->namafakultas;
+    }
+
+    public static function labaja($id)
+    {
+        $la = Lab::where('idlab',$id)->first();
+        return $la->namaLab;
+    }
+
+    public static function laborannya2($lab , $nrpnpk)
+    {
+        $laboran = DB::select("select * from laboran where user = '".$nrpnpk."' and lab = '".$lab."'");
+       return(count($laboran));
     }
 
     public static function laborannya($orderid, $nrpnpk)
@@ -350,32 +363,34 @@ class KeranjangController extends Controller
 
     public static function kirimemaila($id)
     {
-        $orderku = Order::where('idorder',$id)->get();// dd($orderku);
+        $orderku = Order::where('idorder',substr($id, 0, 13))->get();// dd($orderku);
         $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
         $pesanankubarang = DB::select("select p.sdosen, p.skalab, l.lokasi,p.checkin1, p.checkout1, k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.ambil = '".$id."' order by b.nama");
         $pesanankulab = DB::select("select p.sdosen, p.skalab,l.namaLab,p.checkin1, p.checkout1, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.ambil = '".$id."' order by l.namaLab");
         $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
         $ambil = Ambilbalik::where('idambilbalik',$id)->where('tipe','AMBIL')->get();
-        $balik = Ambilbalik::where('idambilbalik',$id)->where('tipe','BALIK')->get();
-        $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$ambil[0]->order.'"');
+        $kalab =  DB::select('select * from users where nrpnpk = "'.$ambil[0]->PIC.'"');
+        $pesan = "Pengambilan Item / Kehadiran Telah Di Proses Oleh Kalab / Laboran";
+        $pesan2 = "Pengambilan Item / Kehadiran Telah Pesanan Yang Berkaitan dengan Anda Di Proses Oleh Kalab / Laboran";
         $emaillab = DB::select("select DISTINCT user from laboran la left join (select DISTINCT bd.lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.lab = lb.lab");
+        
         for ($i=0; $i <count($emaillab) ; $i++) { 
             $emailaboran = Email::where('nrpnpk',$emaillab[$i]->user)->get();
             //dd($emailaboran);
             if($emailaboran[0]->ambil == 1)
             {
-                Mail::to($dosenpj->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek2, $pesan2, $status,$ambil,$balik));
+                Mail::to($dosenpj->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan2, $pesan2, $kalab));
             }
         }
-
-        Mail::to($pemesan[0]->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek1, $pesan1, $status,$ambil,$balik));
+        Mail::to($pemesan[0]->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan, $pesan, $kalab));
+       
                      
         $emaild = Email::where('nrpnpk',$orderku[0]->dosen)->get();
         if($emaild[0]->ambil == 1)
         {
-            Mail::to($dosenpj[0]->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek2, $pesan2, $status,$ambil,$balik));
+            Mail::to($pemesan[0]->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan2, $pesan2, $kalab));
         }
-       
+        //return view('mail.m_ambil',compact('pemesan','dosenpj','pesanankubarang','pesanankulab','ambil','orderku','pesan','kalab'));
     }
 
     public static function kirimemailb($id ,$subjek1, $pesan1,$subjek2, $pesan2, $action)

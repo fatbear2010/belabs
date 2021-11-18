@@ -19,11 +19,10 @@
   <div class="row align-items-center">
     <div class="col-12 text-center">
       <h1>Apakah Anda Yakin ?</h1>
-      <h1>Pengambilan Item / Kehadiran</h1>
+      <h1>Perubahan Pengambilan Barang / Kehadiran</h1>
       <h3>Nomor Pesanan : {{$orderku[0]->idorder}}</h3>
       <br>
-        <h3>Kode Pengambilan / Kehadiran</h3>
-        <h1 style="font-size: 40px;">{{$kodep}}</h1>
+      <br>
     </div>
   </div>
 </div>
@@ -32,7 +31,7 @@
 
    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;">
      <div class="card card-profile shadow " style="width: 100%;">
-        <form method="post" action="{{url('ambil/ambilfinal')}}">
+        <form method="post" action="{{url('ambil/gantifinal')}}">
             @csrf
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 0px 10px 0px 10px;">
@@ -60,9 +59,21 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                            <div class="col-6"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                             <div class="col-6">
+                                                 @if($pj['setuju'] == 1) 
+                                                <h4 class="text-success">Item Telah Diambil</h4>
+                                                <input  type="hidden" name="setujub[{{$pj['idp']}}]" value="1">
+                                                @elseif($pj['setuju'] == 2)
+                                                <h4 class="text-primary">Item Tidak Diambil</h4>
+                                                <input  type="hidden" name="setujub[{{$pj['idp']}}]" value="2"> 
+                                                @elseif($pj['setuju'] == 3)
+                                                <h4 class="text-danger">Pengambilan Item Dibatalkan</h4>
+                                                <input  type="hidden" name="setujub[{{$pj['idp']}}]" value="3"> 
+                                                @endif
+                                            </div>
+                                            <br><br>
                                         </div>
-                                        <input  type="hidden" name="ambilb[{{$pj['idp']}}]" value="{{$pj['idp']}}">
                                         @endforeach
                                     </div>
                              
@@ -95,8 +106,19 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-12">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
-                                            <input  type="hidden" name="ambilb[{{$pj['idp']}}]" value="{{$pj['idp']}}">
+                                            <div class="col-6">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
+                                            <div class="col-6">
+                                                  @if($pj['setuju'] == 1) 
+                                                <h4 class="text-success">Item Telah Diambil</h4>
+                                                <input  type="hidden" name="setujub[{{$pj['idp']}}]" value="1">
+                                                @elseif($pj['setuju'] == 2)
+                                                <h4 class="text-primary">Item Tidak Diambil</h4>
+                                                <input  type="hidden" name="setujub[{{$pj['idp']}}]" value="2"> 
+                                                @elseif($pj['setuju'] == 3)
+                                                <h4 class="text-danger">Pengambilan Item Dibatalkan</h4>
+                                                <input  type="hidden" name="setujub[{{$pj['idp']}}]" value="3"> 
+                                                @endif
+                                            </div>
                                         </div>
                                         @endforeach
                                     </div>
@@ -130,9 +152,21 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                            <div class="col-6"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                            <div class="col-6">
+                                                @if($pj['setuju'] == 1) 
+                                                <h4 class="text-success">Pemesan Sudah Hadir</h4>
+                                                <input  type="hidden" name="setujul[{{$pj['idpl']}}]" value="1">
+                                                @elseif($pj['setuju'] == 2)
+                                                <h4 class="text-primary">Pemesan Tidak Hadir</h4>
+                                                <input  type="hidden" name="setujul[{{$pj['idpl']}}]" value="2"> 
+                                                @elseif($pj['setuju'] == 3)
+                                                <h4 class="text-danger">Pembatalan Kehadiran</h4>
+                                                <input  type="hidden" name="setujul[{{$pj['idpl']}}]" value="3"> 
+                                                @endif
+                                            </div>
+                                            <br><br>
                                         </div>
-                                        <input  type="hidden" name="ambill[{{$pj['idpl']}}]" value="{{$pj['idpl']}}">
                                         @endforeach
                                     </div>
                              
@@ -163,9 +197,20 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-12">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
+                                            <div class="col-6">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
+                                            <div class="col-6">
+                                                @if($pj['setuju'] == 1) 
+                                                <h4 class="text-success">Pemesan Sudah Hadir</h4>
+                                                <input  type="hidden" name="setujul[{{$pj['idpl']}}]" value="1">
+                                                @elseif($pj['setuju'] == 2)
+                                                <h4 class="text-primary">Pemesan Tidak Hadir</h4>
+                                                <input  type="hidden" name="setujul[{{$pj['idpl']}}]" value="2"> 
+                                                @elseif($pj['setuju'] == 3)
+                                                <h4 class="text-danger">Pembatalan Kehadiran</h4>
+                                                <input  type="hidden" name="setujul[{{$pj['idpl']}}]" value="3"> 
+                                                @endif
+                                            </div>
                                         </div>
-                                        <input  type="hidden" name="ambill[{{$pj['idpl']}}]" value="{{$pj['idpl']}}">
                                         @endforeach
                                     </div>
                              
@@ -182,14 +227,13 @@
             <div class="col-lg-12 " style="margin-bottom:10px; ">
                 <div class="card rounded">
                     <div style="margin-left: 10px;" class=" rounded-top text-left" >  
-                        <h3>Catatan Pengambilan / Kehadiran</h3>         
+                        <h3>Catatan Pengambilan</h3>         
                         <h4>{{$pesan}}</h4>
                     </div>
                 </div>
             </div>        
-        </div>
-        <input type="hidden" name="kodep" value="{{$kodep}}">            
-        <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}"> 
+        </div>            
+        <input type="hidden" name="idambilbalik" value="{{$ambilin[0]->idambilbalik}}"> 
         <input type="hidden" name="pesan" value="{{$pesan}}"> 
      @if(isMobile())                
     <button style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya, Simpan Pengambilan / Kehadiran</button>
@@ -200,10 +244,10 @@
    <form>
     @if(isMobile())                
     
-    <a href="{{url('ambil/all/'.$orderku[0]->idorder)}}" style="width: 90%; margin: 0px 10px 10px 10px;" class="btn btn-dark text-wrap">Tidak, Kembali Ke Halaman Sebelumnya</a>
+    <a href="{{url('ambil/detail/'.$ambilin[0]->idambilbalik)}}" style="width: 90%; margin: 0px 10px 10px 10px;" class="btn btn-dark text-wrap">Tidak, Kembali Ke Halaman Sebelumnya</a>
     @else
     
-    <a href="{{url('ambil/all/'.$orderku[0]->idorder)}}" style="width: 97%; margin: 0px 10px 10px 10px;" class="btn btn-dark">Tidak, Kembali Ke Halaman Sebelumnya</a>
+    <a href="{{url('ambil/detail/'.$ambilin[0]->idambilbalik)}}" style="width: 97%; margin: 0px 10px 10px 10px;" class="btn btn-dark">Tidak, Kembali Ke Halaman Sebelumnya</a>
     @endif
     </form>
     </div>

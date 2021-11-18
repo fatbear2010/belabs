@@ -172,10 +172,10 @@
 																			</div>
 																			<br>
 																			<div style="font-size: 12px; color: #000000; line-height: 1.2; font-family: Lato, Tahoma, Verdana, Segoe, sans-serif;">
-																				<p style="margin: 0; text-align: center; font-size: 12px;"><span style="font-size:22px;"><strong>Kode Pengambilan</strong></span></p>
+																				<p style="margin: 0; text-align: center; font-size: 12px;"><span style="font-size:22px;"><strong>Kode Pengambilan / Kehadiran</strong></span></p>
 																				<p style="margin: 0; text-align: center; font-size: 50px;"><span style="font-size:50px;"><strong>{{$ambil[0]->abcode}}</strong></span></p>
 																				<p style="margin: 0; text-align: center; font-size: 12px;"><span style="font-size:12px;"><strong>ID Pengambilan : {{$ambil['0']->idambilbalik}}</strong></span></p>
-																				<p style="margin: 0; text-align: center; font-size: 12px;"><span style="font-size:12px;"><strong>Waktu Pengambilan Dibuat : {{$ambil['0']->time}}</strong></span></p>
+																				<p style="margin: 0; text-align: center; font-size: 12px;"><span style="font-size:12px;"><strong>Waktu Pengambilan Diproses : {{$ambil['0']->time}}</strong></span></p>
 																			</div>
 																		</div>
 																	</td>

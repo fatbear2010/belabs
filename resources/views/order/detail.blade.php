@@ -37,10 +37,38 @@
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
         </div>
+        @elseif(session('status') == 5)
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+          <span class="alert-inner--text">Data Pengambilan Item / Kehadiran Berhasil Disimpan</span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        </div>
+        @elseif(session('status') == 8)
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+          <span class="alert-inner--text">Pengambilan Item / Kehadiran Berhasil Dikonfirmasi Oleh Pemesan</span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        </div>
+         @elseif(session('status') == 6)
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+          <span class="alert-inner--text">Perubahan Data Pengambilan Item / Kehadiran Berhasil Disimpan</span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        </div>
           @elseif(session('status') == 3)
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <span class="alert-inner--icon"><i class="icofont-error"></i></span>
           <span class="alert-inner--text">Password Salah</a></span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          </div>
+           @elseif(session('status') == 9)
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="icofont-error"></i></span>
+          <span class="alert-inner--text">Anda Tidak Memiliki Akses Fitur Ini</a></span>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
           </div>
@@ -51,6 +79,7 @@
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
         </div>
+        
           @endif
         @endif  
       <a style="margin-bottom: 5px; max-width: 100%;" href="{{url('order/batalkan/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-primary">Pengambilan Pesanan (Pemesan)</a>
@@ -121,8 +150,16 @@
         <div class="row" style="margin: 5px 10px 5px 10px;">
             <div class="col-12" >
             @if($orderku[0]->mahasiswa == auth()->user()->nrpnpk)
+             @if(session('status') == 7)
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <span class="alert-inner--icon"><i class="icofont-error"></i></span>
+              <span class="alert-inner--text">Kode Pengambilan Salah Atau Pengambilan Telah Dikonfirmasi</span>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            </div>
+            @endif
             <br>
-                <form>
+                <form method="post" action="{{url('ambil/konfirmasi')}}">
                     @csrf
                     <div class="row">
                         <div class="col-12 col-md-2">Kode Pengambilan</div>
@@ -132,28 +169,60 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-4">
+                            <input type="hidden" name="idorder" value="{{$orderku[0]->idorder}}">
                             <input type="submit" name="ok" class="btn btn-fik text-wrap " value="Cek Kode Pengambilan" style="width: 100%">
                         </div>
                     </div>
                 </form>
             @endif
+
             @if( KeranjangController::laborannya($orderku[0]->idorder,auth()->user()->nrpnpk) > 0)
             <br>
-            <h3>Daftar Pengambilan / Kehadiran</h3>
+            <h3>Daftar Pengambilan / Kehadiran (Kalab / Laboran)</h3>
+           
             <div class="table-responsive">
             <table class="table">
                 <thead class="thead-light">
-                    <th>Kode Pengambilan</th><th>Diajukan</th><th>Diambil</th><th>PIC</th><th>Action</th>
+                    <th>Kode Pengambilan</th><th>Diproses</th><th>Diambil / Hadir</th><th>Kalab / Laboran</th><th>Action</th>
+                </thead>
+                <tbody class="list">
+                    @foreach($ambil as $am)
+                    @if(KeranjangController::laborannya2($am->lab,auth()->user()->nrpnpk) != 0)
+                    <tr>
+                        <td>{{$am->idambilbalik}}<h3>{{$am->abcode}}</h3></td>
+                        <td>{{$am->time}}</td>
+                        <td class="text-wrap">@if($am->time2 == "") Item Belum Diambil / Belum Hadir @else {{$am->time2}}@endif</td>
+                        <td class="text-wrap">{{KeranjangController::cariorang($am->PIC)}} <br>
+                            {{ KeranjangController::labaja($am->lab)}}</td>
+                        <td>
+                            <a href="{{url('ambil/detail/'.$am->idambilbalik)}}" class="text-wrap btn btn-fik">Detail</a>
+                        </td>
+                    </tr>
+                    @endif
+                     @endforeach
+                </tbody>    
+            </table>
+        </div>
+        <br>
+            @endif
+         @if( $orderku[0]->dosen == auth()->user()->nrpnpk)
+            <h3>Daftar Pengambilan / Kehadiran (Penanggungjawab)</h3>
+           
+            <div class="table-responsive">
+            <table class="table">
+                <thead class="thead-light">
+                    <th>Kode Pengambilan</th><th>Diproses</th><th>Diambil / Hadir</th><th>Kalab / Laboran</th><th>Action</th>
                 </thead>
                 <tbody class="list">
                     @foreach($ambil as $am)
                     <tr>
-                        <td>102188265626288<h3>AL67GY</h3></td>
-                        <td>15 Oktober 2021 : 17.00</td>
-                        <td>15 Oktober 2021 : 17.00</td>
-                        <td>Daniel Yanuar Surjadi</td>
+                        <td>{{$am->idambilbalik}}</td>
+                        <td>{{$am->time}}</td>
+                        <td class="text-wrap">@if($am->time2 == "") Item Belum Diambil / Belum Hadir @else {{$am->time2}}@endif</td>
+                        <td class="text-wrap">{{KeranjangController::cariorang($am->PIC)}} <br>
+                            {{ KeranjangController::labaja($am->lab)}}</td>
                         <td>
-                            <a href="" class="text-wrap btn btn-fik">Detail</a>
+                            <a href="{{url('ambil/ambildetaildosen/'.$am->idambilbalik)}}" class="text-wrap btn btn-fik">Detail</a>
                         </td>
                     </tr>
                      @endforeach
@@ -161,7 +230,7 @@
             </table>
         </div>
         <br>
-            @endif
+            @endif   
         </div>
         </div>
     </div>
@@ -217,8 +286,8 @@
                                    
                                         <button 
                                         @if($pj['status'] == 2) class="btn-sm btn-danger text-left " 
-                                        @elseif($pj['checkout'] != "") class="btn-sm btn-info text-left " 
-                                        @elseif($pj['checkin'] != "") class="btn-sm btn-primary text-left " 
+                                        @elseif($pj['checkout1'] != "") class="btn-sm btn-info text-left " 
+                                        @elseif($pj['checkin1'] != "") class="btn-sm btn-primary text-left " 
                                         @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn-sm btn-success text-left " 
                                         @else class="btn-sm btn-fik text-left " @endif
 
@@ -292,8 +361,8 @@
                                    
                                         <button 
                                         @if($pj['status'] == 2) class="btn btn-danger text-left " 
-                                        @elseif($pj['checkout'] != "") class="btn btn-info text-left " 
-                                        @elseif($pj['checkin'] != "") class="btn btn-primary text-left " 
+                                        @elseif($pj['checkout1'] != "") class="btn btn-info text-left " 
+                                        @elseif($pj['checkin1'] != "") class="btn btn-primary text-left " 
                                         @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn btn-success text-left " 
                                         @else class="btn btn-fik text-left " @endif
 
@@ -367,8 +436,8 @@
                                    
                                         <button 
                                         @if($pj['status'] == 2) class="btn-sm btn-danger text-left " 
-                                        @elseif($pj['checkout'] != "") class="btn-sm btn-info text-left " 
-                                        @elseif($pj['checkin'] != "") class="btn-sm btn-primary text-left " 
+                                        @elseif($pj['checkout1'] != "") class="btn-sm btn-info text-left " 
+                                        @elseif($pj['checkin1'] != "") class="btn-sm btn-primary text-left " 
                                         @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn-sm btn-success text-left " 
                                         @else class="btn-sm btn-fik text-left " @endif
 
@@ -442,8 +511,8 @@
                                    
                                         <button 
                                         @if($pj['status'] == 2) class="btn btn-danger text-left " 
-                                        @elseif($pj['checkout'] != "") class="btn btn-info text-left " 
-                                        @elseif($pj['checkin'] != "") class="btn btn-primary text-left " 
+                                        @elseif($pj['checkout1'] != "") class="btn btn-info text-left " 
+                                        @elseif($pj['checkin1'] != "") class="btn btn-primary text-left " 
                                         @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn btn-success text-left " 
                                         @else class="btn btn-fik text-left " @endif
 
