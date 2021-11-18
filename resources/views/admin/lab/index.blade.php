@@ -40,13 +40,13 @@
               <td>{{ $d->idlab }}</td>
               <td>{{ $d->namaLab }}</td>
               <td>{{ $d->lokasi }}</td>
-            
+
               <td>{{ $d->fakultas1()->namafakultas }}</td>
-              
+
               <td>
                 @foreach($d->users as $h)
                 <br>{{$h->nama}}
-                
+
                 @endforeach
               </td>
               <td class="text-right">
@@ -55,6 +55,7 @@
                     <i class="fas fa-ellipsis-v"></i>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                    <a class="dropdown-item" href="{{url('admin/lab/waktu/'.$d->idlab)}}">Waktu Penggunaan</a>
                     <a class="dropdown-item" href="{{route('lab.edit',$d->idlab)}}">Edit</a>
                     <form method='Post' action="{{route('lab.destroy',$d->idlab)}}">
                       @csrf

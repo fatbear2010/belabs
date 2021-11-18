@@ -59,6 +59,10 @@ Route::middleware('auth')->group(function() {
 	Route::post('admin/barangdetail/showsesi','App\Http\Controllers\BarangDetailController@showsesi')->name('barangdetail.showsesi');
 	Route::post('admin/barangdetail/storewaktu/','App\Http\Controllers\BarangDetailController@storesesi')->name('barangdetail.storewaktu');
 
+	Route::get('admin/lab/waktu/{id}','App\Http\Controllers\LabController@sesiPenggunaan')->name('lab.waktu');
+	Route::post('admin/lab/showsesi','App\Http\Controllers\LabController@showsesi')->name('lab.showsesi');
+	Route::post('admin/lab/storewaktu/','App\Http\Controllers\LabController@storesesi')->name('lab.storewaktu');
+
 
 
 	//::resource('category','CategoryController');
