@@ -18,7 +18,7 @@
     <div class="container-fluid mt--7">
         <div class="row">
             <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
-                <div class="card card-profile shadow" style=" height: 610px;">
+                <div class="card card-profile shadow" style=" height: 650px;">
                     <div class="row justify-content-center">
                         <div class="col-lg-3 order-lg-2">
                             <div class="card-profile-image">
@@ -55,7 +55,7 @@
                                 <i class="ni education_hat mr-2"></i>Email : {{ auth()->user()->email }}
                             </div>
                              <div>
-                                <i class="ni education_hat mr-2"></i>Nomor Telepon : {{ auth()->user()->notelp }} | Line ID : {{ auth()->user()->lineId }}
+                                <i class="ni education_hat mr-2"></i>Nomor Telepon : {{ auth()->user()->notelp }} <br> Line ID : {{ auth()->user()->lineId }}
                             </div>
                             <hr class="my-4" />
                             <div class="row">
@@ -70,6 +70,12 @@
                                 <div class="row">
                                     <div class="col">
                                    <a href="{{url('order/all')}}"style="width:100%; margin-bottom:10px;" class="btn btn-fik">Lihat Pesanan Yang Berkaitan Dengan Anda</a>
+
+                               </div>
+                               @else
+                               <div class="row">
+                                    <div class="col">
+                                        
                                </div>
                                @endif
                                 </div>

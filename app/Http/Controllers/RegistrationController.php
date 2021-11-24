@@ -29,7 +29,7 @@ class RegistrationController extends Controller
                 $nama = $user->nama;
                 $email = $user->email;
                 $nrpnpk = $user->nrpnpk;
-                $vcode = Hash::make($nrpnpk);
+                $vcode = str_ireplace( array( '\'','/', '"',',' , ';', '<', '>' ), '', Hash::make($nrpnpk));
                 $user->vcode = $vcode;
                 $user->save();
                 Mail::to($user->email)->send(new email($nama,'https://localhost/kp/belabs2/public/vcodes/'.$vcode));
@@ -62,7 +62,7 @@ class RegistrationController extends Controller
                 $nama = $user->nama;
                 $email = $user->email;
                 $nrpnpk = $user->nrpnpk;
-                $vcode = $vcode = Hash::make($nrpnpk);
+                $vcode = str_ireplace( array( '\'', '/','"',',' , ';', '<', '>' ), '', Hash::make($nrpnpk));
                 $user->vcode = $vcode;
                 $user->save();
                 Mail::to($user->email)->send(new email($nama,'https://localhost/kp/belabs2/public/vcodes/'.$vcode));
@@ -82,7 +82,7 @@ class RegistrationController extends Controller
 
     protected function aktivasi3($vcode)
     {
-        $user = User::where('vcode',$vcode)->where('status','0')->first();
+        $user = User::where('vcode',$vcode)->where('status','2')->first();
 
         if($user)
         {
@@ -114,7 +114,8 @@ class RegistrationController extends Controller
                 $user->notelp = $request->telp;
                 $user->lineId = $request->line;
                 $user->status = 1;
-                $user->vcode = Hash::make($user->nrpnpk);
+                $vcode = str_ireplace( array( '\'','/', '"',',' , ';', '<', '>' ), '', Hash::make($nrpnpk));
+                $user->vcode = $vcode;
                 $user->save();
                 $jabatan = Jabatan::where('idjabatan',$user->jabatan)->first();
                 $jurusan = Jurusan::where('idjurusan',$user->jurusan)->first();

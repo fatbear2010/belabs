@@ -35,7 +35,7 @@ class ForgotPasswordController extends Controller
                 $nama = $user->nama;
                 $email = $user->email;
                 $nrpnpk = $user->nrpnpk;
-                $vcode = substr(Hash::make($nrpnpk), 0, 10);
+                $vcode = str_ireplace( array( '\'','/', '"',',' , ';', '<', '>' ), '', Hash::make($nrpnpk));
                 $user->vcode = $vcode;
                 $user->save();
                 $sukses = 1;
@@ -70,7 +70,7 @@ class ForgotPasswordController extends Controller
                 $nama = $user->nama;
                 $email = $user->email;
                 $nrpnpk = $user->nrpnpk;
-                $vcode = substr(Hash::make($nrpnpk), 0, 10);
+                $vcode = str_ireplace( array( '\'','/', '"',',' , ';', '<', '>' ), '', Hash::make($nrpnpk));
                 $user->vcode = $vcode;
                 $user->save();
                 $sukses = 1;
@@ -122,7 +122,7 @@ class ForgotPasswordController extends Controller
             if($request->pass1 == $request->pass2)
             {
                 $user->password = Hash::make($request->pass1);
-                $user->vcode = Hash::make($user->nrpnpk);
+                $vcode = str_ireplace( array( '\'','/', '"',',' , ';', '<', '>' ), '', Hash::make($user->nrpnpk));
                 $user->save();
                 $nama = $user->nama;
                 $nrpnpk = $user->nrpnpk;

@@ -389,7 +389,7 @@ class PinjamController extends Controller
 
     public function filter(Request $request)
     {
-        $query = 'select b.nama as nama, b.idbarang as idbarang from barang b left join barangdetail d on b.idbarang = d.idbarang left join lab l on l.idlab = d.lab ';
+        $query = 'select distinct b.nama as nama, b.idbarang as idbarang from barang b left join barangdetail d on b.idbarang = d.idbarang left join lab l on l.idlab = d.lab ';
         $jumlah = 0;
         $filter = array();
         if($request->nama != "")
