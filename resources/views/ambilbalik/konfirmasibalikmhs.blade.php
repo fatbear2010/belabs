@@ -19,8 +19,10 @@
   <div class="row align-items-center">
     <div class="col-12 text-center">
       <h1>Apakah Anda Yakin ?</h1>
-      <h1>Pengembalian Item / Kehadiran Keluar</h1>
+      <h1>Pembatalan Pengembalian Barang / Kehadiran Keluar</h1>
       <h3>Nomor Pesanan : {{$orderku[0]->idorder}}</h3>
+      <br>
+      <br>
     </div>
   </div>
 </div>
@@ -29,7 +31,7 @@
 
    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;">
      <div class="card card-profile shadow " style="width: 100%;">
-        <form method="post" action="{{url('balik/balikfinal')}}">
+        <form method="post" action="{{url('balik/gantifinalmhs')}}">
             @csrf
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 0px 10px 0px 10px;">
@@ -58,8 +60,9 @@
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                                <input  type="hidden" name="balikb[{{$pj['idp']}}]" value="1">
+                                            <br><br>
                                         </div>
-                                        <input  type="hidden" name="ambilb[{{$pj['idp']}}]" value="{{$pj['idp']}}">
                                         @endforeach
                                     </div>
                              
@@ -92,8 +95,8 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-12">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
-                                            <input  type="hidden" name="ambilb[{{$pj['idp']}}]" value="{{$pj['idp']}}">
+                                            <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                                <input  type="hidden" name="balikb[{{$pj['idp']}}]" value="1">
                                         </div>
                                         @endforeach
                                     </div>
@@ -127,9 +130,10 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                                <input  type="hidden" name="balikl[{{$pj['idpl']}}]" value="1">
+                                            <br><br>
                                         </div>
-                                        <input  type="hidden" name="ambill[{{$pj['idpl']}}]" value="{{$pj['idpl']}}">
                                         @endforeach
                                     </div>
                              
@@ -160,9 +164,9 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-12">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
+                                            <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                                <input  type="hidden" name="balikl[{{$pj['idpl']}}]" value="1">
                                         </div>
-                                        <input  type="hidden" name="ambill[{{$pj['idpl']}}]" value="{{$pj['idpl']}}">
                                         @endforeach
                                     </div>
                              
@@ -175,22 +179,21 @@
                     @endif
                 </div>
                     @endforeach
-
-        <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}"> 
-    
+              
+        <input type="hidden" name="idambilbalik" value="{{$ambilin[0]->idambilbalik}}"> 
      @if(isMobile())                
-    <button style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya, Simpan Pengembalian / Kehadiran Keluar</button>
+    <button style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger text-wrap">Ya, Batalkan Pengembalian / Kehadiran Keluar</button>
     @else
-     <button style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya, Simpan Pengembalian / Kehadiran Keluar</button>
+     <button style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya,Batalkan Pengembalian / Kehadiran Keluar</button>
     @endif
     </form>   
    <form>
     @if(isMobile())                
     
-    <a href="{{url('ambil/all/'.$orderku[0]->idorder)}}" style="width: 90%; margin: 0px 10px 10px 10px;" class="btn btn-dark text-wrap">Tidak, Kembali Ke Halaman Sebelumnya</a>
+    <a href="{{url('balik/balikdetailmhs/'.$ambilin[0]->idambilbalik)}}" style="width: 90%; margin: 0px 10px 10px 10px;" class="btn btn-dark text-wrap">Tidak, Kembali Ke Halaman Sebelumnya</a>
     @else
     
-    <a href="{{url('ambil/all/'.$orderku[0]->idorder)}}" style="width: 97%; margin: 0px 10px 10px 10px;" class="btn btn-dark">Tidak, Kembali Ke Halaman Sebelumnya</a>
+    <a href="{{url('balik/balikdetailmhs/'.$ambilin[0]->idambilbalik)}}" style="width: 97%; margin: 0px 10px 10px 10px;" class="btn btn-dark">Tidak, Kembali Ke Halaman Sebelumnya</a>
     @endif
     </form>
     </div>

@@ -51,6 +51,20 @@
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
         </div>
+         @elseif(session('status') == 11)
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+          <span class="alert-inner--text">Pengembalian Barang Berhasil Dibatalkan</span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        </div>
+        @elseif(session('status') == 12)
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+          <span class="alert-inner--text">Tanggapan Pengembalian Barang / Kehadiran Keluar Berhasil Disimpan</span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        </div>
         @elseif(session('status') == 8)
           <div class="alert alert-success alert-dismissible fade show" role="alert">
           <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
@@ -261,18 +275,18 @@
             <div class="table-responsive">
             <table class="table">
                 <thead class="thead-light">
-                    <th>Kode Pengambilan</th><th>Diproses</th><th>Diambil / Hadir</th><th>Kalab / Laboran</th><th>Action</th>
+                    <th>Kode Pengambilan</th><th>Diproses</th><th>Dikonfirmasi</th><th>Kalab / Laboran</th><th>Action</th>
                 </thead>
                 <tbody class="list">
                     @foreach($balik as $am)
                     <tr>
                         <td>{{$am->idambilbalik}}<h3>{{$am->abcode}}</h3></td>
                         <td>{{$am->time}}</td>
-                        <td class="text-wrap">@if($am->time2 == "") Item Belum Diambil / Belum Hadir @else {{$am->time2}}@endif</td>
+                        <td class="text-wrap">@if($am->time2 == "") Pengembalian / Kehadiran Keluar Belum Dikonfirmasi @else {{$am->time2}}@endif</td>
                         <td class="text-wrap">{{KeranjangController::cariorang($am->PIC)}} <br>
                             {{ KeranjangController::labaja($am->lab)}}</td>
                         <td>
-                            <a href="{{url('ambil/detail/'.$am->idambilbalik)}}" class="text-wrap btn btn-primary">Detail</a>
+                            <a href="{{url('balik/balikdetailmhs/'.$am->idambilbalik)}}" class="text-wrap btn btn-primary">Detail</a>
                         </td>
                     </tr>                
                      @endforeach
@@ -288,7 +302,7 @@
             <div class="table-responsive">
             <table class="table">
                 <thead class="thead-light">
-                    <th>Kode Pengambilan</th><th>Diproses</th><th>Diambil / Hadir</th><th>Kalab / Laboran</th><th>Action</th>
+                    <th>Kode Pengambilan</th><th>Diproses</th><th>Dikonfirmasi</th><th>Kalab / Laboran</th><th>Action</th>
                 </thead>
                 <tbody class="list">
                     @foreach($balik as $am)
@@ -296,11 +310,11 @@
                     <tr>
                         <td>{{$am->idambilbalik}}<h3>{{$am->abcode}}</h3></td>
                         <td>{{$am->time}}</td>
-                        <td class="text-wrap">@if($am->time2 == "") Item Belum Diambil / Belum Hadir @else {{$am->time2}}@endif</td>
+                        <td class="text-wrap">@if($am->time2 == "") Pengembalian / Kehadiran Keluar Belum Dikonfirmasi @else {{$am->time2}}@endif</td>
                         <td class="text-wrap">{{KeranjangController::cariorang($am->PIC)}} <br>
                             {{ KeranjangController::labaja($am->lab)}}</td>
                         <td>
-                            <a href="{{url('ambil/detail/'.$am->idambilbalik)}}" class="text-wrap btn btn-primary">Detail</a>
+                            <a href="{{url('balik/balikdetaillab/'.$am->idambilbalik)}}" class="text-wrap btn btn-primary">Detail</a>
                         </td>
                     </tr>
                     @endif
@@ -316,18 +330,18 @@
             <div class="table-responsive">
             <table class="table">
                 <thead class="thead-light">
-                    <th>Kode Pengambilan</th><th>Diproses</th><th>Diambil / Hadir</th><th>Kalab / Laboran</th><th>Action</th>
+                    <th>Kode Pengambilan</th><th>Diproses</th><th>Dikonfirmasi</th><th>Kalab / Laboran</th><th>Action</th>
                 </thead>
                 <tbody class="list">
                     @foreach($balik as $am)
                     <tr>
                         <td>{{$am->idambilbalik}}</td>
                         <td>{{$am->time}}</td>
-                        <td class="text-wrap">@if($am->time2 == "") Item Belum Diambil / Belum Hadir @else {{$am->time2}}@endif</td>
+                        <td class="text-wrap">@if($am->time2 == "") Pengembalian / Kehadiran Keluar Belum Dikonfirmasi @else {{$am->time2}}@endif</td>
                         <td class="text-wrap">{{KeranjangController::cariorang($am->PIC)}} <br>
                             {{ KeranjangController::labaja($am->lab)}}</td>
                         <td>
-                            <a href="{{url('ambil/ambildetaildosen/'.$am->idambilbalik)}}" class="text-wrap btn btn-primary">Detail</a>
+                            <a href="{{url('balik/balikdetaildosen/'.$am->idambilbalik)}}" class="text-wrap btn btn-primary">Detail</a>
                         </td>
                     </tr>
                      @endforeach
@@ -620,7 +634,7 @@
                                    
                                         <button 
                                         @if($pj['status'] == 2) class="btn btn-danger text-left " 
-                                        @elseif($pj['status'] == 3) class="btn-sm btn-light text-left " 
+                                        @elseif($pj['status'] == 3) class="btn btn-light text-left " 
                                         @elseif($pj['checkout1'] != "") class="btn btn-info text-left " 
                                         @elseif($pj['checkin1'] != "") class="btn btn-primary text-left " 
                                         @elseif($pj['skalab'] == 1 && $pj['sdosen']==1) class="btn btn-success text-left " 
@@ -721,6 +735,7 @@
                             <div class="">
                                 <h4>{{date("d-m-Y H:i:s" , strtotime($status[$i]->tanggal))}} <br><b>{{$status[$i]->nama}}</b></h4>
                                 <h5>{{KeranjangController::cariorang($status[$i]->pic)}}</h5>
+                                <h5>{{$status[$i]->keterangan}}</h5>
                             </div>
                         </div>
                     </div>       

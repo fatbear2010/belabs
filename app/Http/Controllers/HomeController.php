@@ -187,16 +187,19 @@ class HomeController extends Controller
         }
         else{
             DB::statement("update .order set noteDosen = '".$request->pesan."' where idorder = '".$id."'");
+            $ket = "";
             if($request->setujub != null){
                 foreach($request->setujub as $k=>$cb)
                 {
                     if($cb == 1)
                     {
                         DB::statement("update pinjam set sdosen = 1 , statusDosen = '".auth()->user()->nrpnpk."' where idp = '".$k."'");
+                        $ket.= KeranjangController::itemname($k). " (Setuju) | ";
                     }
                     else if($cb == 2)
                     {
                         DB::statement("update pinjam set sdosen = 2, statusDosen = '".auth()->user()->nrpnpk."', keterangan = 'Item Tidak Mendapat Persetujuan Penanggungjawab' where idp = '".$k."'");
+                        $ket.= KeranjangController::itemname($k). " (Ditolak) | ";
                     }
                 }
             }
@@ -206,10 +209,12 @@ class HomeController extends Controller
                     if($cl == 1)
                     {
                         DB::statement("update pinjamlab set sdosen = 1 , statusDosen = '".auth()->user()->nrpnpk."' where idpl = '".$k."'");
+                        $ket.= KeranjangController::labname($k). " (Setuju) | ";
                     }
                     else if($cl == 2)
                     {
                         DB::statement("update pinjamlab set sdosen = 2, keterangan = 'Item Tidak Mendapat Persetujuan Penanggungjawab' , statusDosen = '".auth()->user()->nrpnpk."' where idpl = '".$k."'");
+                        $ket.= KeranjangController::labname($k). " (Ditolak) | ";
                     }
                 }
             }
@@ -219,6 +224,7 @@ class HomeController extends Controller
             $riwayat->tanggal = date("Y-m-d H:i:s");
             $riwayat->pic =auth()->user()->nrpnpk;
             $riwayat->order = $id;
+            $riwayat->keterangan->$ket;
             $riwayat->save();
             $this->matikan($id);
             KeranjangController::kirimemail($id,'Item Pada Pesanan Anda Telah Mendapat Respon Dari Penanggungjawab','Item Pada Pesanan Anda Telah Mendapat Respon Dari Penanggungjawab','Pesanan Yang Berkaitan Dengan Anda Mendapatkan Respon Dari Penanggungjawab','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan Mendapatkan Respon Dari Penanggungjawab','setuju');
@@ -579,6 +585,7 @@ class HomeController extends Controller
             return redirect('/order/pl/'.$id)->with('status', '1');
         }
         else{
+            $ket = "";
             DB::statement("update .order set noteKalab = '".$request->pesan."' where idorder = '".$id."'");
             if($request->setujub != null){
                 foreach($request->setujub as $k=>$cb)
@@ -586,10 +593,12 @@ class HomeController extends Controller
                     if($cb == 1)
                     {
                         DB::statement("update pinjam set skalab = 1 , statusKalab = '".auth()->user()->nrpnpk."' where idp = '".$k."'");
+                        $ket.= KeranjangController::itemname($k). " (Setuju) | ";
                     }
                     else if($cb == 2)
                     {
                         DB::statement("update pinjam set skalab = 2, statusKalab = '".auth()->user()->nrpnpk."', keterangan = 'Item Tidak Mendapat Persetujuan Kalab / Laboran' where idp = '".$k."'");
+                        $ket.= KeranjangController::itemname($k). " (Ditolak) | ";
                     }
                 }
             }
@@ -599,10 +608,12 @@ class HomeController extends Controller
                     if($cl == 1)
                     {
                         DB::statement("update pinjamlab set skalab = 1 , statusKalab = '".auth()->user()->nrpnpk."' where idpl = '".$k."'");
+                        $ket.= KeranjangController::labname($k). " (Setuju) | ";
                     }
                     else if($cl == 2)
                     {
                         DB::statement("update pinjamlab set skalab = 2, keterangan = 'Item Tidak Mendapat Persetujuan  Kalab / Laboran' , statusKalab = '".auth()->user()->nrpnpk."' where idpl = '".$k."'");
+                        $ket.= KeranjangController::labname($k). " (Ditolak) | ";
                     }
                 }
             }
@@ -612,6 +623,7 @@ class HomeController extends Controller
             $riwayat->tanggal = date("Y-m-d H:i:s");
             $riwayat->pic =auth()->user()->nrpnpk;
             $riwayat->order = $id;
+            $riwayat->keterangan->$ket;
             $riwayat->save();
             $this->matikan($id);
             KeranjangController::kirimemail($id,'Item Pada Pesanan Anda Telah Mendapat Respon Dari Kalab / Laboran','Item Pada Pesanan Anda Telah Mendapat Respon Dari Kalab / Laboran','Pesanan Yang Berkaitan Dengan Anda Mendapatkan Respon Dari Kalab / Laboran','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan Mendapatkan Respon Dari Kalab / Laboran','setuju');
@@ -1170,12 +1182,12 @@ class HomeController extends Controller
         $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, p.idpl, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$orderid."' order by l.namaLab");
         foreach($pesanankubarang as $pb)
         {
-            if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->skalab == 2 )
+            if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout1 != "" || $pb->skalab == 2 )
             { $helper++; }
         }
         foreach($pesanankulab as $pb)
         {
-            if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->skalab == 2 )
+            if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout1 != "" || $pb->skalab == 2 )
             { $helper++; }
         }
 
@@ -1226,16 +1238,19 @@ class HomeController extends Controller
             return redirect('/order/batalkan/'.$id)->with('status', '1');
         }
         else{
+            $ket = "";
             if($request->cancelb != null){
                 foreach($request->cancelb as $cb)
                 {
                     DB::statement("update pinjam set status = 2, keterangan = 'Item Dibatalkan Oleh Pemesan' where idp = '".$cb."'");
+                    $ket.= KeranjangController::itemname($k). " | ";
                 }
             }
             if($request->cancell != null) {
                 foreach($request->cancell as $cl)
                 {
                     DB::statement("update pinjamlab set status = 2, keterangan = 'Item Dibatalkan Oleh Pemesan' where idpl = '".$cl."'");
+                    $ket.= KeranjangController::labname($k). " | ";
                 }
             }
 
@@ -1244,6 +1259,7 @@ class HomeController extends Controller
             $riwayat->tanggal = date("Y-m-d H:i:s");
             $riwayat->pic =auth()->user()->nrpnpk;
             $riwayat->order = $id;
+            $riwayat->keterangan = $ket;
             $riwayat->save();
             $this->matikan($id);
             KeranjangController::kirimemail($id,'Item Pada Pesanan Anda Berhasil Dibatalkan','Item Pada Pesanan Anda Berhasil Dibatalkan','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan','Pesanan Yang Berkaitan Dengan Anda Berhasil Dibatalkan','batal');
@@ -1349,7 +1365,7 @@ class HomeController extends Controller
             $ambil = Ambilbalik::where('order',$id)->where('tipe','AMBIL')->get();
             $balik = Ambilbalik::where('order',$id)->where('tipe','BALIK')->get();
             $pesan = "Terima Kasih Pesanan Anda Telah Kami Terima";
-            $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$id.'"');
+            $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$id.'" order by tanggal');
             $keranjang = array();
             $penampung = "";
             foreach($pesanankubarang as $pb)
@@ -1425,5 +1441,119 @@ class HomeController extends Controller
             }
             return view('order.detail',compact('pemesan','dosenpj','keranjang','orderku','pesan','status','ambil','balik'));
         }
+    }
+
+    //=======================================
+
+    public function allorder(Request $request)
+    {
+        if(auth()->user()->jabatan == 1)
+        {
+            return redirect('/home');
+        }
+        if(isset($request->k))
+        {
+            $labnya = DB::select("select * from laboran where user = '".auth()->user()->nrpnpk."'");
+            if($request->k == 0)
+            {
+                if($request->j == 0)
+                {
+                    $pesanan = DB::select("select DISTINCT o.* from .order o inner join pinjam p on p.order = o.idorder inner join barangdetail b on p.barang = b.idbarangDetail inner join pinjamlab pl on pl.idorder = o.idorder inner join laboran l on b.lab - l.lab inner join laboran on l.lab = pl.idlab where l.user = '".auth()->user()->nrpnpk."' union select * from .order where dosen = '".auth()->user()->nrpnpk."'");
+                }
+                else if($request->j == 1)
+                {
+                    $pesanan = DB::select("select DISTINCT o.* from .order o inner join pinjam p on p.order = o.idorder inner join barangdetail b on p.barang = b.idbarangDetail inner join pinjamlab pl on pl.idorder = o.idorder inner join laboran l on b.lab - l.lab inner join laboran on l.lab = pl.idlab where l.user = '".auth()->user()->nrpnpk."' and o.status = 0 union select * from .order where dosen = '".auth()->user()->nrpnpk."' where status = 0");
+                }
+                else if($request->j == 2)
+                {
+                    $pesanan = DB::select("select DISTINCT o.* from .order o inner join pinjam p on p.order = o.idorder inner join barangdetail b on p.barang = b.idbarangDetail inner join pinjamlab pl on pl.idorder = o.idorder inner join laboran l on b.lab - l.lab inner join laboran on l.lab = pl.idlab where l.user = '".auth()->user()->nrpnpk."' and o.status = 1 and o.status = 2 union select * from .order where dosen = '".auth()->user()->nrpnpk."' where status = 1 and where status = 2");
+                }   
+            }
+            else if($request->k==1)
+            {
+                if($request->j == 0)
+                {
+                    $pesanan = DB::select("select * from .order where dosen = '".auth()->user()->nrpnpk."'");
+                }
+                else if($request->j == 1)
+                {
+                    $pesanan = DB::select("select * from .order where dosen = '".auth()->user()->nrpnpk."' and status = 0");
+                }
+                else if($request->j == 2)
+                {
+                    $pesanan = DB::select("select * from .order where dosen = '".auth()->user()->nrpnpk."' and status != 0");
+                }   
+            }
+            else if($request->k==2)
+            {
+                if($request->j == 0)
+                {
+                    $pesanan = DB::select("select DISTINCT o.* from .order o inner join pinjam p on p.order = o.idorder inner join barangdetail b on p.barang = b.idbarangDetail inner join pinjamlab pl on pl.idorder = o.idorder inner join laboran l on b.lab - l.lab inner join laboran on l.lab = pl.idlab where l.user = '".auth()->user()->nrpnpk."'");
+                }
+                else if($request->j == 1)
+                {
+                    $pesanan = DB::select("select DISTINCT o.* from .order o inner join pinjam p on p.order = o.idorder inner join barangdetail b on p.barang = b.idbarangDetail inner join pinjamlab pl on pl.idorder = o.idorder inner join laboran l on b.lab - l.lab inner join laboran on l.lab = pl.idlab where l.user = '".auth()->user()->nrpnpk."' and o.status = 0");
+                }
+                else if($request->j == 2)
+                {
+                    $pesanan = DB::select("select DISTINCT o.* from .order o inner join pinjam p on p.order = o.idorder inner join barangdetail b on p.barang = b.idbarangDetail inner join pinjamlab pl on pl.idorder = o.idorder inner join laboran l on b.lab - l.lab inner join laboran on l.lab = pl.idlab where l.user = '".auth()->user()->nrpnpk."' and o.status = 1 and o.status = 2");
+                }   
+            }
+            else
+            {
+                $lab = substr($request->k, 1);
+                //sdd($lab);
+                if($request->j == 0)
+                {
+                    $pesanan = DB::select("select DISTINCT o.* from .order o inner join pinjam p on p.order = o.idorder inner join barangdetail b on p.barang = b.idbarangDetail inner join pinjamlab pl on pl.idorder = o.idorder where pl.idlab = '".$lab."' or b.lab = '".$lab."'");
+                }
+                else if($request->j == 1)
+                {
+                    $pesanan = DB::select("select DISTINCT o.* from .order o inner join pinjam p on p.order = o.idorder inner join barangdetail b on p.barang = b.idbarangDetail inner join pinjamlab pl on pl.idorder = o.idorder where (pl.idlab = '".$lab."' or b.lab = '".$lab."') and p.status = 0");
+                }
+                else if($request->j == 2)
+                {
+                    $pesanan = DB::select("select DISTINCT o.* from .order o inner join pinjam p on p.order = o.idorder inner join barangdetail b on p.barang = b.idbarangDetail inner join pinjamlab pl on pl.idorder = o.idorder where (pl.idlab = '".$lab."' or b.lab = '".$lab."') and p.status != 0");
+                }   
+                
+            }
+            $j = $request->j;
+            $k = $request->k;
+            return view('order.orderall',compact('pesanan','labnya','j','k'));
+        }
+        else{
+            $j = 0; $k = 0;
+            $labnya = DB::select("select * from laboran where user = '".auth()->user()->nrpnpk."'");
+            $pesanan = Order::all();
+            return view('order.orderall',compact('pesanan','labnya','j','k'));
+        }
+    }
+
+    public function itemout(Request $request)
+    {
+        if(isset($request->k))
+        {
+            if($request->k == 1)
+            {
+                $labnya = DB::select("select * from laboran where user = '".auth()->user()->nrpnpk."'");
+                $barang = DB::select('select * from pinjam p inner join barangdetail bd on p.barang = bd.idbarangDetail inner join .order o on o.idorder = p.order inner join laboran l on bd.lab = l.lab where (p.status = 3 or (p.checkin != "" and p.checkout1 is null )) and l.user = "'.auth()->user()->nrpnpk.'"');
+                $k = 0;
+                return view('home.itemout',compact('barang','labnya','k'));
+            }
+            else{
+                $lab = substr($request->k, 1);
+                $labnya = DB::select("select * from laboran where user = '".auth()->user()->nrpnpk."'");
+                $barang = DB::select('select * from pinjam p inner join barangdetail bd on p.barang = bd.idbarangDetail inner join .order o on o.idorder = p.order inner join laboran l on bd.lab = l.lab where (p.status = 3 or (p.checkin != "" and p.checkout1 is null )) and bd.lab = "'.$lab.'"');
+                $k = $request->k;
+                return view('home.itemout',compact('barang','labnya','k'));
+            }
+        }
+        else{
+            $labnya = DB::select("select * from laboran where user = '".auth()->user()->nrpnpk."'");
+            $barang = DB::select('select * from pinjam p inner join barangdetail bd on p.barang = bd.idbarangDetail inner join .order o on o.idorder = p.order inner join laboran l on bd.lab = l.lab where (p.status = 3 or (p.checkin != "" and p.checkout1 is null )) and l.user = "'.auth()->user()->nrpnpk.'"');
+            $k = 0;
+            return view('home.itemout',compact('barang','labnya','k'));
+        }
+        
     }
 }

@@ -110,6 +110,12 @@ Route::middleware('auth')->group(function() {
 	Route::post('order/ppl/','App\Http\Controllers\HomeController@prosesordersetujul')->name('order.ppl');
 	Route::post('order/ppl2/','App\Http\Controllers\HomeController@finalsetujul')->name('order.finalsetujul');
 
+	Route::post('order/all/','App\Http\Controllers\HomeController@allorder')->name('order.all');
+	Route::get('order/all/','App\Http\Controllers\HomeController@allorder')->name('order.all');
+
+	Route::post('item/out/','App\Http\Controllers\HomeController@itemout')->name('item.out');
+	Route::get('item/out/','App\Http\Controllers\HomeController@itemout')->name('item.out');
+
 	Route::get('ambil/all/{id}','App\Http\Controllers\AmbilbalikController@ambil')->name('ambil.ambil');
 	Route::post('ambil/labku/','App\Http\Controllers\AmbilbalikController@ambillab')->name('ambil.ambillab');
 	Route::post('ambil/pambil/','App\Http\Controllers\AmbilbalikController@prosesambil')->name('ambil.pambil');
@@ -122,8 +128,14 @@ Route::middleware('auth')->group(function() {
 	Route::post('ambil/konfirmasipemesanfinal/','App\Http\Controllers\AmbilbalikController@konfirmasipemesanfinal')->name('ambil.konfirmasipemesanfinal');
 
 	Route::get('balik/all/{id}','App\Http\Controllers\AmbilbalikController@balik')->name('balik.balik');
-	Route::post('balik/pbalik/','App\Http\Controllers\AmbilbalikController@prosesbalik')->name('ambil.pbalik');
-	Route::post('balik/balikfinal/','App\Http\Controllers\AmbilbalikController@finalbalik')->name('ambil.balikfinal');
-	
+	Route::post('balik/pbalik/','App\Http\Controllers\AmbilbalikController@prosesbalik')->name('balik.pbalik');
+	Route::post('balik/balikfinal/','App\Http\Controllers\AmbilbalikController@finalbalik')->name('balik.balikfinal');
+	Route::get('balik/balikdetailmhs/{id}','App\Http\Controllers\AmbilbalikController@balikdetailmhs')->name('balik.balikdetailmhs');
+	Route::post('balik/prosesmhs/','App\Http\Controllers\AmbilbalikController@prosesmhs')->name('balik.prosesmhs');
+	Route::post('balik/gantifinalmhs/','App\Http\Controllers\AmbilbalikController@gantibalikfinalmhs')->name('balik.gantiambilfinalmhs');
+	Route::get('balik/balikdetaildosen/{id}','App\Http\Controllers\AmbilbalikController@balikdetaildsn')->name('balik.balikdetaildosen');
+	Route::get('balik/balikdetaillab/{id}','App\Http\Controllers\AmbilbalikController@balikdetaillab')->name('balik.balikdetaillab');
+	Route::post('balik/proseslab/','App\Http\Controllers\AmbilbalikController@proseslab')->name('balik.proseslab');
+	Route::post('balik/gantifinallab/','App\Http\Controllers\AmbilbalikController@gantibalikfinallab')->name('balik.gantibalikfinallab');
 });
 

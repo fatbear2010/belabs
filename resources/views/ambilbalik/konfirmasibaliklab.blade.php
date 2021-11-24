@@ -18,71 +18,24 @@
 <div class="card-header border-0">
   <div class="row align-items-center">
     <div class="col-12 text-center">
-   
-      <h1>Detail Pengambilan Item / Kehadiran Masuk</h1>
-      <h1>Nomor Pesanan : {{$orderku[0]->idorder}}</h1>
-       @if(!isset($apa))
-      <h3>Waktu Pesanan Dibuat : {{$orderku['0']->tanggal}}</h3>
-      <h1>Kode Pengambilan: {{$ambilin[0]->abcode}}</h1>
-    @endif  
-      <a style="margin-bottom: 5px; width: 100%;" href="{{url('order/detail/'.$orderku[0]->idorder)}}" class="text-wrap btn btn-dark">Kembali</a>
+      <h1>Apakah Anda Yakin ?</h1>
+      <h1>Perubahan Pengembalian Barang / Kehadiran Keluar</h1>
+       <h3>Kepala Laboratorium  / Laboran</h3>
+      <h3>Nomor Pesanan : {{$orderku[0]->idorder}}</h3>
       <br>
-
-      @if(session('status'))
-          @if(session('status') == 3)
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
-          <span class="alert-inner--text">Item Berhasil Dibatalkan</span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-        </div>
-          @elseif(session('status') == 1)
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <span class="alert-inner--icon"><i class="icofont-error"></i></span>
-          <span class="alert-inner--text">Data Gagal Disimpan, Terjadi Perubahan Status</a></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-          </div>
-          @elseif(session('status') == 2)
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <span class="alert-inner--icon"><i class="icofont-error"></i></span>
-          <span class="alert-inner--text">Tidak Ada Item Yang Dipilih</span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-        </div>
-          @endif
-        @endif  
-
       <br>
     </div>
   </div>
 </div>
 <br>
 <div style="margin-left: auto; margin-right: auto;">
-    <div class="card card-profile shadow " style="width: 100%;">
-        <div class="row" style="margin: 5px 10px 5px 10px;">
-            <div class="col-lg-12 text-left table-responsive">
-                <table class="table wrap">
-                  <tr><td>Pemesan </td><td><b>{{ $pemesan[0]->nrpnpk }} - {{ $pemesan[0]->nama }}</b></td></tr>
-                  <tr><td>Penanggung Jawab</td><td><b>{{ $dosenpj[0]->nrpnpk }} - {{ $dosenpj[0]->nama }}</b></td></tr>
-                  <tr><td>Kalab / Laboran Yang Bertugas</td><td><b>{{KeranjangController::cariorang($ambilin[0]->PIC)}}</b></td></tr>
-                  <tr><td>Waktu Pemrosesan</td><td><b>{{$ambilin[0]->time}}</b></td></tr>
-                  <tr><td>Waktu Pengambilan</td><td><b>@if($ambilin[0]->time2 == "") Item Belum Diambil / Belum Hadir @else {{$ambilin[0]->time2}}@endif</b></td></tr>
-                  <tr><td>Catatan Pengambilan</td><td><b>{{$ambilin[0]->note}}</b></td></tr>
-                </table>
-            </div>
-        </div>
-    </div>
 
    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;">
      <div class="card card-profile shadow " style="width: 100%;">
-        <div class="card-header text-left">
-            <h2>Item Yang Diambil / Kehadiran Masuk</h2>
-        </div>
-        <form method="post" action="{{url('ambil/proses')}}">
+        <form method="post" action="{{url('balik/gantifinallab')}}">
+            @csrf
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 0px 10px 0px 10px;">
-                  <?php $gambar = $item['gambar'];?>
                   @if($item['tipe'] == "barang")
                   @if(isMobile())
                   <div id="d{{$item['id']}}" class="col-lg-12" style=" width: 100%; max-height: 90%;">
@@ -107,22 +60,30 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
-                                            <div class="col-12">
-                                                @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan </h4>
-                                                @elseif (!isset($apa))
-                                                <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujub[{{$pj['idp']}}]">
-                                                        <option value="1">Item Sudah Dikembalikan</option>
-                                                        <option selected value="2">Item Belum Dikembalikan</option>
-                                                        <option value="3">Item Bermasalah</option>
-                                                  </select>  
-                                                </div>
+                                            <div class="col-6"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                             <div class="col-6">
+                                                 @if($pj['balik'] == 1) 
+                                                <h4 class="text-success">Pemesan Mengembalikan Barang</h4>
+                                                <input  type="hidden" name="balikb[{{$pj['idp']}}]" value="1">
+                                                @elseif($pj['balik'] == 2)
+                                                <h4 class="text-primary">Terjadi Permasalahan / Kerusakan</h4>
+                                                <input  type="hidden" name="balikb[{{$pj['idp']}}]" value="2"> 
+                                                @elseif($pj['balik'] == 4)
+                                                <h4 class="text-danger">Permasalahan Telah Diselesaikan</h4>
+                                                <input  type="hidden" name="balikb[{{$pj['idp']}}]" value="4"> 
+                                                @elseif($pj['balik'] == 5)
+                                                <h4 class="text-danger">Batalkan Permasalahan</h4>
+                                                <input  type="hidden" name="balikb[{{$pj['idp']}}]" value="5"> 
                                                 @endif
                                             </div>
-                                            <br><br>
+                                            
                                         </div>
+                                         @if($pj['balik'] != 1) 
+                                          <div style="margin-left: 1px;" class="row"><h5>Deskripsi Permasalahan</h5></div>
+                                        <div style="margin-left: 1px;" class="row"><h6>{{$pj['masalah']}}</h6></div>
+                                        <input type="hidden" name="masb[{{$pj['idp']}}]" value="{{$pj['masalah']}}">
+                                        @endif
+                                        <br>
                                         @endforeach
                                     </div>
                              
@@ -155,20 +116,26 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
-                                            <div class="col-8">
-                                                @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan </h4>
-                                                @elseif (!isset($apa))
-                                                <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujub[{{$pj['idp']}}]">
-                                                        <option value="1">Item Sudah Diambil</option>
-                                                        <option value="2">Item Tidak Diambil</option>
-                                                        <option value="3">Batalkan Pengambilan Item</option>
-                                                        <option selected value="0">Tidak Ada Tindakan</option>
-                                                  </select>  
-                                                </div>
+                                            <div class="col-6">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
+                                            <div class="col-6">
+                                                  @if($pj['balik'] == 1) 
+                                                <h4 class="text-success">Pemesan Mengembalikan Barang</h4>
+                                                <input  type="hidden" name="balikb[{{$pj['idp']}}]" value="1">
+                                                @elseif($pj['balik'] == 2)
+                                                <h4 class="text-danger">Terjadi Permasalahan / Kerusakan</h4>
+                                                <input  type="hidden" name="balikb[{{$pj['idp']}}]" value="2"> 
+                                                @elseif($pj['balik'] == 4)
+                                                <h4 class="text-success">Permasalahan Telah Diselesaikan</h4>
+                                                <input  type="hidden" name="balikb[{{$pj['idp']}}]" value="4"> 
+                                                @elseif($pj['balik'] == 5)
+                                                <h4 class="text-danger">Batalkan Permasalahan</h4>
+                                                <input  type="hidden" name="balikb[{{$pj['idp']}}]" value="5"> 
                                                 @endif
+                                                @if($pj['balik'] != 1)
+                                                 <h4>Deskripsi Permasalahan</h4>
+                                                 <h5>{{$pj['masalah']}}</h5>
+                                                 <input type="hidden" name="masb[{{$pj['idp']}}]" value="{{$pj['masalah']}}">
+                                                @endif 
                                             </div>
                                         </div>
                                         @endforeach
@@ -203,23 +170,31 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
-                                            <div class="col-12">
-                                                @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Pemesan Telah Meninggalkan Lab </h4>
-                                                @elseif (!isset($apa))
-                                               <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujul[{{$pj['idpl']}}]">
-                                                         <option value="1">Pemesan Sudah Hadir</option>
-                                                        <option value="2">Pemesan Tidak Hadir</option>
-                                                        <option value="3">Batalkan Kehadiran</option>
-                                                        <option selected value="0">Tidak Ada Tindakan</option>
-                                                  </select>  
-                                                </div>
+                                            <div class="col-6">
+                                                <h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
+                                            <div class="col-6">
+                                               @if($pj['balik'] == 1) 
+                                                <h4 class="text-success">Pemesan Telah Meninggalkan Lab</h4>
+                                                <input  type="hidden" name="balikl[{{$pj['idpl']}}]" value="1">
+                                                @elseif($pj['balik'] == 2)
+                                                <h4 class="text-danger">Terjadi Permasalahan / Kerusakan</h4>
+                                                <input  type="hidden" name="balikl[{{$pj['idpl']}}]" value="2"> 
+                                                @elseif($pj['balik'] == 4)
+                                                <h4 class="text-success">Permasalahan Telah Diselesaikan</h4>
+                                                <input  type="hidden" name="balikl[{{$pj['idpl']}}]" value="4"> 
+                                                @elseif($pj['balik'] == 5)
+                                                <h4 class="text-danger">Batalkan Permasalahan</h4>
+                                                <input  type="hidden" name="balikl[{{$pj['idpl']}}]" value="5"> 
                                                 @endif
                                             </div>
-                                            <br><br>
+                                            
                                         </div>
+                                        @if($pj['balik'] != 1) 
+                                        <div style="margin-left: 1px;" class="row"><h5>Deskripsi Permasalahan</h5></div>
+                                        <div style="margin-left: 1px;" class="row"><h6>{{$pj['masalah']}}</h6></div>
+                                        <input type="hidden" name="masl[{{$pj['idpl']}}]" value="{{$pj['masalah']}}">
+                                        @endif
+                                        <br>
                                         @endforeach
                                     </div>
                              
@@ -250,20 +225,27 @@
                                         <?php $hitung = 0; ?>
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
-                                            <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
-                                            <div class="col-8">
-                                               @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Pemesan Telah Meninggalkan Lab </h4>
-                                                @elseif (!isset($apa))
-                                                 <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujul[{{$pj['idpl']}}]">
-                                                        <option value="1">Pemesan Sudah Hadir</option>
-                                                        <option value="2">Pemesan Tidak Hadir</option>
-                                                        <option value="3">Batalkan Kehadiran</option>
-                                                        <option selected value="0">Tidak Ada Tindakan</option>
-                                                  </select>  
-                                                </div>
+                                            <div class="col-6">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
+                                            <div class="col-6">
+                                               @if($pj['balik'] == 1) 
+                                                <h4 class="text-success">Pemesan Telah Meninggalkan Lab</h4>
+                                                <input  type="hidden" name="balikl[{{$pj['idpl']}}]" value="1">
+                                                @elseif($pj['balik'] == 2)
+                                                <h4 class="text-danger">Terjadi Permasalahan / Kerusakan</h4>
+                                                <input  type="hidden" name="balikl[{{$pj['idpl']}}]" value="2"> 
+                                                @elseif($pj['balik'] == 4)
+                                                <h4 class="text-success">Permasalahan Telah Diselesaikan</h4>
+                                                <input  type="hidden" name="balikl[{{$pj['idpl']}}]" value="4"> 
+                                                @elseif($pj['balik'] == 5)
+                                                <h4 class="text-danger">Batalkan Permasalahan</h4>
+                                                <input  type="hidden" name="balikl[{{$pj['idpl']}}]" value="5"> 
+                                                
                                                 @endif
+                                                @if($pj['balik'] != 1)
+                                                 <h4>Deskripsi Permasalahan</h4>
+                                                 <h5>{{$pj['masalah']}}</h5>
+                                                 <input type="hidden" name="masl[{{$pj['idpl']}}]" value="{{$pj['masalah']}}">
+                                                @endif 
                                             </div>
                                         </div>
                                         @endforeach
@@ -278,47 +260,37 @@
                     @endif
                 </div>
                     @endforeach
-                    @csrf
-           @if(!isset($apa))          
          <div class="row" style="margin: 0px 10px 0px 10px;">
             <div class="col-lg-12 " style="margin-bottom:10px; ">
                 <div class="card rounded">
-                    <div style="margin-left: 1px;" class="row rounded-top" >  
-                        <h3>Catatan Pengambilan / Kehadiran Masuk</h3>         
-                        <textarea id="txta" style="max-width:100%;" class="form-control" name="pesan" rows="3">{{$ambilin[0]->note}}</textarea>
+                    <div style="margin-left: 10px;" class=" rounded-top text-left" >  
+                        <h3>Catatan Pengembalian / Kehadiran Keluar</h3>         
+                        <h4>{{$pesan}}</h4>
                     </div>
                 </div>
             </div>        
-        </div>
-        <input type="hidden" name="idambilbalik" value="{{$ambilin[0]->idambilbalik}}">   
-    @if(isMobile())                
-        <button type="submit" name="agreeselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Pengambilan / Kehadiran Masuk</button>
+        </div>            
+        <input type="hidden" name="idambilbalik" value="{{$ambilin[0]->idambilbalik}}"> 
+        <input type="hidden" name="pesan" value="{{$pesan}}"> 
+     @if(isMobile())                
+    <button style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-danger text-wrap">Ya, Simpan Pengembalian / Kehadiran Keluar</button>
     @else
-     <button type="submit" name="agreeselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Pengambilan / Kehadiran Masuk</button>
-    @endif 
-@else
-   <div class="row" style="margin: 0px 10px 0px 10px;">
-            <div class="col-lg-12 " style="margin-bottom:10px; ">
-                <div class="card rounded">
-                    <div style="margin-left: 1px;" class=" rounded-top text-left" >  
-                        <h3>Catatan Pengambilan / Kehadiran Masuk</h3>      
-                        <h5>{{$ambilin[0]->note}}</h5>
-                    </div>
-                </div>
-            </div>        
-        </div>  
-@endif
-
-    </form>  
+     <button style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-danger">Ya, Simpan Pengembalian / Kehadiran Keluar</button>
+    @endif
+    </form>   
+   <form>
+    @if(isMobile())                
+    
+    <a href="{{url('balik/balikdetaildosen/'.$ambilin[0]->idambilbalik)}}" style="width: 90%; margin: 0px 10px 10px 10px;" class="btn btn-dark text-wrap">Tidak, Kembali Ke Halaman Sebelumnya</a>
+    @else
+    
+    <a href="{{url('balik/balikdetaildosen/'.$ambilin[0]->idambilbalik)}}" style="width: 97%; margin: 0px 10px 10px 10px;" class="btn btn-dark">Tidak, Kembali Ke Halaman Sebelumnya</a>
+    @endif
+    </form>
     </div>
     </div>  
-    </div>
-</div></div>
-<script type="text/javascript">
-$('#txta').change(function() {
-     $('#txtc').val($("#txta").val());
-});    
-$(document).ready(function () {
-});
-</script>
+      </div>
+</div>
+</div>
+
 @endsection

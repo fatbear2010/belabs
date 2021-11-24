@@ -342,16 +342,6 @@
                 </div>
                     @endforeach
                     @csrf
-         <div class="row" style="margin: 0px 10px 0px 10px;">
-            <div class="col-lg-12 " style="margin-bottom:10px; ">
-                <div class="card rounded">
-                    <div style="margin-left: 1px;" class="row rounded-top" >  
-                        <h3>Catatan Pengembalian / Kehadiran Keluar</h3>         
-                        <textarea id="txta" style="max-width:100%;" class="form-control" name="pesan" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>        
-        </div>
         <input type="hidden" name="labdpl" value="{{$labdpl}}">
         <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">   
     @if(isMobile())                
@@ -365,8 +355,6 @@
  @if(isMobile())                
         <form  method="post" action="{{url('ambil/pambil')}}">
             @csrf
-            <input type="hidden" name="pesan" id="txtc"  value="">
-            <input type="hidden" name="kodep" id="txtd"  value="" >
             <input type="hidden" name="ambilall" value="1">
             <input type="hidden" name="labdpl" value="{{$labdpl}}">
             <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
@@ -377,8 +365,6 @@
     @else
     <form method="post" action="{{url('ambil/pambil')}}">
         @csrf
-        <input type="hidden" name="pesan" id="txtc" value="">
-        <input type="hidden" name="kodep" id="txtd"  value="" >
         <input type="hidden" name="orderid" value="{{$orderku[0]->idorder}}">
         <input type="hidden" name="labdpl" value="{{$labdpl}}">
         <input type="hidden" name="ambilall" value="1">
@@ -394,14 +380,7 @@
 </div></div>
 <script type="text/javascript">
 
- 
-
-$('#txta').change(function() {
-     $('#txtc').val($("#txta").val());
-});   
-$('#txtb').change(function() {
-     $('#txtd').val($("#txtb").val());
-});   
+    
 $(document).ready(function () {
 });
 </script>

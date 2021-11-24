@@ -54,6 +54,18 @@ class KeranjangController extends Controller
         return $fak->namafakultas;
     }
 
+    public static function itemname($id)
+    {
+        $item = DB::select("select b.nama , p.tanggal, p.mulai, p.selesai from pinjam p inner join barangdetail b on p.barang = b.idbarangDetail where p.idp = '".$id."'");
+        return $item[0]->nama." ".$item[0]->tanggal." ".$item[0]->mulai." - ".$item[0]->selesai;
+    }
+
+    public static function labname($id)
+    {
+        $item = DB::select("select b.namalab , p.tanggal, p.mulai, p.selesai from pinjamlab p inner join lab b on p.idlab = b.idlab where p.idpl = '".$id."'");
+        return $item[0]->nama." ".$item[0]->tanggal." ".$item[0]->mulai." - ".$item[0]->selesai;
+    }
+
     public static function labaja($id)
     {
         $la = Lab::where('idlab',$id)->first();
@@ -340,7 +352,7 @@ class KeranjangController extends Controller
         $ambil = Ambilbalik::where('order',$id)->where('tipe','AMBIL')->get();
         $balik = Ambilbalik::where('order',$id)->where('tipe','BALIK')->get();
         $pesan = "Terima Kasih Pesanan Anda Telah Kami Terima";
-        $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$id.'"');
+        $status = DB::select('select * from history h inner join status s on h.status = s.idstatus where h.order = "'.$id.'" order by h.tanggal');
         $emaillab = DB::select("select DISTINCT user from laboran la left join (select DISTINCT bd.lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.lab = lb.lab");
         for ($i=0; $i <count($emaillab) ; $i++) { 
             $emailaboran = Email::where('nrpnpk',$emaillab[$i]->user)->get();

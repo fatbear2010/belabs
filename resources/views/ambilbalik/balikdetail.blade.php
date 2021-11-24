@@ -19,7 +19,7 @@
   <div class="row align-items-center">
     <div class="col-12 text-center">
    
-      <h1>Detail Pengambilan Item / Kehadiran Masuk</h1>
+      <h1>Detail Pengembalian Item / Kehadiran Keluar</h1>
       <h1>Nomor Pesanan : {{$orderku[0]->idorder}}</h1>
        @if(!isset($apa))
       <h3>Waktu Pesanan Dibuat : {{$orderku['0']->tanggal}}</h3>
@@ -67,8 +67,8 @@
                   <tr><td>Penanggung Jawab</td><td><b>{{ $dosenpj[0]->nrpnpk }} - {{ $dosenpj[0]->nama }}</b></td></tr>
                   <tr><td>Kalab / Laboran Yang Bertugas</td><td><b>{{KeranjangController::cariorang($ambilin[0]->PIC)}}</b></td></tr>
                   <tr><td>Waktu Pemrosesan</td><td><b>{{$ambilin[0]->time}}</b></td></tr>
-                  <tr><td>Waktu Pengambilan</td><td><b>@if($ambilin[0]->time2 == "") Item Belum Diambil / Belum Hadir @else {{$ambilin[0]->time2}}@endif</b></td></tr>
-                  <tr><td>Catatan Pengambilan</td><td><b>{{$ambilin[0]->note}}</b></td></tr>
+                  <tr><td>Waktu Pengembalian / Keluar</td><td><b>@if($ambilin[0]->time2 == "") Item Belum Diambil / Belum Hadir @else {{$ambilin[0]->time2}}@endif</b></td></tr>
+                  <tr><td>Catatan Pengembalian</td><td><b>{{$ambilin[0]->note}}</b></td></tr>
                 </table>
             </div>
         </div>
@@ -77,7 +77,7 @@
    <div class="row text-center" id="keranjang13" style="margin-left: auto; margin-right: auto;">
      <div class="card card-profile shadow " style="width: 100%;">
         <div class="card-header text-left">
-            <h2>Item Yang Diambil / Kehadiran Masuk</h2>
+            <h2>Item Yang Dikembalikan / Kehadiran Keluar</h2>
         </div>
         <form method="post" action="{{url('ambil/proses')}}">
            @foreach($keranjang as $item)
@@ -109,14 +109,15 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                             <div class="col-12">
-                                                @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan </h4>
+                                                @if($pj['checkin1'] != "")
+                                                <h4 class="text-danger">Item Telah Diambil </h4>
                                                 @elseif (!isset($apa))
                                                 <div class="form-group" style="margin-left : 10px;">
                                                   <select class="form-control" name="setujub[{{$pj['idp']}}]">
-                                                        <option value="1">Item Sudah Dikembalikan</option>
-                                                        <option selected value="2">Item Belum Dikembalikan</option>
-                                                        <option value="3">Item Bermasalah</option>
+                                                        <option value="1">Item Sudah Diambil</option>
+                                                        <option value="2">Item Tidak Diambil</option>
+                                                        <option value="3">Batalkan Pengambilan Item</option>
+                                                        <option selected value="0">Tidak Ada Tindakan</option>
                                                   </select>  
                                                 </div>
                                                 @endif
@@ -157,8 +158,8 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
-                                                @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan </h4>
+                                                @if($pj['checkin1'] != "")
+                                                <h4 class="text-danger">Item Telah Diambil</h4>
                                                 @elseif (!isset($apa))
                                                 <div class="form-group" style="margin-left : 10px;">
                                                   <select class="form-control" name="setujub[{{$pj['idp']}}]">
@@ -205,8 +206,8 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                             <div class="col-12">
-                                                @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Pemesan Telah Meninggalkan Lab </h4>
+                                                @if($pj['checkin1'] != "")
+                                                <h4 class="text-danger">Pemesan Telah Hadir</h4>
                                                 @elseif (!isset($apa))
                                                <div class="form-group" style="margin-left : 10px;">
                                                   <select class="form-control" name="setujul[{{$pj['idpl']}}]">
@@ -252,8 +253,8 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
-                                               @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Pemesan Telah Meninggalkan Lab </h4>
+                                               @if($pj['checkin1'] != "")
+                                                <h4 class="text-danger">Pemesan Telah Hadir</h4>
                                                 @elseif (!isset($apa))
                                                  <div class="form-group" style="margin-left : 10px;">
                                                   <select class="form-control" name="setujul[{{$pj['idpl']}}]">
@@ -284,7 +285,7 @@
             <div class="col-lg-12 " style="margin-bottom:10px; ">
                 <div class="card rounded">
                     <div style="margin-left: 1px;" class="row rounded-top" >  
-                        <h3>Catatan Pengambilan / Kehadiran Masuk</h3>         
+                        <h3>Catatan Pengembalian  / Kehadiran Keluar</h3>         
                         <textarea id="txta" style="max-width:100%;" class="form-control" name="pesan" rows="3">{{$ambilin[0]->note}}</textarea>
                     </div>
                 </div>
@@ -301,7 +302,7 @@
             <div class="col-lg-12 " style="margin-bottom:10px; ">
                 <div class="card rounded">
                     <div style="margin-left: 1px;" class=" rounded-top text-left" >  
-                        <h3>Catatan Pengambilan / Kehadiran Masuk</h3>      
+                        <h3>Catatan Pengembalian / Kehadiran Keluar</h3>        
                         <h5>{{$ambilin[0]->note}}</h5>
                     </div>
                 </div>

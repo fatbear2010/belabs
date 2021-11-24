@@ -69,7 +69,7 @@
                                  @if(auth()->user()->jabatan1()->nama != "Mahasiswa")
                                 <div class="row">
                                     <div class="col">
-                                   <a href="{{url('order')}}"style="width:100%; margin-bottom:10px;" class="btn btn-fik">Lihat Pesanan Yang Berkaitan Dengan Anda</a>
+                                   <a href="{{url('order/all')}}"style="width:100%; margin-bottom:10px;" class="btn btn-fik">Lihat Pesanan Yang Berkaitan Dengan Anda</a>
                                </div>
                                @endif
                                 </div>

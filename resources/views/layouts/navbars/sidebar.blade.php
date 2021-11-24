@@ -29,6 +29,7 @@
                     <div class=" dropdown-header noti-title">
                         <h6 class="text-overflow m-0">{{ __('Welcome!') }}</h6>
                     </div>
+                    @if(1==2)
                     <a href="{{ route('profile.edit') }}" class="dropdown-item">
                         <i class="ni ni-single-02"></i>
                         <span>{{ __('My profile') }}</span>
@@ -45,6 +46,7 @@
                         <i class="ni ni-support-16"></i>
                         <span>{{ __('Support') }}</span>
                     </a>
+                    @endif
                     <div class="dropdown-divider"></div>
                     <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">
@@ -102,12 +104,18 @@
                         <i class="icofont-computer text-fik"></i> Penggunaan Laboratorium
                     </a>
                 </li>
-               
+               @if(auth()->user()->jabatan != 1)
                  <li class="nav-item">
-                    <a class="nav-link" href="{{ route('home') }}">
+                    <a class="nav-link" href="{{ url('/order/all') }}">
                         <i class="icofont-heart-alt" style="color: #f4645f;"></i> Pesanan
                     </a>
                 </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/item/out') }}">
+                        <i class="icofont-paperclip" style="color: #f4645f;"></i> Barang Keluar / Bermasalah
+                    </a>
+                </li>
+               @endif 
                <li class="nav-item">
                 <a class="nav-link " href="#navbar-examples1" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples1">
                     <i class="fab fa-laravel" style="color: #f4645f;"></i>

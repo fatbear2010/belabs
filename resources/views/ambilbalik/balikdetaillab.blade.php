@@ -19,7 +19,8 @@
   <div class="row align-items-center">
     <div class="col-12 text-center">
    
-      <h1>Detail Pengambilan Item / Kehadiran Masuk</h1>
+      <h1>Detail Pengembalian Item / Kehadiran Keluar</h1>
+      <h3>Kepala Laboratorium  / Laboran</h3>
       <h1>Nomor Pesanan : {{$orderku[0]->idorder}}</h1>
        @if(!isset($apa))
       <h3>Waktu Pesanan Dibuat : {{$orderku['0']->tanggal}}</h3>
@@ -32,7 +33,7 @@
           @if(session('status') == 3)
           <div class="alert alert-success alert-dismissible fade show" role="alert">
           <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
-          <span class="alert-inner--text">Item Berhasil Dibatalkan</span>
+          <span class="alert-inner--text">Anda Tidak Memiliki Akses</span>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
         </div>
@@ -79,7 +80,7 @@
         <div class="card-header text-left">
             <h2>Item Yang Diambil / Kehadiran Masuk</h2>
         </div>
-        <form method="post" action="{{url('ambil/proses')}}">
+        <form method="post" action="{{url('balik/proseslab')}}">
            @foreach($keranjang as $item)
                 <div class="row" style="margin: 0px 10px 0px 10px;">
                   <?php $gambar = $item['gambar'];?>
@@ -109,17 +110,37 @@
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
                                             <div class="col-12">
-                                                @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan </h4>
-                                                @elseif (!isset($apa))
-                                                <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujub[{{$pj['idp']}}]">
-                                                        <option value="1">Item Sudah Dikembalikan</option>
-                                                        <option selected value="2">Item Belum Dikembalikan</option>
-                                                        <option value="3">Item Bermasalah</option>
+                                                @if($pj['status']==3)
+                                                <h4 class="text-danger">Item Bermasalah</h4>
+                                                @endif
+
+                                               @if($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Pemesan Telah Mengembalikan Item </h4>
+                                               @elseif($pj['checkout'] == "")
+                                                <h4 class="text-danger">Pemesan Belum Mengembalikan Item</h4> 
+                                                @elseif($pj['checkin1'] == "")
+                                                <h4 class="text-danger">Barang Belum Diambil</h4> 
+                                              @else
+                                                 <div class="form-group" style="margin-left : 10px;">
+                                                  <select id="diambilb{{$pj['idp']}}" onchange="mas('b{{$pj['idp']}}')" class="form-control" name="diambib[{{$pj['idp']}}]">
+                                                     @if($pj['status']==3)
+                                                        <option selected value="0">Tidak Ada Tindakan</option>
+                                                        <option value="4">Permasalahan Telah Diselesaikan</option>
+                                                        <option value="5">Batalkan Permasalahan</option>
+                                                    @else
+                                                        <option selected value="0">Item Belum Dikembalikan</option>
+                                                        <option value="1">Pemesan Mengembalikan Barang</option>
+                                                        <option value="2">Terjadi Permasalahan / Kerusakan</option>
+                                                    @endif
                                                   </select>  
                                                 </div>
                                                 @endif
+                                                <div id="txtmasl{{$pj['idp']}}" style="margin-left : 10px;  @if($pj['status']!=3) display: none; @endif"  >
+                                                <h4>Deskripsi Permasalahan / Kerusakan</h4>
+                                                
+                                                    <textarea style="max-width:100%;" class="form-control" name="masb[{{$pj['idp']}}]" rows="3">{{$pj['masalah']}}</textarea>
+                                                 </div>  
+                                               
                                             </div>
                                             <br><br>
                                         </div>
@@ -157,18 +178,37 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
-                                                @if($pj['checkout1'] != "")
-                                                <h4 class="text-danger">Item Telah Dikembalikan </h4>
-                                                @elseif (!isset($apa))
-                                                <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujub[{{$pj['idp']}}]">
-                                                        <option value="1">Item Sudah Diambil</option>
-                                                        <option value="2">Item Tidak Diambil</option>
-                                                        <option value="3">Batalkan Pengambilan Item</option>
+                                                @if($pj['status']==3)
+                                                <h4 class="text-danger">Item Bermasalah</h4>
+                                                @endif
+
+                                               @if($pj['checkout1'] != "")
+                                                <h4 class="text-danger">Pemesan Telah Mengembalikan Item </h4>
+                                               @elseif($pj['checkout'] == "")
+                                                <h4 class="text-danger">Pemesan Belum Mengembalikan Item</h4> 
+                                                @elseif($pj['checkin1'] == "")
+                                                <h4 class="text-danger">Barang Belum Diambil</h4> 
+                                              @else
+                                                 <div class="form-group" style="margin-left : 10px;">
+                                                  <select id="diambilb{{$pj['idp']}}" onchange="mas('b{{$pj['idp']}}')" class="form-control" name="diambib[{{$pj['idp']}}]">
+                                                     @if($pj['status']==3)
                                                         <option selected value="0">Tidak Ada Tindakan</option>
+                                                        <option value="4">Permasalahan Telah Diselesaikan</option>
+                                                        <option value="5">Batalkan Permasalahan</option>
+                                                    @else
+                                                        <option selected value="0">Item Belum Dikembalikan</option>
+                                                        <option value="1">Pemesan Mengembalikan Barang</option>
+                                                        <option value="2">Terjadi Permasalahan / Kerusakan</option>
+                                                    @endif
                                                   </select>  
                                                 </div>
                                                 @endif
+                                                <div id="txtmasl{{$pj['idp']}}" style="margin-left : 10px;  @if($pj['status']!=3) display: none; @endif"  >
+                                                <h4>Deskripsi Permasalahan / Kerusakan</h4>
+                                                
+                                                    <textarea style="max-width:100%;" class="form-control" name="masb[{{$pj['idp']}}]" rows="3">{{$pj['masalah']}}</textarea>
+                                                 </div>  
+                                               
                                             </div>
                                         </div>
                                         @endforeach
@@ -204,19 +244,38 @@
                                         @foreach($item['pinjam'] as $pj)  
                                         <div class="row">
                                             <div class="col-12"><h5>{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</h5></div>
-                                            <div class="col-12">
-                                                @if($pj['checkout1'] != "")
+                                             <div class="col-12">
+                                                @if($pj['status']==3)
+                                                <h4 class="text-danger">Item Bermasalah</h4>
+                                                @endif
+
+                                               @if($pj['checkout1'] != "")
                                                 <h4 class="text-danger">Pemesan Telah Meninggalkan Lab </h4>
-                                                @elseif (!isset($apa))
-                                               <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujul[{{$pj['idpl']}}]">
-                                                         <option value="1">Pemesan Sudah Hadir</option>
-                                                        <option value="2">Pemesan Tidak Hadir</option>
-                                                        <option value="3">Batalkan Kehadiran</option>
+                                               @elseif($pj['checkout'] == "")
+                                                <h4 class="text-danger">Pemesan Belum  Memproses Kehadiran Keluar</h4> 
+                                                @elseif($pj['checkin1'] == "")
+                                                <h4 class="text-danger">Pemesan Belum Hadir</h4> 
+                                              @else
+                                                 <div class="form-group" style="margin-left : 10px;">
+                                                  <select id="diambill{{$pj['idpl']}}" onchange="mas('l{{$pj['idpl']}}')" class="form-control" name="diambill[{{$pj['idpl']}}]">
+                                                     @if($pj['status']==3)
                                                         <option selected value="0">Tidak Ada Tindakan</option>
+                                                        <option value="4">Permasalahan Telah Diselesaikan</option>
+                                                        <option value="5">Batalkan Permasalahan</option>
+                                                    @else
+                                                        <option selected value="0">Pemesan Belum Meninggalkan Lab</option>
+                                                        <option value="1">Pemesan Telah Meninggalkan Lab</option>
+                                                        <option value="2">Terjadi Permasalahan / Kerusakan</option>
+                                                    @endif
                                                   </select>  
                                                 </div>
                                                 @endif
+                                                <div id="txtmasl{{$pj['idpl']}}" style="margin-left : 10px;  @if($pj['status']!=3) display: none; @endif" >
+                                                <h4>Deskripsi Permasalahan / Kerusakan</h4>
+                                                
+                                                    <textarea style="max-width:100%;" class="form-control" name="masl[{{$pj['idpl']}}]" rows="3">{{$pj['masalah']}}</textarea>
+                                                 </div>  
+                                               
                                             </div>
                                             <br><br>
                                         </div>
@@ -252,18 +311,37 @@
                                         <div class="row">
                                             <div class="col-4">{{date("d-m-Y", strtotime($pj['tgl']))." ".$pj['mulai']." - ".$pj['selesai']}}</div>
                                             <div class="col-8">
+                                                @if($pj['status']==3)
+                                                <h4 class="text-danger">Item Bermasalah</h4>
+                                                @endif
+
                                                @if($pj['checkout1'] != "")
                                                 <h4 class="text-danger">Pemesan Telah Meninggalkan Lab </h4>
-                                                @elseif (!isset($apa))
+                                               @elseif($pj['checkout'] == "")
+                                                <h4 class="text-danger">Pemesan Belum  Memproses Kehadiran Keluar</h4> 
+                                                @elseif($pj['checkin1'] == "")
+                                                <h4 class="text-danger">Pemesan Belum Hadir</h4> 
+                                              @else
                                                  <div class="form-group" style="margin-left : 10px;">
-                                                  <select class="form-control" name="setujul[{{$pj['idpl']}}]">
-                                                        <option value="1">Pemesan Sudah Hadir</option>
-                                                        <option value="2">Pemesan Tidak Hadir</option>
-                                                        <option value="3">Batalkan Kehadiran</option>
+                                                  <select id="diambill{{$pj['idpl']}}" onchange="mas('l{{$pj['idpl']}}')" class="form-control" name="diambill[{{$pj['idpl']}}]">
+                                                     @if($pj['status']==3)
                                                         <option selected value="0">Tidak Ada Tindakan</option>
+                                                        <option value="4">Permasalahan Telah Diselesaikan</option>
+                                                        <option value="5">Batalkan Permasalahan</option>
+                                                    @else
+                                                        <option selected value="0">Pemesan Belum Meninggalkan Lab</option>
+                                                        <option value="1">Pemesan Telah Meninggalkan Lab</option>
+                                                        <option value="2">Terjadi Permasalahan / Kerusakan</option>
+                                                    @endif
                                                   </select>  
                                                 </div>
                                                 @endif
+                                                <div id="txtmasl{{$pj['idpl']}}" style="margin-left : 10px;  @if($pj['status']!=3) display: none; @endif" >
+                                                <h4>Deskripsi Permasalahan / Kerusakan</h4>
+                                                
+                                                    <textarea style="max-width:100%;" class="form-control" name="masl[{{$pj['idpl']}}]" rows="3">{{$pj['masalah']}}</textarea>
+                                                 </div>  
+                                               
                                             </div>
                                         </div>
                                         @endforeach
@@ -279,12 +357,12 @@
                 </div>
                     @endforeach
                     @csrf
-           @if(!isset($apa))          
+             
          <div class="row" style="margin: 0px 10px 0px 10px;">
             <div class="col-lg-12 " style="margin-bottom:10px; ">
                 <div class="card rounded">
                     <div style="margin-left: 1px;" class="row rounded-top" >  
-                        <h3>Catatan Pengambilan / Kehadiran Masuk</h3>         
+                        <h3 class="text-left">Catatan Pengambilan / Kehadiran Masuk</h3>         
                         <textarea id="txta" style="max-width:100%;" class="form-control" name="pesan" rows="3">{{$ambilin[0]->note}}</textarea>
                     </div>
                 </div>
@@ -292,22 +370,11 @@
         </div>
         <input type="hidden" name="idambilbalik" value="{{$ambilin[0]->idambilbalik}}">   
     @if(isMobile())                
-        <button type="submit" name="agreeselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Pengambilan / Kehadiran Masuk</button>
+        <button type="submit" name="agreeselected" style="width: 90%; margin: 0px auto 10px auto;" class="btn btn-fik text-wrap">Simpan Pengembalian / Kehadiran Keluar</button>
     @else
-     <button type="submit" name="agreeselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Pengambilan / Kehadiran Masuk</button>
+     <button type="submit" name="agreeselected" style="width: 98%; margin: 0px auto 10px auto;" class="btn btn-fik">Simpan Pengembalian / Kehadiran Keluar</button>
     @endif 
-@else
-   <div class="row" style="margin: 0px 10px 0px 10px;">
-            <div class="col-lg-12 " style="margin-bottom:10px; ">
-                <div class="card rounded">
-                    <div style="margin-left: 1px;" class=" rounded-top text-left" >  
-                        <h3>Catatan Pengambilan / Kehadiran Masuk</h3>      
-                        <h5>{{$ambilin[0]->note}}</h5>
-                    </div>
-                </div>
-            </div>        
-        </div>  
-@endif
+
 
     </form>  
     </div>
@@ -315,6 +382,12 @@
     </div>
 </div></div>
 <script type="text/javascript">
+function mas(p1) {
+    if($('#diambil'+p1).val() == 0 || $('#diambil'+p1).val() == 1)
+        { $('#txtmas'+p1).hide(); }
+    else
+        { $('#txtmas'+p1).show();  }
+}
 $('#txta').change(function() {
      $('#txtc').val($("#txta").val());
 });    
