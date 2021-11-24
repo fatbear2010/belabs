@@ -189,4 +189,41 @@ class LabController extends Controller
         
         return redirect()->route('lab.index')->with('status', 'Barang Detail Waktu Penggunaan Berhasil');
     }
+
+    public function blockSesi($id)
+    {
+        $this->authorize('check-jabatan');
+        $data = Lab::find($id);
+        $sesi = Sesi::All();
+        return view('admin.lab.block', compact('sesi','data'));
+    }
+
+    public function showblock()
+    {
+        $arr = $_POST['sesi'];
+        $table = "";
+        foreach ($arr as $a) {
+            
+            $sesi = Sesi::find($a[1]);
+            $table .= "<tr><td>$a[0]</td><td>$sesi->mulai</td><td>$sesi->selesai</td><td>$a[5]</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2],$a[3],$a[4],$a[5]'>";
+        }
+        return response()->json(array('status' => 'oke', 'msg' => $table), 200);
+    }
+    public function storeblock(Request $request)
+    {
+        $this->authorize('check-jabatan');
+        $sesi =$request->get('sesi');
+       // dd($sesi);
+        foreach($sesi as $u)
+        {
+            $sesiL = explode(',', $u);
+            //dd($sesiL);
+            //dd($sesiL[5]);
+            $query = DB::table('block')->insert(['tanggal'=>$sesiL[0],'mulai'=>$sesiL[2],'selesai'=>$sesiL[3],'idlab'=>$sesiL[4],'keterangan'=>$sesiL[5]]);
+            // $data->users()->attach($userlab[0],["keterangan"=>$userlab[1]]);
+            
+        }
+        
+        return redirect()->route('barangdetail.index')->with('status', 'Lab Block Waktu Penggunaan Berhasil Ditambahkan');
+    }
 }

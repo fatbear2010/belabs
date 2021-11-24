@@ -59,9 +59,17 @@ Route::middleware('auth')->group(function() {
 	Route::post('admin/barangdetail/showsesi','App\Http\Controllers\BarangDetailController@showsesi')->name('barangdetail.showsesi');
 	Route::post('admin/barangdetail/storewaktu/','App\Http\Controllers\BarangDetailController@storesesi')->name('barangdetail.storewaktu');
 
+	Route::get('admin/barangdetail/block/{id}','App\Http\Controllers\BarangDetailController@blockSesi')->name('barangdetail.block');
+	Route::post('admin/barangdetail/showblock','App\Http\Controllers\BarangDetailController@showblock')->name('barangdetail.showblock');
+	Route::post('admin/barangdetail/storeblock/','App\Http\Controllers\BarangDetailController@storeblock')->name('barangdetail.storeblock');
+
 	Route::get('admin/lab/waktu/{id}','App\Http\Controllers\LabController@sesiPenggunaan')->name('lab.waktu');
 	Route::post('admin/lab/showsesi','App\Http\Controllers\LabController@showsesi')->name('lab.showsesi');
 	Route::post('admin/lab/storewaktu/','App\Http\Controllers\LabController@storesesi')->name('lab.storewaktu');
+	
+	Route::get('admin/lab/block/{id}','App\Http\Controllers\LabController@blockSesi')->name('lab.block');
+	Route::post('admin/lab/showblock','App\Http\Controllers\LabController@showblock')->name('lab.showblock');
+	Route::post('admin/lab/storeblock/','App\Http\Controllers\LabController@storeblock')->name('lab.storeblock');
 
 
 

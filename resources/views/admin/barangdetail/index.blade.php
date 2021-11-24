@@ -111,7 +111,7 @@ use App\Http\Controllers\PinjamController; ?>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                         <a class="dropdown-item" href="{{url('admin/barangdetail/waktu/'.$d->idbarangDetail)}}">Waktu Penggunaan</a>
-
+                                        <a class="dropdown-item" href="{{url('admin/barangdetail/block/'.$d->idbarangDetail)}}">Blok Sesi Penggunaan</a>
                                         <a class="dropdown-item" href="{{route('barangdetail.edit',$d->idbarangDetail)}}">Edit</a>
                                         <form method='Post' action="{{route('barangdetail.destroy',$d->idbarangDetail)}}">
                                             @csrf

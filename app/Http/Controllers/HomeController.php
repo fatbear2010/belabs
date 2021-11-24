@@ -1523,7 +1523,7 @@ class HomeController extends Controller
         }
         else{
             $j = 0; $k = 0;
-            $labnya = DB::select("select * from laboran where user = '".auth()->user()->nrpnpk."'");
+            $labnya = DB::select("select * from laboran where user = '".auth()->user()->nrpnpk."'");  
             $pesanan = Order::all();
             return view('order.orderall',compact('pesanan','labnya','j','k'));
         }

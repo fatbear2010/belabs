@@ -56,6 +56,8 @@
                   </a>
                   <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                     <a class="dropdown-item" href="{{url('admin/lab/waktu/'.$d->idlab)}}">Waktu Penggunaan</a>
+                    <a class="dropdown-item" href="{{url('admin/lab/block/'.$d->idlab)}}">Block Sesi</a>
+
                     <a class="dropdown-item" href="{{route('lab.edit',$d->idlab)}}">Edit</a>
                     <form method='Post' action="{{route('lab.destroy',$d->idlab)}}">
                       @csrf
