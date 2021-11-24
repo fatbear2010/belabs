@@ -144,11 +144,11 @@
                                 {{ __('Jabatan') }}
                             </a>
                         </li> -->
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('perbaikan.index') }}">
                                 {{ __('Perbaikan') }}
                             </a>
-                        </li>
+                        </li> --}}
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('status.index') }}">
                                 {{ __('Status') }}

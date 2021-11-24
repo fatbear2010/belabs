@@ -50,7 +50,7 @@ class LabController extends Controller
     {
         $this->authorize('check-jabatan');
         $laboran =$request->get('laboran');
-        dd($request->get('laboran'));
+        //dd($request->get('laboran'));
        
         $data = new Lab();
         $data->idlab = $request->get('txtID');
