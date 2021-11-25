@@ -26,6 +26,15 @@ Route::post('/vdone', 'App\Http\Controllers\RegistrationController@aktivasi4');
 Route::post('/resetfinish', 'App\Http\Controllers\auth\ForgotPasswordController@reset3');
 Auth::routes(['verify' => true]);
 
+Route::get('test/email', function(){
+  
+	$send_mail = '21stefsk@gmail.com';
+  
+    dispatch(new App\Jobs\SendEmail($send_mail));
+  
+    dd('send mail successfully !!');
+});
+
 
 Route::middleware('auth')->group(function() {
 	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
