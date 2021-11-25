@@ -78,8 +78,9 @@ use App\Http\Controllers\KeranjangController;
                             <table>
                                 <tr>
                                     <td>
-                                         <h3>{{$barang[$i]->idorder}} </h3>
-                                          <h2>{{KeranjangController::cariorang($barang[$i]->mahasiswa)}} </h2>
+                                         <h3>{{$barang[$i]->idorder}} | @if($barang[$i]->status == 3) Barang Bermasalah @else Barang Belum Dikembalikan @endif  </h3>
+                                         <h2>{{$barang[$i]->nama}}</h2>
+                                          <h3>{{KeranjangController::cariorang($barang[$i]->mahasiswa)}} </h3>
                                     </td>
                                     <td>
                                       <div class="dropdown" >
@@ -93,7 +94,7 @@ use App\Http\Controllers\KeranjangController;
                                     </div>
                                 </td>
                             </tr>
-                            <tr><td><h4>Pesanan Dibuat  : {{date("d-m-Y H:i:s",strtotime($barang[$i]->tanggal))}} </h4></td></tr>
+                            <tr><td><h4>Jadwal Pengembalian  : {{date("d-m-Y",strtotime($barang[$i]->tanggal))." ".$barang[$i]->selesai}} </h4></td></tr>
                         </table>
                         
                           </div>

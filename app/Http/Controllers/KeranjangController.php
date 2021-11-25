@@ -63,7 +63,7 @@ class KeranjangController extends Controller
     public static function labname($id)
     {
         $item = DB::select("select b.namalab , p.tanggal, p.mulai, p.selesai from pinjamlab p inner join lab b on p.idlab = b.idlab where p.idpl = '".$id."'");
-        return $item[0]->nama." ".$item[0]->tanggal." ".$item[0]->mulai." - ".$item[0]->selesai;
+        return $item[0]->namalab." ".$item[0]->tanggal." ".$item[0]->mulai." - ".$item[0]->selesai;
     }
 
     public static function labaja($id)
@@ -80,8 +80,9 @@ class KeranjangController extends Controller
 
     public static function laborannya($orderid, $nrpnpk)
     {
-        $laboran = DB::select("select DISTINCT user from laboran la left join (select DISTINCT bd.lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$orderid."' union select DISTINCT idlab from pinjamLab  where idorder = '".$orderid."') lb on la.lab = lb.lab where user = '".$nrpnpk."'");
-       return(count($laboran));
+        $laboran = DB::select("select DISTINCT la.user from laboran la inner join (select DISTINCT bd.lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$orderid."' union select DISTINCT idlab from pinjamLab  where idorder = '".$orderid."') lb on la.lab = lb.lab where la.user = '".$nrpnpk."'");
+       // dd("select DISTINCT la.user from laboran la left join (select DISTINCT bd.lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$orderid."' union select DISTINCT idlab from pinjamLab  where idorder = '".$orderid."') lb on la.lab = lb.lab where la.user = '".$nrpnpk."'");
+        return(count($laboran));
     }
 
     public function clean(Request $request)
@@ -359,7 +360,8 @@ class KeranjangController extends Controller
             //dd($emailaboran);
             if($emailaboran[0]->$action == 1)
             {
-                Mail::to($dosenpj->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek2, $pesan2, $status,$ambil,$balik));
+                $emaillab2 = user::where('nrpnpk',$emailaboran[0]->nrpnpk)->get();
+                Mail::to($emaillab2[0]->email)->send(new emailOrder($pemesan,$dosenpj,$pesanankubarang,$pesanankulab, $orderku,$id.' BeLABS '.$subjek2, $pesan2, $status,$ambil,$balik));
             }
         }
 
@@ -391,7 +393,8 @@ class KeranjangController extends Controller
             //dd($emailaboran);
             if($emailaboran[0]->ambil == 1)
             {
-                Mail::to($dosenpj->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan2, $pesan2, $kalab));
+                $emaillab2 = user::where('nrpnpk',$emailaboran[0]->nrpnpk)->get();
+                Mail::to($emaillab2[0]->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan2, $pesan2, $kalab));
             }
         }
         Mail::to($pemesan[0]->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan, $pesan, $kalab));
@@ -400,7 +403,7 @@ class KeranjangController extends Controller
         $emaild = Email::where('nrpnpk',$orderku[0]->dosen)->get();
         if($emaild[0]->ambil == 1)
         {
-            Mail::to($pemesan[0]->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan2, $pesan2, $kalab));
+            Mail::to($dosenpj[0]->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan2, $pesan2, $kalab));
         }
         //return view('mail.m_ambil',compact('pemesan','dosenpj','pesanankubarang','pesanankulab','ambil','orderku','pesan','kalab'));
     }
@@ -423,7 +426,9 @@ class KeranjangController extends Controller
             //dd($emailaboran);
             if($emailaboran[0]->kembalikan == 1)
             {
-                Mail::to($dosenpj->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan2, $pesan2, $kalab));
+                $emaillab2 = user::where('nrpnpk',$emailaboran[0]->nrpnpk)->get();
+                //dd($emaillab2);
+                Mail::to($emaillab2[0]->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan2, $pesan2, $kalab));
             }
         }
         Mail::to($pemesan[0]->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan, $pesan, $kalab));
@@ -432,7 +437,7 @@ class KeranjangController extends Controller
         $emaild = Email::where('nrpnpk',$orderku[0]->dosen)->get();
         if($emaild[0]->kembalikan == 1)
         {
-            Mail::to($pemesan[0]->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan2, $pesan2, $kalab));
+            Mail::to($dosenpj[0]->email)->send(new emaila($pemesan,$dosenpj,$pesanankubarang,$pesanankulab,$ambil,$orderku, substr($id, 0, 13).' BeLABS '.$pesan2, $pesan2, $kalab));
         }
     }
 

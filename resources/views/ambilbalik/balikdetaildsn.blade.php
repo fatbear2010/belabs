@@ -116,7 +116,7 @@
                                                 <h4 class="text-danger">Item Sudah Dikembalikan </h4>
                                                 @elseif($pj['status'] == "3")
                                                 <h4 class="text-danger">Item Bermasalah </h4>
-                                                <h5 class="text-dark">$pj['masalah']</h5>
+                                                <h5 class="text-dark">{{$pj['masalah']}}</h5>
                                                 @elseif($pj['checkout1'] == "")
                                                 <h4 class="text-dark">Pengembalian Barang Belum Dikonfirmasi Oleh Kalab / Laboran </h4>
                                                 @endif
@@ -163,7 +163,7 @@
                                                 <h4 class="text-danger">Item Sudah Dikembalikan </h4>
                                                 @elseif($pj['status'] == "3")
                                                 <h4 class="text-danger">Item Bermasalah </h4>
-                                                 <h5 class="text-dark">$pj['masalah']</h5>
+                                                 <h5 class="text-dark">{{$pj['masalah']}}</h5>
                                                 @elseif($pj['checkout1'] == "")
                                                 <h4 class="text-dark">Pengembalian Barang Belum Dikonfirmasi Oleh Kalab / Laboran </h4>
                                                 @endif
@@ -209,7 +209,7 @@
                                                 <h4 class="text-danger">Pemesan Sudah Keluar </h4>
                                                 @elseif($pj['status'] == "3")
                                                 <h4 class="text-danger">Item Bermasalah </h4>
-                                                 <h5 class="text-dark">$pj['masalah']</h5>
+                                                 <h5 class="text-dark">{{$pj['masalah']}}</h5>
                                                 @elseif($pj['checkout1'] == "")
                                                   <h4 class="text-dark">Kehadiran Keluar Belum Dikonfirmasi Oleh Kalab / Laboran </h4>
                                                 @endif
@@ -254,7 +254,7 @@
                                                 <h4 class="text-danger">Pemesan Sudah Keluar </h4>
                                                 @elseif($pj['status'] == "3")
                                                 <h4 class="text-danger">Item Bermasalah </h4>
-                                                 <h5 class="text-dark">$pj['masalah']</h5>
+                                                 <h5 class="text-dark">{{$pj['masalah']}}</h5>
                                                 @elseif($pj['checkout1'] == "")
                                                  <h4 class="text-dark">Kehadiran Keluar Belum Dikonfirmasi Oleh Kalab / Laboran </h4>
                                                 @endif

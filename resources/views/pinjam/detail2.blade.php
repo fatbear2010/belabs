@@ -179,6 +179,8 @@
       <div class="row">
         <div class="col-lg-6" style="margin-bottom:5px;">
           <h5>Tanggal</h5>
+          <input type="date" name="tgl" id="ptgl" required="" class="form-control" min="{{ now()->toDateString('Y-m-d') }}">
+          @if(1==2)
           <select class="form-control" name="tgl" id="ptgl" required="">
             <option value="" disabled selected>Tanggal Peminjaman</option>
             <?php date_default_timezone_set("Asia/Bangkok");
@@ -186,6 +188,7 @@
                 <option value="{{date('d-m-Y', strtotime(date('d-m-Y'). ' + '.$i.' days'))}}">{{date('d-m-Y', strtotime(date('d-m-Y'). ' + '.$i.' days'))}}</option>
             <?php }?>
           </select>
+          @endif
         </div>
         <div class="col-lg-3" style="margin-bottom:5px;">
           
@@ -213,11 +216,14 @@
   <div class="row text-center justify-content-md-center" >
     
     <br><br><br>
+    <input type="date" name="tgl" id="tgl" class="form-control" min="{{ now()->toDateString('Y-m-d') }}">
+    @if(1==2)
      <select class="form-control" name="tgl" id="tgl">
           <?php date_default_timezone_set("Asia/Bangkok");
             for ($i=0; $i < 7 ; $i++) { ?>
               <option value="{{date('d-m-Y', strtotime(date('d-m-Y'). ' + '.$i.' days'))}}">{{date('d-m-Y', strtotime(date('d-m-Y'). ' + '.$i.' days'))}}</option>
           <?php }?>
+    @endif
       </select>
       <br><br><br>
       <div class="table-responsive" id="jadwal">

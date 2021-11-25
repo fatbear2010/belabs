@@ -499,6 +499,7 @@ class AmbilbalikController extends Controller
             return redirect(url('/home'))->with("status",4);
         }
         else if(count($ambilin) > 0 || auth()->user()->jabatan == 9){
+            $laboran = DB::select('select * from laboran where user = "'.auth()->user()->nrpnpk.'"');
             $orderku = Order::where('idorder',$ambilin[0]->order)->get();// dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang,p.checkout1,p.checkin1, b.idbarangdetail, b.nama, p.idp, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.ambil = '".$id."' order by nama");
@@ -743,7 +744,7 @@ class AmbilbalikController extends Controller
             $ambilin->save();
 
             if($request->ambilb != null){
-                foreach($request->ambilb as $cb)
+                foreach($request->ambilb as $k=>$cb)
                 {
                     //dd("update pinjam set checkin = now(), ambil = '".$idab."' where idp = '".$cb."'");
                     DB::statement("update pinjam set checkin = now(), ambil = '".$idab."' where idp = '".$cb."'");
@@ -751,7 +752,7 @@ class AmbilbalikController extends Controller
                 }
             }
             if($request->ambill != null) {
-                foreach($request->ambill as $cl)
+                foreach($request->ambill as $k=>$cl)
                 {
                    DB::statement("update pinjamlab set checkin = now() , ambil = '".$idab."' where idpl = '".$cl."'");
                    $ket.= KeranjangController::labname($k). " | ";
@@ -776,6 +777,7 @@ class AmbilbalikController extends Controller
         $id = $request->idambilbalik;
         $ambilin = Ambilbalik::where('idambilbalik',$id)->get();
         $helper = 0;
+        $ket = "";
         $laboran = DB::select('select * from laboran where user = "'.auth()->user()->nrpnpk.'"');
         $orderku = Order::where('idorder',$ambilin[0]->order)->get();
         if($request->setujub != null){
@@ -1011,10 +1013,6 @@ class AmbilbalikController extends Controller
         {
             return redirect(url('/order/detail/'.$request->idorder))->with("status",7);
         }
-        if(KeranjangController::laborannya2($ambilin[0]->lab,auth()->user()->nrpnpk) == 0)
-        {
-            return redirect(url('/home'))->with("status",4);
-        }
         else if(count($ambilin) > 0 || auth()->user()->jabatan == 9){
             $id = $ambilin[0]->idambilbalik;
             $orderku = Order::where('idorder',$ambilin[0]->order)->get();// dd($orderku);
@@ -1056,11 +1054,9 @@ class AmbilbalikController extends Controller
                     $help['lokasi'] = $pb->lokasi;
                     $help['fakultas'] = $pb->fakultas;
                     $help['tipe'] = "barang";
-                    foreach($laboran as $la)
-                    {
-                        if($pb->idlab == $la->lab)
+                    
                         $keranjang[$pb->idbarangdetail] = $help;
-                    }
+                    
                 }
                 else
                 {
@@ -1116,7 +1112,7 @@ class AmbilbalikController extends Controller
         $riwayat = new History;
         $riwayat->status = 13;
         $riwayat->tanggal = date("Y-m-d H:i:s");
-        $riwayat->pic =auth()->user()->nrpnpk;
+        $riwayat->PIC =auth()->user()->nrpnpk;
         $riwayat->order = $request->orderid;
         $riwayat->save();
         KeranjangController::kirimemail($request->orderid,'Pengambilan Item / Kehadiran Telah Dikonfirmasi Oleh Pemesan','Pengambilan Item / Kehadiran Telah Dikonfirmasi Oleh Pemesan','Pengambilan Item / Kehadiran Telah Dikonfirmasi Oleh Pemesan (Pesanan Yang Berkaitan Dengan Anda)','Pengambilan Item / Kehadiran Telah Dikonfirmasi Oleh Pemesan (Pesanan Yang Berkaitan Dengan Anda)','ambil');
@@ -1132,14 +1128,10 @@ class AmbilbalikController extends Controller
         {
             return redirect(url('/home'))->with("status",4);
         }
-        else if (KeranjangController::laborannya($id,auth()->user()->nrpnpk) > 0 || auth()->user()->jabatan == 9){
+        else{
 
-            if(auth()->user()->jabatan == 9){
-                $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab");
-            }
-            else{
-                $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab where user = '".auth()->user()->nrpnpk."'");
-            }
+            
+            $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab");
             $orderku = Order::where('idorder',$id)->get();// dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp,p.checkout1,p.checkin1, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai ,  p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' and l.idlab = '".$lab[0]->idlab."' order by b.nama");
@@ -1180,19 +1172,17 @@ class AmbilbalikController extends Controller
                     $help['lokasi'] = $pb->lokasi;
                     $help['fakultas'] = $pb->fakultas;
                     $help['tipe'] = "barang";
-                    foreach($laboran as $la)
-                    {
-                        if($pb->idlab == $la->lab)
+                    
+                       
                         $keranjang[$pb->idbarangdetail] = $help;
-                    }
+                    
                 }
                 else
                 {
-                    foreach($laboran as $la)
-                    {
-                        if($pb->idlab == $la->lab)
+                   
+                      
                         { array_push($keranjang[$pb->idbarangdetail]['pinjam'],$pinjam); }
-                    }
+                    
                 }
             }
             foreach($pesanankulab as $pb)
@@ -1223,19 +1213,17 @@ class AmbilbalikController extends Controller
                     $help['tipe'] = "lab";
                     //dd($laboran);
 
-                    foreach($laboran as $la)
-                    {
-                        if($pb->idlab == $la->lab)
+                 
+                       
                         { $keranjang[$pb->idlab] = $help; }
-                    }
+                    
                 }
                 else
                 {   
-                    foreach($laboran as $la)
-                    {
-                        if($pb->idlab == $la->lab)
-                        { array_push($keranjang[$pb->idlab]['pinjam'],$pinjam); } 
-                    }
+                   
+                       
+                      { array_push($keranjang[$pb->idlab]['pinjam'],$pinjam); } 
+                    
                 }
             }
             $labdpl = $lab[0]->idlab;
@@ -1501,11 +1489,11 @@ class AmbilbalikController extends Controller
             $ambilin = new Ambilbalik;
             $ambilin->idambilbalik = $idab;
             $ambilin->order = $id;
-           // $ambilin->note = $request->pesan;
+            $ambilin->note = $request->pesan;
             $ambilin->abcode = $request->kodep;
             $ambilin->tipe = "BALIK";
             $ambilin->time = date("Y-m-d H:i:s");
-           // $ambilin->PIC = auth()->user()->nrpnpk;
+            $ambilin->PIC = auth()->user()->nrpnpk;
             $ambilin->lab = $labdpl;
             $ambilin->save();
 
@@ -1526,7 +1514,7 @@ class AmbilbalikController extends Controller
             $riwayat = new History;
             $riwayat->status = 14;
             $riwayat->tanggal = date("Y-m-d H:i:s");
-            $riwayat->pic =auth()->user()->nrpnpk;
+            $riwayat->PIC =auth()->user()->nrpnpk;
             $riwayat->order = $id;
             $riwayat->save();
            keranjangController::kirimemailb($idab);
@@ -1539,7 +1527,7 @@ class AmbilbalikController extends Controller
     {
         $ambilin = Ambilbalik::where('idambilbalik',$id)->get();
         $orderku = Order::where('idorder',$ambilin[0]->order)->get();
-        if($orderku[0]->dosen != auth()->user()->nrpnpk)
+        if($orderku[0]->mahasiswa != auth()->user()->nrpnpk)
         {
             return redirect(url('/order/detail/'.$ambilin[0]->order))->with("status",9);
         }
@@ -1775,6 +1763,7 @@ class AmbilbalikController extends Controller
         $id = $request->idambilbalik;
         $ambilin = Ambilbalik::where('idambilbalik',$id)->get();
         $helper = 0;
+        $ket = "";
         $laboran = DB::select('select * from laboran where user = "'.auth()->user()->nrpnpk.'"');
         $orderku = Order::where('idorder',$ambilin[0]->order)->get();
         if($request->balikb != null){
@@ -1830,7 +1819,7 @@ class AmbilbalikController extends Controller
             $riwayat = new History;
             $riwayat->status = 15;
             $riwayat->tanggal = date("Y-m-d H:i:s");
-            $riwayat->pic =auth()->user()->nrpnpk;
+            $riwayat->PIC =auth()->user()->nrpnpk;
             $riwayat->order = $ambilin[0]->order;
             $riwayat->keterangan = $ket;
             $riwayat->save();
@@ -2262,14 +2251,14 @@ class AmbilbalikController extends Controller
                 }
             }
 
-            $this->matikan();
+            $this->matikan($ambilin[0]->order);
             $riwayat = new History;
             $riwayat->status = 16;
             $riwayat->tanggal = date("Y-m-d H:i:s");
-            $riwayat->pic =auth()->user()->nrpnpk;
+            $riwayat->PIC =auth()->user()->nrpnpk;
             $riwayat->order = $ambilin[0]->order;
             $riwayat->keterangan = $ket;
-            $riwayat->save($ambilin[0]->order);
+            $riwayat->save();
             KeranjangController::kirimemail($ambilin[0]->order,'Pengembalian Barang / Kehadiran Keluar Mendapat Tanggapan Dari Kalab / Laboran','Pengembalian Barang / Kehadiran Keluar Mendapat Tanggapan Dari Kalab / Laboran','Pengembalian Barang / Kehadiran Keluar Dari Pesanan Yang Berkaitan Dengan Anda Mendapat Tanggapan Dari Kalab / Laboran','Pengembalian Barang / Kehadiran Keluar Dari Pesanan Yang Berkaitan Dengan Anda Mendapat Tanggapan Dari Kalab / Laboran','ambil');
              return redirect('/order/detail/'.$ambilin[0]->order)->with('status', '12');
         }
@@ -2279,8 +2268,8 @@ class AmbilbalikController extends Controller
     {
         $helper = 0;
         $orderku = Order::where('idorder',$orderid)->get();// dd($orderku);
-        $pesanankubarang = DB::select("select p.sdosen, p.skalab, p.idp, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$orderid."' order by b.nama");
-        $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, p.idpl, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$orderid."' order by l.namaLab");
+        $pesanankubarang = DB::select("select p.checkout1, p.sdosen, p.skalab, p.idp, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$orderid."' order by b.nama");
+        $pesanankulab = DB::select("select p.checkout1, p.sdosen, p.skalab,l.idlab, p.idpl, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$orderid."' order by l.namaLab");
         foreach($pesanankubarang as $pb)
         {
             if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout1 != "" || $pb->skalab == 2 )
@@ -2298,7 +2287,7 @@ class AmbilbalikController extends Controller
             $riwayat = new History;
             $riwayat->status = 4;
             $riwayat->tanggal = date("Y-m-d H:i:s");
-            $riwayat->pic ='020102000';
+            $riwayat->PIC ='020102000';
             $riwayat->order = $orderid;
             $riwayat->save();
             return 1;
