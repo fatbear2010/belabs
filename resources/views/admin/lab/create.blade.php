@@ -32,6 +32,10 @@
 							<input type="text" name="txtLokasi" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" style="width:600px;">
 						</div>
 						<div class="form-group">
+							<label for="exampleInputEmail1">Kapasitas</label>
+							<input type="text" name="txtkapasitas" class="form-control form-control-alternative" id="exampleInputEmail1" placeholder="Enter text" style="width:600px;">
+						</div>
+						<div class="form-group">
 							<label for="exampleInputEmail1">Fakultas</label>
 							<br>
 							<select class="form-control multiple-laboran" name="comboFak" id="comboFak">

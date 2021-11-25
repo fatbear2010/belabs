@@ -58,7 +58,8 @@ class LabController extends Controller
         $data->namaLab = $request->get('txtName');
         $data->lokasi = $request->get('txtLokasi');
         $data->fakultas = $request->get('comboFak');
-
+        $data->kapasitas = $request->get('txtkapasitas');
+//dd($data->kapasitas);
         $data->save();
         
         foreach($laboran as $u)
@@ -118,6 +119,7 @@ class LabController extends Controller
         $lab->namaLab = $request->get('txtName');
         $lab->lokasi = $request->get('txtLokasi');
         $lab->fakultas = $request->get('comboFak');
+        $lab->kapasitas = $request->get('txtkapasistas');
 
         $lab->save();
         return redirect()->route('lab.index')->with('status', 'Data Lab Sudah dihapus');
@@ -169,7 +171,7 @@ class LabController extends Controller
         $table = "";
         foreach ($arr as $a) {
             $sesi = Sesi::find($a[1]);
-            $table .= "<tr><td>$a[4]</td><td>$sesi->mulai</td><td>$sesi->selesai</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2],$a[3],$a[4],$a[5]'>";
+            $table .= "<tr><td>$a[4]</td><td>$sesi->mulai</td><td>$a[3]</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2],$a[3],$a[4],$a[5]'>";
         }
         return response()->json(array('status' => 'oke', 'msg' => $table), 200);
     }
@@ -205,7 +207,7 @@ class LabController extends Controller
         foreach ($arr as $a) {
             
             $sesi = Sesi::find($a[1]);
-            $table .= "<tr><td>$a[0]</td><td>$sesi->mulai</td><td>$sesi->selesai</td><td>$a[5]</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2],$a[3],$a[4],$a[5]'>";
+            $table .= "<tr><td>$a[0]</td><td>$sesi->mulai</td><td>$a[3]</td><td>$a[5]</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2],$a[3],$a[4],$a[5]'>";
         }
         return response()->json(array('status' => 'oke', 'msg' => $table), 200);
     }

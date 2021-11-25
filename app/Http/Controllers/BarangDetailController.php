@@ -156,7 +156,7 @@ class BarangDetailController extends Controller
         $table = "";
         foreach ($arr as $a) {
             $sesi = Sesi::find($a[1]);
-            $table .= "<tr><td>$a[4]</td><td>$sesi->mulai</td><td>$sesi->selesai</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2],$a[3],$a[4],$a[5]'>";
+            $table .= "<tr><td>$a[4]</td><td>$sesi->mulai</td><td>$a[3]</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2],$a[3],$a[4],$a[5]'>";
         }
         return response()->json(array('status' => 'oke', 'msg' => $table), 200);
     }
@@ -192,7 +192,7 @@ class BarangDetailController extends Controller
         foreach ($arr as $a) {
             
             $sesi = Sesi::find($a[1]);
-            $table .= "<tr><td>$a[0]</td><td>$sesi->mulai</td><td>$sesi->selesai</td><td>$a[5]</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2],$a[3],$a[4],$a[5]'>";
+            $table .= "<tr><td>$a[0]</td><td>$sesi->mulai</td><td>$a[3]</td><td>$a[5]</td><td><button type=button onclick=removeSesi($a[1])><i class='ni ni-fat-remove'></i></button></td></tr><input type='hidden' name='sesi[]' value='$a[0],$a[1],$a[2],$a[3],$a[4],$a[5]'>";
         }
         return response()->json(array('status' => 'oke', 'msg' => $table), 200);
     }

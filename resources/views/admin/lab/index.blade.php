@@ -28,6 +28,7 @@
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Nama Kategori</th>
+              <th scope="col">Kapasitas</th>
               <th scope="col">Lokasi</th>
               <th scope="col">Fakultas</th>
               <th scope="col">Laboran</th>
@@ -38,6 +39,8 @@
             @foreach($queryBuilder as $d)
             <tr>
               <td>{{ $d->idlab }}</td>
+              <td>{{ $d->kapasitas }}</td>
+
               <td>{{ $d->namaLab }}</td>
               <td>{{ $d->lokasi }}</td>
 

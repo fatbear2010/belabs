@@ -45,7 +45,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Status</label>
+                            <label>Jam Selesai</label>
                             <br>
                             <select class="form-control" name="comboSelesai" id="comboSelesai">
                                 @foreach($sesi as $s)
