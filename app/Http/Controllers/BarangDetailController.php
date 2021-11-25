@@ -22,7 +22,7 @@ class BarangDetailController extends Controller
     public function index()
     {
         $this->authorize('check-jabatan');
-        $queryBuilder = DB::table('barangDetail')->get();
+        $queryBuilder = DB::table('barangdetail')->get();
         foreach($queryBuilder as $q )
         {
             $q->gambars = DB::table('gambar')->where('barang',$q->idbarangDetail)->get();

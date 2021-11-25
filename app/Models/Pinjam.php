@@ -8,7 +8,7 @@ use App\Models\BarangDetail;
 use App\Models\Order;
 class Pinjam extends Model
 {
-    protected $table = 'Pinjam';
+    protected $table = 'pinjam';
     public $primaryKey = 'idp';
     public $timestamps = false;
     public function brang()

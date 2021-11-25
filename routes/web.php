@@ -13,9 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('auth/login');
-});
+Route::get('/', 'App\Http\Controllers\HomeController@index')->name('home');
+
 Route::get('trymail','App\Http\Controllers\MailController@sendVerificarionMail');
 Route::post('/vcode','App\Http\Controllers\RegistrationController@aktivasi1');
 Route::get('/resend/{id}', 'App\Http\Controllers\RegistrationController@aktivasi2');
@@ -25,16 +24,6 @@ Route::get('/resetpass/{vcode}', 'App\Http\Controllers\auth\ForgotPasswordContro
 Route::post('/vdone', 'App\Http\Controllers\RegistrationController@aktivasi4');
 Route::post('/resetfinish', 'App\Http\Controllers\auth\ForgotPasswordController@reset3');
 Auth::routes(['verify' => true]);
-
-Route::get('test/email', function(){
-  
-	$send_mail = '21stefsk@gmail.com';
-  
-    dispatch(new App\Jobs\SendEmail($send_mail));
-  
-    dd('send mail successfully !!');
-});
-
 
 Route::middleware('auth')->group(function() {
 	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);

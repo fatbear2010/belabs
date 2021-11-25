@@ -8,7 +8,7 @@ use App\Models\Lab;
 use App\Models\Order;
 class PinjamLab extends Model
 {
-    protected $table = 'PinjamLab';
+    protected $table = 'pinjamLab';
     public $primaryKey = 'idpl';
     public $timestamps = false;
     public function lab()

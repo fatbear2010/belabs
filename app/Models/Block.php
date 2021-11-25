@@ -8,7 +8,7 @@ use App\Models\BarangDetail;
 use App\Models\Lab;
 class Block extends Model
 {
-    protected $table = 'Block';
+    protected $table = 'block';
     public $primaryKey = 'idblock';
     public $timestamps = false;
     public function barang()

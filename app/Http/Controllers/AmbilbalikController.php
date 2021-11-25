@@ -39,15 +39,15 @@ class AmbilbalikController extends Controller
         else if (KeranjangController::laborannya($id,auth()->user()->nrpnpk) > 0 || auth()->user()->jabatan == 9){
 
             if(auth()->user()->jabatan == 9){
-                $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab");
+                $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamlab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab");
             }
             else{
-                $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab where user = '".auth()->user()->nrpnpk."'");
+                $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamlab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab where user = '".auth()->user()->nrpnpk."'");
             }
             $orderku = Order::where('idorder',$id)->get();// dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp,p.checkout1,p.checkin1, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai ,  p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' and l.idlab = '".$lab[0]->idlab."' order by b.nama");
-            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai ,p.checkout1,p.checkin1, p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' and l.idlab = '".$lab[0]->idlab."' order by l.namaLab");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai ,p.checkout1,p.checkin1, p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' and l.idlab = '".$lab[0]->idlab."' order by l.namaLab");
             $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
             $keranjang = array();
             $penampung = "";
@@ -159,11 +159,11 @@ class AmbilbalikController extends Controller
             return redirect(url('/home'))->with("status",4);
         }
         else if (KeranjangController::laborannya($id,auth()->user()->nrpnpk) > 0 || auth()->user()->jabatan == 9){
-            $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab where user = '".auth()->user()->nrpnpk."'");
+            $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamlab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab where user = '".auth()->user()->nrpnpk."'");
             $orderku = Order::where('idorder',$id)->get();// dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp,p.checkout1,p.checkin1, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai ,  p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' and l.idlab = '".$request->lab."' order by b.nama");
-            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai ,p.checkout1,p.checkin1, p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' and l.idlab = '".$request->lab."' order by l.namaLab");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai ,p.checkout1,p.checkin1, p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' and l.idlab = '".$request->lab."' order by l.namaLab");
             $keranjang = array();
             $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
             $penampung = "";
@@ -282,7 +282,7 @@ class AmbilbalikController extends Controller
         {   
             $orderku = Order::where('idorder',$id)->get();// dd($orderku);
             $pesanankubarang = DB::select("select p.sdosen,p.checkin1, p.checkout1, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' and l.idlab = '".$mylab."' order by b.nama");
-            $pesanankulab = DB::select("select p.sdosen,p.checkin1, p.checkout1, p.skalab,l.idlab, l.namaLab,l.kapasitas, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' and p.idlab = '".$mylab."' order by l.namaLab");
+            $pesanankulab = DB::select("select p.sdosen,p.checkin1, p.checkout1, p.skalab,l.idlab, l.namaLab,l.kapasitas, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' and p.idlab = '".$mylab."' order by l.namaLab");
             $penampung = "";
             foreach($pesanankubarang as $pb)
             {
@@ -435,7 +435,7 @@ class AmbilbalikController extends Controller
             if($request->diambill != null) {
                 foreach($request->diambill as $cl)
                 {
-                    $pesanankulab = DB::select("select p.sdosen,p.checkin1, p.checkout1, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
+                    $pesanankulab = DB::select("select p.sdosen,p.checkin1, p.checkout1, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
                     foreach($pesanankulab as $pb)
                     {
                         //$cek = DB::select('select count(idp) as jumlah from pinjamLab where idlab = "'.$pb->idlab.'"and checkin != "" and checkout1 = ""');
@@ -503,7 +503,7 @@ class AmbilbalikController extends Controller
             $orderku = Order::where('idorder',$ambilin[0]->order)->get();// dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang,p.checkout1,p.checkin1, b.idbarangdetail, b.nama, p.idp, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.ambil = '".$id."' order by nama");
-            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.ambil = '".$id."' order by namaLab");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.ambil = '".$id."' order by namaLab");
             $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
             $keranjang = array();
             $penampung = "";
@@ -603,7 +603,7 @@ class AmbilbalikController extends Controller
             // dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang,p.checkout1,p.checkin1, b.idbarangdetail, b.nama, p.idp, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.ambil = '".$id."' order by nama");
-            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.ambil = '".$id."' order by namaLab");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.ambil = '".$id."' order by namaLab");
             $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
             $keranjang = array();
             $penampung = "";
@@ -714,7 +714,7 @@ class AmbilbalikController extends Controller
         if($request->ambill != null) {
             foreach($request->ambill as $cl)
             {
-                $pesanankulab = DB::select("select p.sdosen,p.checkout1, p.checkin1, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
+                $pesanankulab = DB::select("select p.sdosen,p.checkout1, p.checkin1, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
                 foreach($pesanankulab as $pb)
                 {
                     $labdpl =  $pb->idlab;
@@ -796,7 +796,7 @@ class AmbilbalikController extends Controller
         if($request->setujul != null) {
             foreach($request->setujul as $k=>$cl)
             {
-                $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
+                $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
                 foreach($pesanankulab as $pb)
                 {
                     if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout != "" || $pb->checkin == "" || $pb->skalab == 2 )
@@ -938,7 +938,7 @@ class AmbilbalikController extends Controller
             if($request->setujul != null) {
                 foreach($request->setujul as $k=>$cl)
                 {
-                    $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,l.idlab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
+                    $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,l.idlab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
                     foreach($pesanankulab as $pb)
                     {
                         $pinjam['tgl'] = $pb->tanggal;
@@ -1018,7 +1018,7 @@ class AmbilbalikController extends Controller
             $orderku = Order::where('idorder',$ambilin[0]->order)->get();// dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang,p.checkout1,p.checkin1, b.idbarangdetail, b.nama, p.idp, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.ambil = '".$id."' order by nama");
-            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.ambil = '".$id."' order by namaLab");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.ambil = '".$id."' order by namaLab");
             $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
             $keranjang = array();
             $penampung = "";
@@ -1131,11 +1131,11 @@ class AmbilbalikController extends Controller
         else{
 
             
-            $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamLab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab");
+            $lab = DB::select("select DISTINCT la.idlab, la.namaLab, la.fakultas from lab la left join (select DISTINCT bd.lab as lab from pinjam p left join barangdetail bd on bd.idbarangDetail = p.barang where p.order = '".$id."' union select DISTINCT idlab from pinjamlab  where idorder = '".$id."') lb on la.idlab = lb.lab left join laboran lc on lb.lab = lc.lab");
             $orderku = Order::where('idorder',$id)->get();// dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp,p.checkout1,p.checkin1, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai ,  p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' and l.idlab = '".$lab[0]->idlab."' order by b.nama");
-            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai ,p.checkout1,p.checkin1, p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' and l.idlab = '".$lab[0]->idlab."' order by l.namaLab");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai ,p.checkout1,p.checkin1, p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' and l.idlab = '".$lab[0]->idlab."' order by l.namaLab");
             $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
             $keranjang = array();
             $penampung = "";
@@ -1242,7 +1242,7 @@ class AmbilbalikController extends Controller
         {   
             $orderku = Order::where('idorder',$id)->get();// dd($orderku);
             $pesanankubarang = DB::select("select p.sdosen,p.checkin1, p.checkout1, p.skalab,k.nama as kategori, br.nama as namaBarang, b.idbarangdetail, b.nama, p.idp, b.merk,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$id."' and l.idlab = '".$mylab."' order by b.nama");
-            $pesanankulab = DB::select("select p.sdosen,p.checkin1, p.checkout1, p.skalab,l.idlab, l.namaLab,l.kapasitas, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' and p.idlab = '".$mylab."' order by l.namaLab");
+            $pesanankulab = DB::select("select p.sdosen,p.checkin1, p.checkout1, p.skalab,l.idlab, l.namaLab,l.kapasitas, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$id."' and p.idlab = '".$mylab."' order by l.namaLab");
             $penampung = "";
             foreach($pesanankubarang as $pb)
             {
@@ -1391,7 +1391,7 @@ class AmbilbalikController extends Controller
             if($request->diambill != null) {
                 foreach($request->diambill as $cl)
                 {
-                    $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.checkin1, p.checkout1, p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
+                    $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.checkin1, p.checkout1, p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
                     foreach($pesanankulab as $pb)
                     {
                         //$cek = DB::select('select count(idp) as jumlah from pinjamLab where idlab = "'.$pb->idlab.'"and checkin != "" and checkout1 = ""');
@@ -1468,7 +1468,7 @@ class AmbilbalikController extends Controller
         if($request->ambill != null) {
             foreach($request->ambill as $cl)
             {
-                $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab,p.checkout1, p.checkin1, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
+                $pesanankulab = DB::select("select p.sdosen, p.skalab,l.idlab,p.checkout1, p.checkin1, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$cl."'");
                 foreach($pesanankulab as $pb)
                 {
                     $labdpl =  $pb->idlab;
@@ -1535,7 +1535,7 @@ class AmbilbalikController extends Controller
             // dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang,p.checkout1,p.checkin1, b.idbarangdetail, b.nama, p.idp, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.balik = '".$id."' order by nama");
-            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.balik = '".$id."' order by namaLab");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.balik = '".$id."' order by namaLab");
             $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
             $keranjang = array();
             $penampung = "";
@@ -1693,7 +1693,7 @@ class AmbilbalikController extends Controller
             if($request->balikl != null) {
                 foreach($request->balikl as $k=>$cl)
                 {
-                    $pesanankulab = DB::select("select p.sdosen,p.checkout1, p.checkin1, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,l.idlab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
+                    $pesanankulab = DB::select("select p.sdosen,p.checkout1, p.checkin1, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,l.idlab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
                     foreach($pesanankulab as $pb)
                     {
                         $pinjam['tgl'] = $pb->tanggal;
@@ -1782,7 +1782,7 @@ class AmbilbalikController extends Controller
         if($request->balikl != null) {
             foreach($request->balikl as $k=>$cl)
             {
-                $pesanankulab = DB::select("select p.checkin1, p.checkout1, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
+                $pesanankulab = DB::select("select p.checkin1, p.checkout1, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
                 foreach($pesanankulab as $pb)
                 {
                     if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout == "" || $pb->checkin == "" || $pb->checkout1 != "" || $pb->checkin1 == "" || $pb->skalab == 2 )
@@ -1840,7 +1840,7 @@ class AmbilbalikController extends Controller
             // dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang,p.checkout1,p.checkin1, b.idbarangdetail, b.nama, p.idp, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.balik = '".$id."' order by nama");
-            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.balik = '".$id."' order by namaLab");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.balik = '".$id."' order by namaLab");
             $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
             $keranjang = array();
             $penampung = "";
@@ -1941,7 +1941,7 @@ class AmbilbalikController extends Controller
             // dd($orderku);
             $dosenpj = $dosen = DB::select('select * from users where nrpnpk = "'.$orderku[0]->dosen.'"');
             $pesanankubarang = DB::select("select p.sdosen, p.skalab,k.nama as kategori, br.nama as namaBarang,p.checkout1,p.checkin1, b.idbarangdetail, b.nama, p.idp, b.merk,l.idlab,l.lokasi, l.namaLab, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.balik = '".$id."' order by nama");
-            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.balik = '".$id."' order by namaLab");
+            $pesanankulab = DB::select("select p.status, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi,p.checkout1,p.checkin1, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.balik = '".$id."' order by namaLab");
             $pemesan = user::where('nrpnpk',$orderku[0]->mahasiswa)->get();
             $keranjang = array();
             $penampung = "";
@@ -2098,7 +2098,7 @@ class AmbilbalikController extends Controller
             if($request->diambill != null) {
                 foreach($request->diambill as $k=>$cl)
                 {
-                    $pesanankulab = DB::select("select p.sdosen,p.checkin1, p.checkout1, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
+                    $pesanankulab = DB::select("select p.sdosen,p.checkin1, p.checkout1, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
                     foreach($pesanankulab as $pb)
                     {
                         //$cek = DB::select('select count(idp) as jumlah from pinjamLab where idlab = "'.$pb->idlab.'"and checkin != "" and checkout1 = ""');
@@ -2181,7 +2181,7 @@ class AmbilbalikController extends Controller
         if($request->balikl != null) {
             foreach($request->balikl as $k=>$cl)
             {
-                $pesanankulab = DB::select("select p.checkin1, p.checkout1, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
+                $pesanankulab = DB::select("select p.checkin1, p.checkout1, p.sdosen, p.skalab,l.idlab, l.namaLab, p.idpl,l.lokasi, l.fakultas, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idpl = '".$k."'");
                 foreach($pesanankulab as $pb)
                 {
                     if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout == "" || $pb->checkin == "" || $pb->checkout1 != "" || $pb->checkin1 == "" || $pb->skalab == 2 )
@@ -2269,7 +2269,7 @@ class AmbilbalikController extends Controller
         $helper = 0;
         $orderku = Order::where('idorder',$orderid)->get();// dd($orderku);
         $pesanankubarang = DB::select("select p.checkout1, p.sdosen, p.skalab, p.idp, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah,p.statusKalab,p.keterangan, p.status FROM pinjam p inner join barangdetail b on p.barang = b.idbarangDetail inner join lab l on b.lab = l.idlab inner join barang br on b.idbarang = br.idbarang inner join kategori k on br.kategori = k.idkategori where p.order = '".$orderid."' order by b.nama");
-        $pesanankulab = DB::select("select p.checkout1, p.sdosen, p.skalab,l.idlab, p.idpl, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamLab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$orderid."' order by l.namaLab");
+        $pesanankulab = DB::select("select p.checkout1, p.sdosen, p.skalab,l.idlab, p.idpl, p.tanggal, p.mulai , p.selesai, p.checkin, p.checkout,p.statusDosen,p.masalah, p.statusKalab,p.keterangan, p.status FROM pinjamlab p inner join lab l on p.idlab = l.idlab where p.idorder = '".$orderid."' order by l.namaLab");
         foreach($pesanankubarang as $pb)
         {
             if($pb->sdosen == 2 || $pb->status == 2 || $pb->checkout1 != "" || $pb->skalab == 2 )

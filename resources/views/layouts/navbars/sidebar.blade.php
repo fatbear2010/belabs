@@ -170,57 +170,7 @@
             </li>
 
 
-                <li class="nav-item">
-                <a class="nav-link " href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">
-                    <i class="fab fa-laravel" style="color: #f4645f;"></i>
-                    <span class="nav-link-text" style="color: #f4645f;">{{ __('Admin') }}</span>
-                </a>
-
-                <div class="collapse " id="navbar-examples">
-                    <ul class="nav nav-sm flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/admin/kategori') }}">
-                                {{ __('Kategori Barang') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('barang.index') }}">
-                                {{ __('Barang') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('barangdetail.index') }}">
-                                {{ __('Barang Detail') }}
-                            </a>
-                        </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="{{ route('jabatan.index') }}">
-                                {{ __('Jabatan') }}
-                            </a>
-                        </li> -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('perbaikan.index') }}">
-                                {{ __('Perbaikan') }}
-                            </a>
-                        </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="{{ route('status.index') }}">
-                                {{ __('Status') }}
-                            </a>
-                        </li> -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('lab.index') }}">
-                                {{ __('Lab') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('users.index') }}">
-                                {{ __('User') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
+               
                <li class="nav-item">
                     <a class="nav-link" href="{{ route('home') }}">
                         <i class="icofont-code" style="color: #f4645f;"></i> About Developer
