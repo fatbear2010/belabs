@@ -1536,21 +1536,21 @@ class HomeController extends Controller
             if($request->k == 1)
             {
                 $labnya = DB::select("select * from laboran where user = '".auth()->user()->nrpnpk."'");
-                $barang = DB::select('select * from pinjam p inner join barangdetail bd on p.barang = bd.idbarangDetail inner join .order o on o.idorder = p.order inner join laboran l on bd.lab = l.lab where (p.status = 3 or (p.checkin != "" and p.checkout1 is null )) and l.user = "'.auth()->user()->nrpnpk.'"');
+                $barang = DB::select('select * from pinjam p inner join barangdetail bd on p.barang = bd.idbarangDetail inner join .order o on o.idorder = p.order inner join laboran l on bd.lab = l.lab where (p.status = 3 or (p.checkin != "" and p.checkout1 is null )) and l.user = "'.auth()->user()->nrpnpk.'"order by p.tanggal desc');
                 $k = 0;
                 return view('home.itemout',compact('barang','labnya','k'));
             }
             else{
                 $lab = substr($request->k, 1);
                 $labnya = DB::select("select * from laboran where user = '".auth()->user()->nrpnpk."'");
-                $barang = DB::select('select * from pinjam p inner join barangdetail bd on p.barang = bd.idbarangDetail inner join .order o on o.idorder = p.order inner join laboran l on bd.lab = l.lab where (p.status = 3 or (p.checkin != "" and p.checkout1 is null )) and bd.lab = "'.$lab.'"');
+                $barang = DB::select('select * from pinjam p inner join barangdetail bd on p.barang = bd.idbarangDetail inner join .order o on o.idorder = p.order inner join laboran l on bd.lab = l.lab where (p.status = 3 or (p.checkin != "" and p.checkout1 is null )) and bd.lab = "'.$lab.'" order by p.tanggal desc');
                 $k = $request->k;
                 return view('home.itemout',compact('barang','labnya','k'));
             }
         }
         else{
             $labnya = DB::select("select * from laboran where user = '".auth()->user()->nrpnpk."'");
-            $barang = DB::select('select * from pinjam p inner join barangdetail bd on p.barang = bd.idbarangDetail inner join .order o on o.idorder = p.order inner join laboran l on bd.lab = l.lab where (p.status = 3 or (p.checkin != "" and p.checkout1 is null )) and l.user = "'.auth()->user()->nrpnpk.'"');
+            $barang = DB::select('select * from pinjam p inner join barangdetail bd on p.barang = bd.idbarangDetail inner join .order o on o.idorder = p.order inner join laboran l on bd.lab = l.lab where (p.status = 3 or (p.checkin != "" and p.checkout1 is null )) and l.user = "'.auth()->user()->nrpnpk.'" order by p.tanggal desc');
             $k = 0;
             return view('home.itemout',compact('barang','labnya','k'));
         }
