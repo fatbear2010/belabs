@@ -54,6 +54,7 @@ class UserController extends Controller
         $jabatan = Jabatan::All();
         $data =User::find($id);
         
+        return view('admin.user.edit', compact('jabatan','data'));
        
     }
     public function update(Request $request, $id)

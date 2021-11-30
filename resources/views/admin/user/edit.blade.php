@@ -13,7 +13,7 @@
 						<h3 class="mb-0">Edit Status</h3>
 					</div>
 				</div>
-				<form enctype="multipart/form-data" role="form" method="POST" action="{{route('users.update',$data->id)}}">
+				<form enctype="multipart/form-data" role="form" method="POST" action="{{route('users.update',$data->nrpnpk)}}">
 					@csrf
 					@method("PUT")
 					<h6 class="heading-small text-muted mb-4"> &nbsp Ubah Informasi Status Jabatan</h6>
@@ -21,10 +21,7 @@
 					<div class="pl-lg-4">
 
 						<div class="form-group">
-							<div class="form-group">
-								<label for="form-control-label">ID User</label>
-								<input type="text" name="txtID" class="form-control form-control-alternative" id="exampleInputEmail1" value="{{$data->id}}">
-							</div>
+							
 							<div class="form-group">
 								<label for="form-control-label">NRP/NPK</label>
 								<input type="text" name="txtNRP" class="form-control form-control-alternative" id="exampleInputEmail1" value="{{$data->nrpnpk}}">
