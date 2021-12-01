@@ -37,7 +37,7 @@
       <tr>
         <td>{{ $d->nrpnpk}}</td>
         <td>{{ $d->nama }}</td>
-        <td>{{ $d->status }}</td>
+        <td>@if($d->status == 1)Sudah Aktivasi @elseif($d->status == 2) Belum Aktivasi @else Akun Diblokir @endif</td>
         <td>{{ $d->email }}</td>
 
         <td class="text-right">
