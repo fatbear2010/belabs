@@ -1107,7 +1107,7 @@ class AmbilbalikController extends Controller
     public function konfirmasipemesanfinal(Request $request)
     {
         DB::statement("update pinjam set checkin1 = now() where ambil = '".$request->idambilbalik."'");
-        DB::statement("update pinjamLab set checkin1 = now() where ambil = '".$request->idambilbalik."'");
+        DB::statement("update pinjamlab set checkin1 = now() where ambil = '".$request->idambilbalik."'");
         DB::statement("update ambilbalik set time2 = now() where idambilbalik = '".$request->idambilbalik."'");
         $riwayat = new History;
         $riwayat->status = 13;
